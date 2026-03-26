@@ -5,7 +5,7 @@ import { Card } from "./Card";
 
 interface SearchHeaderProps {
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   actions?: React.ReactNode;
 }
 
@@ -18,9 +18,11 @@ export function SearchHeader({ title, children, actions }: SearchHeaderProps) {
           {actions && <div className="flex items-center gap-3 w-full sm:w-auto">{actions}</div>}
         </div>
         
-        <Card className="shadow-sm border-gray-200/60 bg-white/70 backdrop-blur-xs">
-          {children}
-        </Card>
+        {children && (
+          <Card className="shadow-sm border-gray-200/60 bg-white/70 backdrop-blur-xs">
+            {children}
+          </Card>
+        )}
       </div>
     </div>
   );

@@ -6,6 +6,10 @@ import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { Card } from "@/app/components/Card";
 import { Button } from "@/app/components/Button";
 import { Input } from "@/app/components/Input";
+import { Select } from "@/app/components/Select";
+import { TextArea } from "@/app/components/TextArea";
+import { SearchHeader } from "@/app/components/SearchHeader";
+import { PlusCircle, Trash2, ClipboardList, Target, Clock, AlertCircle } from "lucide-react";
 
 interface Task {
   id: string;
@@ -38,6 +42,7 @@ export default function MentorTasksPage() {
     priority: "medium",
     status: "pending",
   });
+  const [filters, setFilters] = useState({ title: "", status: "", priority: "" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -148,17 +153,65 @@ export default function MentorTasksPage() {
     return "text-gray-700 bg-gray-100";
   };
 
+  const filteredTasks = tasks.filter((task) => {
+    return (
+      task.title.toLowerCase().includes(filters.title.toLowerCase()) &&
+      (filters.status === "" || task.status === filters.status) &&
+      (filters.priority === "" || task.priority === filters.priority)
+    );
+  });
+
   return (
     <DashboardLayout>
-      <div className="max-w-6xl">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Manage Tasks</h1>
-          <Button onClick={() => setShowForm(!showForm)}>
-            {showForm ? "Cancel" : "+ Assign Task"}
-          </Button>
-        </div>
+      <div className="w-full">
+        <SearchHeader
+          title="Manage Tasks"
+          actions={
+            <Button
+              onClick={() => setShowForm(!showForm)}
+              icon={!showForm && <PlusCircle className="w-5 h-5" />}
+              className="py-2.5 px-6 shadow-xl"
+            >
+              {showForm ? "Cancel" : "Assign Task"}
+            </Button>
+          }
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-2 items-end">
+            <Input
+              label="Search Tasks"
+              placeholder="Ex: API Development"
+              value={filters.title}
+              onChange={(e) => setFilters({ ...filters, title: e.target.value })}
+              compact
+            />
+            <Select
+                label="Task Status"
+                value={filters.status}
+                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                compact
+              >
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </Select>
 
-        {showForm && (
+              <Select
+                label="Priority Level"
+                value={filters.priority}
+                onChange={(e) => setFilters({ ...filters, priority: e.target.value })}
+                compact
+              >
+                <option value="">All Priorities</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </Select>
+          </div>
+        </SearchHeader>
+
+        <div className="space-y-10">
+          {showForm && (
           <Card title="Assign New Task" className="mb-8">
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
@@ -169,30 +222,22 @@ export default function MentorTasksPage() {
                 required
               />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows={4}
-                  required
-                />
-              </div>
+              <TextArea
+                label="Objective Description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                rows={4}
+                required
+                placeholder="Detail the tasks and expected outcomes..."
+              />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Assign to Intern
-                  </label>
-                  <select
+                  <Select
+                    label="Assign to Intern"
                     name="assignedIntern"
                     value={formData.assignedIntern}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   >
                     <option value="">Select Intern</option>
@@ -201,8 +246,7 @@ export default function MentorTasksPage() {
                         {intern.name}
                       </option>
                     ))}
-                  </select>
-                </div>
+                  </Select>
 
                 <Input
                   label="Deadline"
@@ -213,122 +257,92 @@ export default function MentorTasksPage() {
                   required
                 />
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Priority
-                  </label>
-                  <select
+                  <Select
+                    label="Task Priority"
                     name="priority"
                     value={formData.priority}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
-                  </select>
-                </div>
+                  </Select>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Status
-                  </label>
-                  <select
+                  <Select
+                    label="Initial Status"
                     name="status"
                     value={formData.status}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="pending">Pending</option>
                     <option value="in-progress">In Progress</option>
                     <option value="completed">Completed</option>
-                  </select>
-                </div>
+                  </Select>
               </div>
 
               <Button type="submit">Assign Task</Button>
             </form>
           </Card>
-        )}
+          )}
 
-        {loading ? (
-          <p>Loading tasks...</p>
-        ) : tasks.length === 0 ? (
-          <Card>
-            <p className="text-gray-600">No tasks assigned yet.</p>
-          </Card>
-        ) : (
-          <Card>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                      Title
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                      Assigned To
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                      Deadline
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                      Priority
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-gray-700">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {tasks.map((task) => (
-                    <tr key={task.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                        {task.title}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
-                        {getAssignedToLabel(task)}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
-                        {task.deadline}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                            task.priority
-                          )}`}
-                        >
-                          {task.priority}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                            task.status
-                          )}`}
-                        >
-                          {task.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <Button
-                          onClick={() => handleDelete(task.id)}
-                          variant="danger"
-                          className="px-3 py-1 text-sm"
-                        >
-                          Delete
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-32 text-gray-400">
+              <div className="premium-spinner mb-6"></div>
+              <p className="text-sm font-bold uppercase tracking-widest">Synchronizing Directives...</p>
             </div>
-          </Card>
-        )}
+          ) : filteredTasks.length === 0 ? (
+            <Card className="text-center py-24 border-dashed border-2 border-gray-200 bg-gray-50/30">
+              <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-6" />
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No tasks found</h3>
+              <p className="text-gray-500 mb-8 max-w-sm mx-auto">Try adjusting your filters or create a new task.</p>
+              <Button onClick={() => setShowForm(true)}>Create Task</Button>
+            </Card>
+          ) : (
+            <Card className="overflow-hidden border-gray-200 shadow-xl rounded-2xl">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-gray-50/80 border-b border-gray-200">
+                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Title</th>
+                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Assigned To</th>
+                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Deadline</th>
+                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Priority</th>
+                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Status</th>
+                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {filteredTasks.map((task) => (
+                      <tr key={task.id} className="group hover:bg-blue-50/30 transition-all duration-200">
+                        <td className="px-8 py-6 font-bold text-gray-900">{task.title}</td>
+                        <td className="px-8 py-6 text-gray-600">{getAssignedToLabel(task)}</td>
+                        <td className="px-8 py-6 text-gray-600">{task.deadline}</td>
+                        <td className="px-8 py-6">
+                          <span className={`px-4 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${getPriorityColor(task.priority)}`}>
+                            {task.priority}
+                          </span>
+                        </td>
+                        <td className="px-8 py-6">
+                          <span className={`px-4 py-1.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${getStatusColor(task.status)}`}>
+                            {task.status}
+                          </span>
+                        </td>
+                        <td className="px-8 py-6 text-center">
+                          <button
+                            onClick={() => handleDelete(task.id)}
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white transition-all duration-300 font-bold text-xs shadow-sm mx-auto"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" /> <span>Delete</span>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          )}
+        </div>
       </div>
     </DashboardLayout>
   );

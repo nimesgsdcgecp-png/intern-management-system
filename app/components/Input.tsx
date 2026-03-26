@@ -13,6 +13,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: "default" | "glass";
   showPasswordToggle?: boolean;
   labelPosition?: "float" | "top" | "hidden";
+  compact?: boolean;
 }
 
 /**
@@ -31,6 +32,7 @@ export function Input({
   variant = "default",
   showPasswordToggle = false,
   labelPosition = "float",
+  compact = false,
   value,
   placeholder,
   ...props
@@ -49,16 +51,16 @@ export function Input({
   const shouldHideLabel = labelPosition === "hidden";
   const shouldFloat = !shouldUseTopLabel && !shouldHideLabel && (isFocused || hasValue || type === "date" || type === "datetime-local");
 
-  const borderColor = error ? "border-red-500 ring-red-500/20" : 
-                    success ? "border-emerald-500 ring-emerald-500/20" : 
-                    isFocused ? "border-blue-500 ring-blue-500/20" : "border-gray-200";
+  const borderColor = error ? "border-red-500 ring-4 ring-red-500/10" : 
+                    success ? "border-emerald-500 ring-4 ring-emerald-500/10" : 
+                    isFocused ? "border-blue-500 ring-4 ring-blue-500/10" : "border-gray-200 hover:border-gray-300";
 
   const iconColor = error ? "text-red-500" : 
                    success ? "text-emerald-500" : 
                    isFocused ? "text-blue-500" : "text-gray-400";
 
   return (
-    <div className={`relative mb-6 ${className}`}>
+    <div className={`relative ${compact ? "" : "mb-6"} ${className}`}>
       <div className="relative group">
         {/* Left Icon */}
         {leftIcon && (
@@ -76,14 +78,12 @@ export function Input({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           className={`
-            w-full px-4 py-3 border rounded-xl text-gray-900 transition-all outline-none
-            ${variant === "glass" ? "glass-surface border-white/20 backdrop-blur-sm" : "bg-white"}
+            w-full px-4 py-3 border rounded-xl text-sm transition-all outline-none bg-white font-medium
             ${borderColor}
             ${leftIcon ? "pl-10" : ""}
             ${(rightIcon || (isPassword && showPasswordToggle)) ? "pr-10" : ""}
             ${(isFocused || error || success) ? "ring-2" : ""}
             ${disabled ? "opacity-50 cursor-not-allowed" : ""}
-            ${shouldUseTopLabel ? "pt-4" : ""}
           `}
           value={value}
           {...props}
@@ -97,9 +97,9 @@ export function Input({
               <label
                 htmlFor={inputId}
                 className={`
-                  absolute -top-2 left-3 text-xs font-medium bg-white px-1 z-10
+                  absolute -top-2 left-3 text-[10px] font-bold bg-white px-1 z-10 uppercase tracking-widest transition-colors
                   ${leftIcon ? "left-10" : "left-3"}
-                  ${error ? "text-red-500" : success ? "text-emerald-500" : isFocused ? "text-blue-500" : "text-gray-700"}
+                  ${error ? "text-red-500" : success ? "text-emerald-500" : isFocused ? "text-blue-600" : "text-gray-400"}
                 `}
               >
                 {label} {required && <span className="text-red-500">*</span>}

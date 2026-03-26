@@ -5,6 +5,11 @@ import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { Card } from "@/app/components/Card";
 import { Button } from "@/app/components/Button";
+import { Input } from "@/app/components/Input";
+import { Select } from "@/app/components/Select";
+import { TextArea } from "@/app/components/TextArea";
+import { SearchHeader } from "@/app/components/SearchHeader";
+import { FileText, Clock, MessageSquare, Target } from "lucide-react";
 
 interface Report {
   id: string;
@@ -28,6 +33,7 @@ export default function MentorReportsPage() {
   const [loading, setLoading] = useState(true);
   const [feedbackData, setFeedbackData] = useState<Record<string, string>>({});
   const [submittingFeedback, setSubmittingFeedback] = useState<Record<string, boolean>>({});
+  const [filters, setFilters] = useState({ internName: "", feedbackStatus: "" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,78 +123,118 @@ export default function MentorReportsPage() {
     }
   };
 
+  const filteredReports = reports.filter((report) => {
+    const internName = interns.get(report.internId) || "";
+    const hasFeedback = !!report.mentorFeedback;
+    return (
+      internName.toLowerCase().includes(filters.internName.toLowerCase()) &&
+      (filters.feedbackStatus === "" ||
+        (filters.feedbackStatus === "pending" && !hasFeedback) ||
+        (filters.feedbackStatus === "reviewed" && hasFeedback))
+    );
+  });
+
   return (
     <DashboardLayout>
-      <div className="max-w-6xl">
-        <h1 className="text-3xl font-bold mb-8 text-gray-900">View Reports</h1>
-
-        {loading ? (
-          <p>Loading reports...</p>
-        ) : reports.length === 0 ? (
-          <Card>
-            <p className="text-gray-600">No reports submitted yet.</p>
-          </Card>
-        ) : (
-          <div className="space-y-6">
-            {reports.map((report) => (
-              <Card key={report.id}>
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900">
-                      {interns.get(report.internId)}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {new Date(report.submittedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-                    {report.hoursWorked} hours
-                  </span>
-                </div>
-
-                <div className="mb-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">
-                    Work Description
-                  </h4>
-                  <p className="text-sm text-gray-600">{report.workDescription}</p>
-                </div>
-
-                {report.mentorFeedback && (
-                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded">
-                    <h4 className="text-sm font-medium text-green-800 mb-1">
-                      Your Feedback
-                    </h4>
-                    <p className="text-sm text-green-700">{report.mentorFeedback}</p>
-                  </div>
-                )}
-
-                {!report.mentorFeedback && (
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Add Feedback
-                    </label>
-                    <textarea
-                      value={feedbackData[report.id] || ""}
-                      onChange={(e) =>
-                        handleFeedbackChange(report.id, e.target.value)
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      rows={3}
-                      placeholder="Provide constructive feedback..."
-                    />
-                    <Button
-                      onClick={() => handleSubmitFeedback(report.id)}
-                      className="mt-2"
-                      disabled={submittingFeedback[report.id] || !feedbackData[report.id]?.trim()}
-                    >
-                      {submittingFeedback[report.id] ? "Submitting..." : "Submit Feedback"}
-                    </Button>
-                  </div>
-                )}
-              </Card>
-            ))}
+      <div className="w-full">
+        <SearchHeader title="View Reports">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-2 items-end">
+            <Input
+              label="Search by Intern"
+              placeholder="Ex: John Doe"
+              value={filters.internName}
+              onChange={(e) => setFilters({ ...filters, internName: e.target.value })}
+              compact
+            />
+            <Select
+              label="Review Status"
+              value={filters.feedbackStatus}
+              onChange={(e) => setFilters({ ...filters, feedbackStatus: e.target.value })}
+              compact
+            >
+              <option value="">All Reports</option>
+              <option value="pending">Pending Feedback</option>
+              <option value="reviewed">Reviewed</option>
+            </Select>
           </div>
-        )}
+        </SearchHeader>
+
+        <div className="space-y-10">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-32 text-gray-400">
+              <div className="premium-spinner mb-6"></div>
+              <p className="text-sm font-bold uppercase tracking-widest">Synchronizing Reports...</p>
+            </div>
+          ) : filteredReports.length === 0 ? (
+            <Card className="text-center py-24 border-dashed border-2 border-gray-200 bg-gray-50/30">
+              <FileText className="w-16 h-16 text-gray-300 mx-auto mb-6" />
+              <h3 className="text-xl font-bold text-gray-900 mb-2">No reports found</h3>
+              <p className="text-gray-500 max-w-sm mx-auto">No reports match your filters or have been submitted yet.</p>
+            </Card>
+          ) : (
+            <div className="space-y-6">
+              {filteredReports.map((report) => (
+                <Card key={report.id} className="hover:shadow-lg transition-all duration-200 border-gray-200">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">
+                        {interns.get(report.internId)}
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {new Date(report.submittedAt).toLocaleDateString("en-US", {
+                          weekday: "short",
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </p>
+                    </div>
+                    <span className="px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs font-bold flex items-center gap-1.5 border border-blue-100">
+                      <Clock className="w-3.5 h-3.5" /> {report.hoursWorked} hrs
+                    </span>
+                  </div>
+
+                  <div className="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                      Work Description
+                    </h4>
+                    <p className="text-sm text-gray-700 leading-relaxed">{report.workDescription}</p>
+                  </div>
+
+                  {report.mentorFeedback && (
+                    <div className="mb-4 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+                      <h4 className="text-xs font-bold text-emerald-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <MessageSquare className="w-3.5 h-3.5" /> Your Feedback
+                      </h4>
+                      <p className="text-sm text-emerald-800">{report.mentorFeedback}</p>
+                    </div>
+                  )}
+
+                  {!report.mentorFeedback && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <TextArea
+                        label="Evaluation Feedback"
+                        value={feedbackData[report.id] || ""}
+                        onChange={(e) =>
+                          handleFeedbackChange(report.id, e.target.value)
+                        }
+                        rows={3}
+                        placeholder="Provide constructive feedback for the intern..."
+                      />
+                      <Button
+                        onClick={() => handleSubmitFeedback(report.id)}
+                        className="mt-3"
+                        disabled={submittingFeedback[report.id] || !feedbackData[report.id]?.trim()}
+                      >
+                        {submittingFeedback[report.id] ? "Submitting..." : "Submit Feedback"}
+                      </Button>
+                    </div>
+                  )}
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </DashboardLayout>
   );

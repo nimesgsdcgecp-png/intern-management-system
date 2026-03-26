@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
-import { addWarning } from "@/app/lib/redux/slices/notificationSlice";
+import { addWarning, addError } from "@/app/lib/redux/slices/notificationSlice";
 import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { Card } from "@/app/components/Card";
 import { Button } from "@/app/components/Button";
 import { Input } from "@/app/components/Input";
-import { Edit3, Trash2, AlertTriangle, PlusCircle, Users, Mail, GraduationCap, Building2, Calendar } from "lucide-react";
+import { Edit3, Trash2, PlusCircle, Users, Mail, GraduationCap, Building2, Calendar, Search } from "lucide-react";
 import { SearchHeader } from "@/app/components/SearchHeader";
+import { Select } from "@/app/components/Select";
 
 interface Intern {
   id: string;
@@ -48,8 +49,8 @@ export default function InternsPage() {
   const [loading, setLoading] = useState(true);
   const [showInternForm, setShowInternForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [pageError, setPageError] = useState("");
   const [credentialNotice, setCredentialNotice] = useState<CredentialNotice | null>(null);
+  const [phoneError, setPhoneError] = useState("");
   const [filters, setFilters] = useState({
     name: "",
     collegeName: "",
@@ -92,10 +93,22 @@ export default function InternsPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validatePhone = (phone: string): boolean => {
+    if (!phone) return true; // Phone is optional
+    const digitsOnly = phone.replace(/\D/g, "");
+    return digitsOnly.length === 10;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setPageError("");
     setCredentialNotice(null);
+    setPhoneError("");
+
+    // Validate phone number
+    if (formData.phone && !validatePhone(formData.phone)) {
+      setPhoneError("Phone number must be exactly 10 digits");
+      return;
+    }
 
     try {
       const url = editingId ? `/api/interns/${editingId}` : "/api/interns";
@@ -110,7 +123,11 @@ export default function InternsPage() {
 
       if (!res.ok) {
         const err = await res.json();
-        setPageError(err?.error || "Failed to save intern");
+        dispatch(addError({
+          title: "Failed to Save",
+          message: err?.error || "Failed to save intern",
+          duration: 5000,
+        }));
         return;
       }
 
@@ -138,7 +155,11 @@ export default function InternsPage() {
         }
       }
     } catch (error) {
-      setPageError("Failed to save intern");
+      dispatch(addError({
+        title: "Error",
+        message: "Failed to save intern",
+        duration: 5000,
+      }));
     }
   };
 
@@ -203,33 +224,31 @@ export default function InternsPage() {
             </div>
           }
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-2">
-            <Input label="Search Names" placeholder="Ex: John Doe" value={filters.name} onChange={(e) => setFilters({ ...filters, name: e.target.value })} />
-            <Input label="Search College" placeholder="Ex: MIT Boston" value={filters.collegeName} onChange={(e) => setFilters({ ...filters, collegeName: e.target.value })} />
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Department</label>
-              <select value={filters.department} onChange={(e) => setFilters({ ...filters, department: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
-                <option value="">All Streams</option>
-                {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Supervisor</label>
-              <select value={filters.mentorName} onChange={(e) => setFilters({ ...filters, mentorName: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
-                <option value="">All Mentors</option>
-                {mentors.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
-              </select>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2 items-end">
+            <Input label="Search Names" placeholder="Ex: John Doe" value={filters.name} onChange={(e) => setFilters({ ...filters, name: e.target.value })} compact />
+            <Input label="Search College" placeholder="Ex: MIT Boston" value={filters.collegeName} onChange={(e) => setFilters({ ...filters, collegeName: e.target.value })} compact />
+            <Select 
+              label="Department" 
+              value={filters.department} 
+              onChange={(e) => setFilters({ ...filters, department: e.target.value })} 
+              compact
+            >
+              <option value="">All Streams</option>
+              {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+            </Select>
+            <Select 
+              label="Supervisor" 
+              value={filters.mentorName} 
+              onChange={(e) => setFilters({ ...filters, mentorName: e.target.value })} 
+              compact
+            >
+              <option value="">All Mentors</option>
+              {mentors.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
+            </Select>
           </div>
         </SearchHeader>
 
         <div className="space-y-10">
-          {pageError && (
-             <Card className="border-red-200 bg-red-50/40 animate-in fade-in">
-              <p className="text-sm font-medium text-red-700 flex items-center gap-3"><AlertTriangle className="w-5 h-5" /> {pageError}</p>
-            </Card>
-          )}
-
           {credentialNotice && (
             <Card title="Portal Credentials Generated" className="border-emerald-200 bg-emerald-50/20 shadow-lg animate-in zoom-in-95">
               <div className="p-4 space-y-6">
@@ -256,21 +275,17 @@ export default function InternsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   <Input label="Full Name" name="name" value={formData.name} onChange={handleInputChange} required placeholder="Full Name" />
                   <Input label="Email Address" type="email" name="email" value={formData.email} onChange={handleInputChange} required placeholder="email@address.com" />
-                  <Input label="Phone Number" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+1 123 456 7890" />
+                  <Input label="Phone Number" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+1 123 456 7890" error={phoneError} />
                   <Input label="Educational Institution" name="collegeName" value={formData.collegeName} onChange={handleInputChange} required placeholder="College/University Name" />
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700">Assigned Department</label>
-                    <select name="department" value={formData.department} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all">
-                      {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
-                    </select>
-                  </div>
+                  <Select label="Assigned Department" name="department" value={formData.department} onChange={handleInputChange}>
+                    {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+                  </Select>
                   <Input label="Start Date" type="date" name="startDate" value={formData.startDate} onChange={handleInputChange} />
-                  <div className="space-y-2 lg:col-span-3">
-                    <label className="block text-sm font-semibold text-gray-700">Assign Training Mentor</label>
-                    <select name="mentorId" value={formData.mentorId} onChange={handleInputChange} className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all">
+                  <div className="lg:col-span-3">
+                    <Select label="Assign Training Mentor" name="mentorId" value={formData.mentorId} onChange={handleInputChange}>
                       <option value="">Select a supervisor...</option>
                       {mentors.map(m => <option key={m.id} value={m.id}>{m.name} ({m.department})</option>)}
-                    </select>
+                    </Select>
                   </div>
                 </div>
                 <div className="flex justify-end gap-4 border-t border-gray-100 pt-8">

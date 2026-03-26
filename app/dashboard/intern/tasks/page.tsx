@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { Card } from "@/app/components/Card";
+import { SearchHeader } from "@/app/components/SearchHeader";
+import { Select } from "@/app/components/Select";
+import { Button } from "@/app/components/Button";
+import { Clock, CheckCircle2, AlertCircle, Target, User, Calendar, ArrowRight } from "lucide-react";
 
 interface Task {
   id: string;
@@ -91,68 +95,81 @@ export default function MyTasksPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl">
-        <h1 className="text-3xl font-bold mb-8 text-gray-900">My Tasks</h1>
+      <div className="max-w-6xl mx-auto pb-12">
+        <SearchHeader title="Mission Objectives" />
 
         {loading ? (
-          <p>Loading tasks...</p>
+          <div className="flex flex-col items-center justify-center py-32">
+            <div className="premium-spinner mb-6"></div>
+            <p className="text-gray-400 font-bold text-sm uppercase tracking-[0.2em]">Synchronizing Directives...</p>
+          </div>
         ) : tasks.length === 0 ? (
-          <Card>
-            <p className="text-gray-600">No tasks assigned yet.</p>
+          <Card className="text-center py-24 border-dashed border-2 border-gray-100 bg-gray-50/20">
+            <div className="w-16 h-16 rounded-3xl bg-white shadow-sm flex items-center justify-center mx-auto mb-6 text-gray-300">
+               <Target className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-black text-gray-900 mb-2">Operational Calm</h3>
+            <p className="text-gray-500 max-w-sm mx-auto font-medium">No tasks have been assigned to your workspace yet.</p>
           </Card>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
             {tasks.map((task) => (
               <Card
                 key={task.id}
-                className={`${getStatusColor(task.status)}`}
+                className="group relative overflow-hidden border-none shadow-2xl shadow-gray-200/50 hover:shadow-indigo-500/10 transition-all duration-500"
               >
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900">
-                      {task.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {task.description}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-2">
-                      <strong>Assigned by:</strong> {getAssignedByName(task.assignedBy || "")}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                        task.priority
-                      )}`}
-                    >
-                      {task.priority}
-                    </span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                        task.status
-                      )}`}
-                    >
-                      {task.status}
-                    </span>
-                  </div>
+                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-125 transition-transform duration-700">
+                   {task.status === "completed" ? <CheckCircle2 className="w-32 h-32" /> : <Clock className="w-32 h-32" />}
                 </div>
 
-                <div className="flex justify-between items-center text-sm text-gray-600 mt-4">
-                  <span>
-                    <strong>Deadline:</strong> {task.deadline}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-medium text-gray-700">Update Status:</label>
-                    <select
-                      value={task.status}
-                      onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                      disabled={updatingTaskId === task.id}
-                      className="px-3 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="in-progress">In Progress</option>
-                      <option value="completed">Completed</option>
-                    </select>
+                <div className="p-6 relative z-10">
+                  <div className="flex justify-between items-start mb-6">
+                    <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                      task.priority === "high" ? "bg-red-50 text-red-600 border-red-100" :
+                      task.priority === "medium" ? "bg-amber-50 text-amber-600 border-amber-100" :
+                      "bg-emerald-50 text-emerald-600 border-emerald-100"
+                    }`}>
+                      {task.priority === "high" && <AlertCircle className="w-3 h-3 inline mr-1" />}
+                      {task.priority} Priority
+                    </span>
+                    
+                    <div className="flex items-center gap-2">
+                       <Clock className="w-3.5 h-3.5 text-gray-400" />
+                       <span className="text-xs font-bold text-gray-500">{task.deadline}</span>
+                    </div>
+                  </div>
+
+                  <h3 className="text-xl font-black text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors">
+                    {task.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 font-medium leading-relaxed mb-8 line-clamp-3">
+                    {task.description}
+                  </p>
+
+                  <div className="flex items-center justify-between pt-6 border-t border-gray-50">
+                    <div className="flex items-center gap-3">
+                       <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                          <User className="w-4 h-4 text-gray-400" />
+                       </div>
+                       <div className="flex flex-col">
+                          <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Assignee</p>
+                          <p className="text-[11px] font-bold text-gray-700">{getAssignedByName(task.assignedBy || "")}</p>
+                       </div>
+                    </div>
+
+                    <div className="w-32">
+                       <Select
+                          value={task.status}
+                          onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                          disabled={updatingTaskId === task.id}
+                          compact
+                          className="mb-0"
+                       >
+                          <option value="pending">Pending</option>
+                          <option value="in-progress">In Progress</option>
+                          <option value="completed">Completed</option>
+                       </Select>
+                    </div>
                   </div>
                 </div>
               </Card>

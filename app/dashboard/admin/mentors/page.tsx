@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
-import { addWarning } from "@/app/lib/redux/slices/notificationSlice";
+import { addWarning, addError } from "@/app/lib/redux/slices/notificationSlice";
 import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { Card } from "@/app/components/Card";
 import { Button } from "@/app/components/Button";
 import { Input } from "@/app/components/Input";
-import { Edit3, Trash2, PlusCircle, AlertTriangle, Users, Mail } from "lucide-react";
+import { Edit3, Trash2, PlusCircle, Users, Mail } from "lucide-react";
 import { SearchHeader } from "@/app/components/SearchHeader";
+import { Select } from "@/app/components/Select";
 
 interface Mentor {
   id: string;
@@ -33,7 +34,6 @@ export default function MentorsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [pageError, setPageError] = useState("");
   const [credentialNotice, setCredentialNotice] = useState<CredentialNotice | null>(null);
   const [filters, setFilters] = useState({
     name: "",
@@ -70,7 +70,6 @@ export default function MentorsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setPageError("");
     setCredentialNotice(null);
 
     try {
@@ -89,7 +88,11 @@ export default function MentorsPage() {
 
       if (!res.ok) {
         const err = await res.json();
-        setPageError(err?.error || "Failed to save mentor");
+        dispatch(addError({
+          title: "Failed to Save",
+          message: err?.error || "Failed to save mentor",
+          duration: 5000,
+        }));
         return;
       }
 
@@ -118,7 +121,11 @@ export default function MentorsPage() {
       }
     } catch (error) {
       console.error("Failed to save mentor:", error);
-      setPageError("Failed to save mentor");
+      dispatch(addError({
+        title: "Error",
+        message: "Failed to save mentor",
+        duration: 5000,
+      }));
     }
   };
 
@@ -139,9 +146,19 @@ export default function MentorsPage() {
     try {
       const res = await fetch(`/api/mentors/${id}`, { method: "DELETE" });
       if (res.ok) await fetchMentors();
-      else setPageError("Failed to delete mentor");
+      else {
+        dispatch(addError({
+          title: "Delete Failed",
+          message: "Failed to delete mentor",
+          duration: 5000,
+        }));
+      }
     } catch (error) {
-      setPageError("Error deleting mentor");
+      dispatch(addError({
+        title: "Error",
+        message: "Error deleting mentor",
+        duration: 5000,
+      }));
     }
   };
 
@@ -172,45 +189,38 @@ export default function MentorsPage() {
             </Button>
           }
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-2 items-end">
             <Input
               label="Search by Name"
               placeholder="Ex: Dr. Smith"
               value={filters.name}
               onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+              compact
             />
             <Input
               label="Search by Email"
               placeholder="Ex: smith@mentor.com"
               value={filters.email}
               onChange={(e) => setFilters({ ...filters, email: e.target.value })}
+              compact
             />
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Department</label>
-              <select
+            <Select
+                label="Department"
                 value={filters.department}
                 onChange={(e) => setFilters({ ...filters, department: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                compact
               >
                 <option value="">All Departments</option>
                 {DEPARTMENTS.map((d) => (
-                  <option key={d} value={d}>{d}</option>
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
                 ))}
-              </select>
-            </div>
+              </Select>
           </div>
         </SearchHeader>
 
         <div className="space-y-10">
-          {pageError && (
-            <Card className="border-red-200 bg-red-50/40 animate-in fade-in">
-              <p className="text-sm font-medium text-red-700 flex items-center gap-3">
-                <AlertTriangle className="w-5 h-5" />
-                {pageError}
-              </p>
-            </Card>
-          )}
-
           {credentialNotice && (
             <Card title="Mentor Credentials Generated" className="border-emerald-200 bg-emerald-50/20 shadow-lg animate-in zoom-in-95">
               <div className="p-4 space-y-6">
@@ -237,19 +247,9 @@ export default function MentorsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <Input label="Full Name" name="name" value={formData.name} onChange={handleInputChange} required placeholder="Dr. Alice Johnson" />
                   <Input label="Email Address" type="email" name="email" value={formData.email} onChange={handleInputChange} required placeholder="alice@university.edu" />
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-gray-700">Department</label>
-                    <select
-                      name="department"
-                      value={formData.department}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
-                    >
-                      {DEPARTMENTS.map((d) => (
-                        <option key={d} value={d}>{d}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <Select label="Department" name="department" value={formData.department} onChange={(e) => setFormData({ ...formData, department: e.target.value })} required>
+                  {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+                </Select>
                 </div>
                 <div className="flex justify-end gap-4 border-t border-gray-100 pt-6">
                   <Button type="button" variant="secondary" onClick={() => setShowForm(false)} className="px-8">Discard</Button>

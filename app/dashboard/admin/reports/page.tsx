@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { Card } from "@/app/components/Card";
 import { StatsGrid } from "@/app/components/StatsGrid";
 import { SearchHeader } from "@/app/components/SearchHeader";
 import { Input } from "@/app/components/Input";
+import { Select } from "@/app/components/Select";
 import { Button } from "@/app/components/Button";
 import {
   FileText,
@@ -171,43 +172,42 @@ export default function AdminReportsPage() {
     <DashboardLayout>
       <div className="w-full">
         <SearchHeader title="Report Analytics">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2 items-end">
             <Input
               label="Search Intern"
               placeholder="Ex: John Doe"
               value={filters.internName}
               onChange={(e) => setFilters({ ...filters, internName: e.target.value })}
+              compact
             />
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Department</label>
-              <select
-                value={filters.department}
-                onChange={(e) => setFilters({ ...filters, department: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
-              >
-                <option value="">All Departments</option>
-                {DEPARTMENTS.map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Feedback Status</label>
-              <select
-                value={filters.feedbackStatus}
-                onChange={(e) => setFilters({ ...filters, feedbackStatus: e.target.value as any })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
-              >
-                <option value="all">All Status</option>
-                <option value="pending">Pending Feedback</option>
-                <option value="reviewed">Reviewed</option>
-              </select>
-            </div>
+            <Select
+              label="Department Filter"
+              value={filters.department}
+              onChange={(e) => setFilters({ ...filters, department: e.target.value })}
+              compact
+            >
+              <option value="">All Streams</option>
+              {DEPARTMENTS.map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </Select>
+
+            <Select
+              label="Review Status"
+              value={filters.feedbackStatus}
+              onChange={(e) => setFilters({ ...filters, feedbackStatus: e.target.value as any })}
+              compact
+            >
+              <option value="all">All Status</option>
+              <option value="pending">Pending Feedback</option>
+              <option value="reviewed">Reviewed</option>
+            </Select>
             <Input
               label="From Date"
               type="date"
               value={filters.dateFrom}
               onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
+              compact
             />
           </div>
         </SearchHeader>
@@ -253,8 +253,8 @@ export default function AdminReportsPage() {
                       const isExpanded = expandedReportId === report.id;
 
                       return (
-                        <>
-                          <tr key={report.id} className="group hover:bg-blue-50/30 transition-all duration-200">
+                        <Fragment key={report.id}>
+                          <tr className="group hover:bg-blue-50/30 transition-all duration-200">
                             {/* ID */}
                             <td className="px-8 py-6">
                               <code className="text-[10px] font-mono font-bold text-gray-400 bg-gray-100 px-2.5 py-1 rounded-md" title={report.id}>
@@ -368,7 +368,7 @@ export default function AdminReportsPage() {
                               </td>
                             </tr>
                           )}
-                        </>
+                        </Fragment>
                       );
                     })}
                   </tbody>

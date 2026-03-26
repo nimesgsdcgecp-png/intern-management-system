@@ -7,6 +7,8 @@ import { Button } from "@/app/components/Button";
 import { Input } from "@/app/components/Input";
 import { PlusCircle, Trash2, AlertTriangle, Search, CheckCircle2, Clock, Activity } from "lucide-react";
 import { SearchHeader } from "@/app/components/SearchHeader";
+import { Select } from "@/app/components/Select";
+import { TextArea } from "@/app/components/TextArea";
 
 interface Task {
   id: string;
@@ -22,6 +24,7 @@ interface Task {
 interface Intern {
   id: string;
   name: string;
+  department?: string; // Added department based on the new Select component
 }
 
 export default function TasksPage() {
@@ -37,6 +40,7 @@ export default function TasksPage() {
     deadline: "",
     priority: "medium",
     status: "pending",
+    internId: "", // Added internId for single assignment
   });
 
   const [filters, setFilters] = useState({ title: "", status: "", priority: "" });
@@ -67,20 +71,25 @@ export default function TasksPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.assignedToAll && formData.assignedInterns.length === 0) {
-      alert("Assign to at least one intern.");
+    // Adjusted validation for single intern assignment
+    if (!formData.internId) {
+      alert("Assign to an intern.");
       return;
     }
     try {
       const res = await fetch("/api/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          assignedInterns: formData.internId ? [formData.internId] : [], // Convert single internId to array
+          assignedToAll: false, // Assuming single assignment means not assigned to all
+        }),
       });
       if (res.ok) {
         fetchTasks();
         setShowForm(false);
-        setFormData({ title: "", description: "", assignedInterns: [], assignedToAll: false, deadline: "", priority: "medium", status: "pending" });
+        setFormData({ title: "", description: "", assignedInterns: [], assignedToAll: false, deadline: "", priority: "medium", status: "pending", internId: "" });
       }
     } catch (e) { console.error(e); }
   };
@@ -121,39 +130,36 @@ export default function TasksPage() {
             </Button>
           }
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-2 items-end">
             <Input
               label="Search Tasks"
               placeholder="Ex: Refactor API"
               value={filters.title}
               onChange={(e) => setFilters({ ...filters, title: e.target.value })}
+              compact
             />
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Status Filter</label>
-              <select
+            <Select
+                label="Status Filter"
                 value={filters.status}
                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                compact
               >
                 <option value="">All Statuses</option>
                 <option value="pending">Pending</option>
                 <option value="in-progress">In Progress</option>
                 <option value="completed">Completed</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="block text-sm font-semibold text-gray-700">Priority Filter</label>
-              <select
+              </Select>
+            <Select
+                label="Priority Filter"
                 value={filters.priority}
                 onChange={(e) => setFilters({ ...filters, priority: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-gray-50/50 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
+                compact
               >
                 <option value="">All Priorities</option>
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
-              </select>
-            </div>
+              </Select>
           </div>
         </SearchHeader>
 
@@ -164,18 +170,7 @@ export default function TasksPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                   <div className="space-y-8">
                     <Input label="Task Title" name="title" value={formData.title} onChange={handleInputChange} required placeholder="Ex: Database Migration" />
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-gray-700">Detailed Description</label>
-                      <textarea
-                        name="description"
-                        value={formData.description}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all"
-                        rows={5}
-                        required
-                        placeholder="Provide clear instructions..."
-                      />
-                    </div>
+                    <TextArea label="Detailed Description" name="description" value={formData.description} onChange={handleInputChange} required placeholder="Provide clear instructions..." rows={5} />
                   </div>
 
                   <div className="space-y-8">
@@ -210,19 +205,11 @@ export default function TasksPage() {
 
                     <div className="grid grid-cols-2 gap-6">
                       <Input label="Submission Deadline" type="date" name="deadline" value={formData.deadline} onChange={handleInputChange} required />
-                      <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-gray-700">Priority Level</label>
-                        <select
-                          name="priority"
-                          value={formData.priority}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm"
-                        >
-                          <option value="low">Low</option>
-                          <option value="medium">Medium</option>
-                          <option value="high">High</option>
-                        </select>
-                      </div>
+                      <Select label="Priority Level" name="priority" value={formData.priority} onChange={handleInputChange}>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                      </Select>
                     </div>
                   </div>
                 </div>

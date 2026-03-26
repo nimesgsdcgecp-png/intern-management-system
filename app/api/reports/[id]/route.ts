@@ -78,7 +78,7 @@ export async function PUT(
     // Build dynamic mutation based on fields being updated
     const setFields: string[] = [];
     const mutationVars: any = { id };
-    const varDeclarations: string[] = ["$id: String!"];
+    const varDeclarations: string[] = ["$id: uuid!"];
 
     if (updates?.date !== undefined) {
       mutationVars.reportDate = updates.date;

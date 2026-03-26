@@ -2,9 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { StatsGrid } from "@/app/components/StatsGrid";
 import { Card } from "@/app/components/Card";
+import { SearchHeader } from "@/app/components/SearchHeader";
+import { Button } from "@/app/components/Button";
 import { Users, FileText, Clock, CheckSquare } from "lucide-react";
 
 interface DashboardStats {
@@ -104,63 +107,87 @@ export default function MentorDashboard() {
   return (
     <DashboardLayout>
       <div className="max-w-6xl">
-        <h1 className="text-3xl font-bold mb-8 text-gray-900">Mentor Dashboard</h1>
+        <SearchHeader title="Mentor Dashboard" />
 
         {loading ? (
-          <div className="text-center py-8">
+          <div className="flex flex-col items-center justify-center py-20">
             <div className="premium-spinner mb-4"></div>
-            <p className="text-gray-600">Loading your dashboard...</p>
+            <p className="text-gray-400 font-bold text-sm uppercase tracking-widest">Accessing Supervision Portal...</p>
           </div>
         ) : (
           <StatsGrid stats={statsData} loading={loading} />
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-          <Card title="Quick Actions">
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a
-                  href="/dashboard/mentor/interns"
-                  className="text-blue-600 hover:underline"
-                >
-                  → View My Interns
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
+          <div className="lg:col-span-2 space-y-8">
+            <h3 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Supervision Controls</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {[
+                { label: "My Interns", href: "/dashboard/mentor/interns", icon: <Users className="w-5 h-5" />, color: "bg-blue-50 text-blue-600", desc: "Manage your team" },
+                { label: "Assign Tasks", href: "/dashboard/mentor/tasks", icon: <FileText className="w-5 h-5" />, color: "bg-indigo-50 text-indigo-600", desc: "Delegate objectives" },
+                { label: "Review Reports", href: "/dashboard/mentor/reports", icon: <CheckSquare className="w-5 h-5" />, color: "bg-emerald-50 text-emerald-600", desc: "Evaluate progress" }
+              ].map((action, i) => (
+                <a key={i} href={action.href} className="group p-6 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  <div className={`w-12 h-12 rounded-2xl ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    {action.icon}
+                  </div>
+                  <h4 className="text-sm font-black text-gray-900 mb-1">{action.label}</h4>
+                  <p className="text-[11px] text-gray-500 font-medium">{action.desc}</p>
                 </a>
-              </li>
-              <li>
-                <a
-                  href="/dashboard/mentor/tasks"
-                  className="text-blue-600 hover:underline"
-                >
-                  → Assign Tasks
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/dashboard/mentor/reports"
-                  className="text-blue-600 hover:underline"
-                >
-                  → Review Reports
-                </a>
-              </li>
-            </ul>
-          </Card>
-
-          <Card title="System Information">
-            <div className="text-sm text-gray-600 space-y-2">
-              <p>
-                <strong>Welcome:</strong> {session?.user?.name}
-              </p>
-              <p>
-                <strong>Email:</strong> {session?.user?.email}
-              </p>
-              <p>
-                <strong>Role:</strong> Mentor
-              </p>
-              <p className="text-xs text-gray-400 mt-4">
-                Last login: {new Date().toLocaleString()}
-              </p>
+              ))}
             </div>
-          </Card>
+
+            <Card className="bg-linear-to-r from-gray-900 to-slate-800 text-white overflow-hidden border-none shadow-2xl">
+              <div className="p-8 relative">
+                 <div className="relative z-10 max-w-sm">
+                   <h3 className="text-xl font-black mb-3">Professional Mentorship</h3>
+                   <p className="text-xs text-gray-400 font-medium leading-relaxed mb-6">
+                     Consistency in feedback is key to intern growth. Ensure reports are reviewed within 24 hours of submission for optimal guidance.
+                   </p>
+                   <Link href="/dashboard/mentor/reports">
+                     <Button variant="secondary" className="bg-white/10 hover:bg-white/20 border-none text-white px-6">Supervision Guidelines</Button>
+                   </Link>
+                 </div>
+                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                    <CheckSquare className="w-48 h-48" />
+                 </div>
+              </div>
+            </Card>
+          </div>
+
+          <div className="space-y-8">
+            <h3 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Lead Identifier</h3>
+            <Card className="overflow-hidden border-none shadow-2xl shadow-gray-200/50">
+              <div className="p-6 bg-linear-to-br from-blue-700 to-indigo-800 text-white relative">
+                 <div className="relative z-10">
+                   <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70 mb-1">Authenticated Account</p>
+                   <h4 className="text-xl font-black mb-4">{session?.user?.name}</h4>
+                   <div className="flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full w-fit">
+                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                     <span className="text-[10px] font-black uppercase tracking-widest">Status: active Supervisor</span>
+                   </div>
+                 </div>
+              </div>
+              <div className="p-6 space-y-6 bg-white">
+                {[
+                   { label: "Email Address", value: session?.user?.email },
+                   { label: "Primary Role", value: "Training Mentor" },
+                   { label: "Access Level", value: "Standard Supervision" },
+                   { label: "Department", value: (session?.user as any)?.department || "Cross-Functional" }
+                ].map((item, i) => (
+                  <div key={i} className="flex flex-col gap-1">
+                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{item.label}</p>
+                    <p className="text-xs font-bold text-gray-700">{item.value || "N/A"}</p>
+                  </div>
+                ))}
+                <div className="pt-6 border-t border-gray-50 text-center">
+                   <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest">
+                     System Security: Standard SSL Enabled
+                   </p>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
     </DashboardLayout>
