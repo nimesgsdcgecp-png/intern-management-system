@@ -103,7 +103,7 @@ function VerifyOTPContent() {
           <div className="p-6 space-y-6">
             <div className="text-center pt-2">
               <h2 className="text-xl font-bold text-gray-900 tracking-tight">Verify Code</h2>
-              <p className="text-[10px] text-gray-500 mt-1 max-w-[220px] mx-auto">
+              <p className="text-[10px] text-gray-500 mt-1 max-w-55 mx-auto">
                 We sent a 6-digit code to <span className="font-bold text-gray-900">{email}</span>
               </p>
             </div>

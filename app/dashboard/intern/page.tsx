@@ -168,7 +168,7 @@ export default function InternDashboard() {
           <div className="space-y-8">
             <h3 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Identity Profile</h3>
             <Card className="overflow-hidden border-none shadow-2xl shadow-gray-200/50">
-              <div className="p-6 bg-gradient-to-br from-indigo-600 to-blue-700 text-white relative">
+              <div className="p-6 bg-linear-to-br from-indigo-600 to-blue-700 text-white relative">
                  <div className="relative z-10">
                    <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70 mb-1">Authenticated Identifier</p>
                    <h4 className="text-xl font-black mb-4">{session?.user?.name}</h4>

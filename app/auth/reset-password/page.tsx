@@ -103,7 +103,7 @@ function ResetPasswordContent() {
           <div className="p-6 space-y-6">
             <div className="text-center pt-2">
               <h2 className="text-xl font-bold text-gray-900 tracking-tight">Setup New Password</h2>
-              <p className="text-xs text-gray-500 mt-1 max-w-[200px] mx-auto">Create a secure password for your account</p>
+              <p className="text-xs text-gray-500 mt-1 max-w-50 mx-auto">Create a secure password for your account</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -122,7 +122,7 @@ function ResetPasswordContent() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-[35px] text-gray-300 hover:text-gray-600 transition-colors"
+                        className="absolute right-4 top-8.75 text-gray-300 hover:text-gray-600 transition-colors"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>

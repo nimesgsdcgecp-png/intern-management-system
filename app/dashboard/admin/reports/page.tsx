@@ -244,7 +244,7 @@ export default function AdminReportsPage() {
                       <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Report Date</th>
                       <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Hours</th>
                       <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Feedback</th>
-                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest sticky right-0 bg-gray-50/80 backdrop-blur-sm shadow-[-12px_0_15px_-3px_rgba(0,0,0,0.05)] min-w-[150px]">Actions</th>
+                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest sticky right-0 bg-gray-50/80 backdrop-blur-sm shadow-[-12px_0_15px_-3px_rgba(0,0,0,0.05)] min-w-37.5">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">

@@ -310,7 +310,7 @@ export function Sidebar() {
                         }
                         ${
                           isActive
-                            ? "bg-gradient-to-r from-blue-600/90 to-blue-500/70 text-white shadow-lg shadow-blue-500/25 backdrop-blur-sm"
+                            ? "bg-linear-to-r from-blue-600/90 to-blue-500/70 text-white shadow-lg shadow-blue-500/25 backdrop-blur-sm"
                             : "text-gray-300 hover:text-white hover:bg-white/10 hover:backdrop-blur-sm"
                         }
                       `}
@@ -325,7 +325,7 @@ export function Sidebar() {
                       {/* Active Indicator for Expanded Sidebar */}
                       {isActive && !isCollapsed && (
                         <motion.div
-                          className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 to-emerald-400 rounded-r-full"
+                          className="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-blue-400 to-emerald-400 rounded-r-full"
                           layoutId="activeIndicator"
                           initial={false}
                           transition={{
@@ -339,7 +339,7 @@ export function Sidebar() {
                       {/* Active Indicator for Collapsed Sidebar */}
                       {isActive && isCollapsed && (
                         <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-emerald-500/20 rounded-xl ring-2 ring-blue-400/50"
+                          className="absolute inset-0 bg-linear-to-r from-blue-500/20 to-emerald-500/20 rounded-xl ring-2 ring-blue-400/50"
                           layoutId="activeIndicatorCollapsed"
                           initial={false}
                           transition={{
@@ -398,7 +398,7 @@ export function Sidebar() {
                       {/* Hover Glow Effect */}
                       {!isActive && (
                         <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-blue-500/0 rounded-xl opacity-0 group-hover:opacity-100"
+                          className="absolute inset-0 bg-linear-to-r from-blue-500/0 via-blue-500/5 to-blue-500/0 rounded-xl opacity-0 group-hover:opacity-100"
                           transition={{ duration: 0.3 }}
                         />
                       )}

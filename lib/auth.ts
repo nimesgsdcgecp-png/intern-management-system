@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
 
                     const passwordMatch = await compare(
                           credentials.password as string,
-                          user.password
+                          user.password || ""
                         );
 
                     console.log("🔑 Password match result:", passwordMatch);

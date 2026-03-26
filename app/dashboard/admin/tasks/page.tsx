@@ -245,7 +245,7 @@ export default function TasksPage() {
                       <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Timeline</th>
                       <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Severity</th>
                       <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Status</th>
-                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest sticky right-0 bg-gray-50/80 backdrop-blur-sm shadow-[-12px_0_15px_-3px_rgba(0,0,0,0.05)] min-w-[200px]">Actions</th>
+                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest sticky right-0 bg-gray-50/80 backdrop-blur-sm shadow-[-12px_0_15px_-3px_rgba(0,0,0,0.05)] min-w-50">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -262,7 +262,7 @@ export default function TasksPage() {
                             <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500">
                               {getInternNames(task).charAt(0)}
                             </div>
-                            <span className="text-sm font-semibold text-gray-700 truncate max-w-[150px]">{getInternNames(task)}</span>
+                            <span className="text-sm font-semibold text-gray-700 truncate max-w-37.5">{getInternNames(task)}</span>
                           </div>
                         </td>
                         <td className="px-8 py-6">

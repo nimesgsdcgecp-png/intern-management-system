@@ -320,7 +320,7 @@ export default function InternsPage() {
                       <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Placement</th>
                       <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Mentorship</th>
                       <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest">State</th>
-                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest sticky right-0 bg-gray-50/80 backdrop-blur-sm shadow-[-12px_0_15px_-3px_rgba(0,0,0,0.05)] min-w-[300px]">Actions</th>
+                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest sticky right-0 bg-gray-50/80 backdrop-blur-sm shadow-[-12px_0_15px_-3px_rgba(0,0,0,0.05)] min-w-75">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">

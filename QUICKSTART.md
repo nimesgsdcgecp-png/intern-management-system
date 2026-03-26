@@ -2,6 +2,15 @@
 
 Get up and running with the Intern Management System in 2 minutes!
 
+## Prerequisites
+
+This system requires a **PostgreSQL database** and **Hasura GraphQL Engine**.
+
+**Quick Setup:**
+- Follow the [README.md](./README.md) installation instructions for database setup
+- Ensure PostgreSQL and Hasura are running before starting the Next.js app
+- The system uses environment variables from `.env` (copy from `.env.example`)
+
 ## Step 1: Start the Development Server
 
 ```bash
@@ -32,7 +41,8 @@ Try each role to see different dashboards:
 - ✅ Add new interns (click "+ Add Intern")
 - ✅ Assign mentors to interns
 - ✅ Create tasks for interns
-- ✅ View system statistics
+- ✅ View report analytics and statistics
+- ✅ Manage mentors
 
 ### Option 2: Mentor Login
 - Email: `mentor@internship.com`
@@ -60,7 +70,8 @@ Try each role to see different dashboards:
 1. Go to "Manage Interns" and add a new intern
 2. Assign a mentor
 3. Go to "Create Tasks" and assign a task
-4. View statistics on the dashboard
+4. View "Report Analytics" to see all submitted reports
+5. Check dashboard statistics
 
 ### As Mentor:
 1. View "My Interns"
@@ -72,14 +83,22 @@ Try each role to see different dashboards:
 2. Click "Submit Daily Report" to submit work
 3. View "My Reports & Feedback" to see mentor comments
 
-## File Locations
+## Database & Architecture
 
-All data is stored in JSON files in the `data/` folder:
+This system uses a modern **PostgreSQL + Hasura GraphQL** stack:
 
-- **data/users.json** - User accounts and roles
-- **data/interns.json** - Intern information
-- **data/tasks.json** - Task assignments
-- **data/reports.json** - Submitted reports
+- **Database**: PostgreSQL with UUID primary keys
+- **API Layer**: Hasura GraphQL Engine for real-time data access
+- **Frontend**: Next.js App Router with Apollo Client
+- **Authentication**: NextAuth.js with JWT sessions
+
+### Database Tables:
+- **users** - User accounts with role-based access (admin, mentor, intern)
+- **profiles** - User profiles (name, department, phone, etc.)
+- **interns** - Intern-specific data (mentor assignments, college info, dates)
+- **tasks** - Task assignments with priorities and deadlines
+- **reports** - Daily/weekly reports with mentor feedback
+- **task_assignments** - Many-to-many task-intern relationships
 
 ## Useful Commands
 
@@ -123,7 +142,7 @@ npm run lint
 
 ### 2. Customize
 - Change colors in `app/globals.css`
-- Add new roles in `data/users.json`
+- Add new roles via database modifications
 - Create new API endpoints following existing patterns
 
 ### 3. Learn More
@@ -183,7 +202,7 @@ npm run lint
 💡 **Pro Tips:**
 - You can logout and login as different roles to test workflows
 - Check your browser's DevTools (F12) → Network tab to see API calls
-- All data is persisted in JSON files - changes are permanent
+- All data is persisted in PostgreSQL database - changes are permanent
 - Try exploring different features before deploying
 
 🎯 **Learning Path:**
