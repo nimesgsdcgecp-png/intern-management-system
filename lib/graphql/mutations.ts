@@ -321,6 +321,7 @@ export const UPDATE_MENTOR_USER = gql`
     $name: String!
     $email: String!
     $department: String
+    $phone: String
   ) {
     update_users_by_pk(
       pk_columns: { id: $id }
@@ -337,11 +338,13 @@ export const UPDATE_MENTOR_USER = gql`
       _set: {
         name: $name
         department: $department
+        phone: $phone
       }
     ) {
       user_id
       name
       department
+      phone
     }
   }
 `;
@@ -453,3 +456,116 @@ export const UPDATE_USER_EMAIL = gql`
     }
   }
 `;
+
+export const INSERT_ATTENDANCE = gql`
+  mutation InsertAttendance(
+    $userId: uuid!
+    $date: date!
+    $clockIn: timestamptz!
+    $status: String!
+  ) {
+    insert_attendance_one(
+      object: {
+        user_id: $userId
+        date: $date
+        clock_in: $clockIn
+        status: $status
+      }
+    ) {
+      id
+      clock_in
+    }
+  }
+`;
+
+export const UPDATE_ATTENDANCE = gql`
+  mutation UpdateAttendance(
+    $id: uuid!
+    $clockOut: timestamptz!
+    $totalHours: numeric!
+  ) {
+    update_attendance_by_pk(
+      pk_columns: { id: $id }
+      _set: { clock_out: $clockOut, total_hours: $totalHours }
+    ) {
+      id
+      clock_out
+      total_hours
+    }
+  }
+`;
+
+export const LOG_ACTIVITY = gql`
+  mutation LogActivity(
+    $userId: uuid!
+    $action: String!
+    $entityType: String!
+    $entityId: uuid
+    $metadata: jsonb
+  ) {
+    insert_activity_logs_one(
+      object: {
+        user_id: $userId
+        action: $action
+        entity_type: $entityType
+        entity_id: $entityId
+        metadata: $metadata
+      }
+    ) {
+      id
+      created_at
+    }
+  }
+`;
+
+export const INSERT_USERS_BULK = gql`
+  mutation InsertUsersBulk($users: [users_insert_input!]!) {
+    insert_users(objects: $users) {
+      returning {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export const CREATE_EVENT = gql`
+  mutation CreateEvent(
+    $id: uuid!
+    $title: String!
+    $description: String
+    $startTime: timestamptz!
+    $endTime: timestamptz!
+    $location: String
+    $type: String!
+    $department: String
+    $createdBy: uuid!
+  ) {
+    insert_events_one(
+      object: {
+        id: $id
+        title: $title
+        description: $description
+        start_time: $startTime
+        end_time: $endTime
+        location: $location
+        type: $type
+        department: $department
+        created_by: $createdBy
+      }
+    ) {
+      id
+      title
+      start_time
+    }
+  }
+`;
+
+export const DELETE_EVENT = gql`
+  mutation DeleteEvent($id: uuid!) {
+    delete_events_by_pk(id: $id) {
+      id
+    }
+  }
+`;
+

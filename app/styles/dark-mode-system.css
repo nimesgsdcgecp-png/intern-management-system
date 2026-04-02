@@ -1,0 +1,602 @@
+/* ============================================================
+   DARK MODE SYSTEM — InternHub
+   Complete semantic token system for light/dark theme switching.
+   All tokens use the .dark class selector (set by next-themes).
+   ============================================================ */
+
+/* ═══════════════════════════════════════════════
+   1. SEMANTIC COLOR TOKENS (Light defaults)
+   ═══════════════════════════════════════════════ */
+:root {
+  /* ── Page Surfaces ── */
+  --dm-bg-page: #f8fafc;            /* slate-50 */
+  --dm-bg-elevated: #ffffff;         /* white */
+  --dm-bg-sunken: #f1f5f9;          /* slate-100 */
+  --dm-bg-overlay: rgba(15, 23, 42, 0.5);
+
+  /* ── Card Surfaces ── */
+  --dm-card-bg: #ffffff;
+  --dm-card-bg-hover: #f8fafc;
+  --dm-card-border: #e2e8f0;        /* slate-200 */
+  --dm-card-border-hover: rgba(99, 102, 241, 0.3);
+  --dm-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --dm-card-shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+
+  /* ── Text ── */
+  --dm-text-primary: #0f172a;       /* slate-900 */
+  --dm-text-secondary: #475569;     /* slate-600 */
+  --dm-text-muted: #94a3b8;         /* slate-400 */
+  --dm-text-placeholder: #cbd5e1;   /* slate-300 */
+  --dm-text-inverse: #f8fafc;       /* for dark backgrounds */
+  --dm-text-link: #4f46e5;          /* indigo-600 */
+  --dm-text-link-hover: #4338ca;    /* indigo-700 */
+
+  /* ── Borders ── */
+  --dm-border-default: #e2e8f0;     /* slate-200 */
+  --dm-border-subtle: #f1f5f9;      /* slate-100 */
+  --dm-border-strong: #cbd5e1;      /* slate-300 */
+  --dm-border-focus: rgba(99, 102, 241, 0.5);
+
+  /* ── Form Inputs ── */
+  --dm-input-bg: #ffffff;
+  --dm-input-border: #e2e8f0;
+  --dm-input-border-hover: #cbd5e1;
+  --dm-input-border-focus: #6366f1; /* indigo-500 */
+  --dm-input-ring: rgba(99, 102, 241, 0.2);
+  --dm-input-text: #0f172a;
+  --dm-input-placeholder: #94a3b8;
+  --dm-input-label: #64748b;        /* slate-500 */
+  --dm-input-label-focus: #4f46e5;
+  --dm-input-bg-disabled: #f1f5f9;
+
+  /* ── Sidebar ── */
+  --dm-sidebar-bg: #0f172a;         /* already dark in light mode */
+  --dm-sidebar-text: #e2e8f0;
+  --dm-sidebar-text-muted: #94a3b8;
+  --dm-sidebar-hover: rgba(255, 255, 255, 0.1);
+  --dm-sidebar-active: linear-gradient(to right, rgba(59, 130, 246, 0.9), rgba(59, 130, 246, 0.7));
+  --dm-sidebar-border: rgba(255, 255, 255, 0.1);
+
+  /* ── Header ── */
+  --dm-header-bg: rgba(255, 255, 255, 0.8);
+  --dm-header-border: #f1f5f9;
+  --dm-header-search-bg: #f1f5f9;
+  --dm-header-search-border: #e2e8f0;
+
+  /* ── Dropdown / Popover ── */
+  --dm-dropdown-bg: #ffffff;
+  --dm-dropdown-border: #e2e8f0;
+  --dm-dropdown-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+  --dm-dropdown-item-hover: #f1f5f9;
+
+  /* ── Modal ── */
+  --dm-modal-bg: #ffffff;
+  --dm-modal-border: #e2e8f0;
+  --dm-modal-header-bg: #ffffff;
+  --dm-modal-backdrop: rgba(15, 23, 42, 0.6);
+
+  /* ── Button Variants (secondary & ghost switch for dark mode) ── */
+  --dm-btn-secondary-bg: #ffffff;
+  --dm-btn-secondary-text: #374151;
+  --dm-btn-secondary-border: #e5e7eb;
+  --dm-btn-secondary-hover: #f9fafb;
+  --dm-btn-ghost-hover: #f3f4f6;
+
+  /* ── Badges / Tags ── */
+  --dm-badge-bg: #f1f5f9;
+  --dm-badge-text: #475569;
+  --dm-badge-border: #e2e8f0;
+
+  /* ── Table ── */
+  --dm-table-header-bg: #f8fafc;
+  --dm-table-row-hover: #f1f5f9;
+  --dm-table-border: #e2e8f0;
+  --dm-table-sticky-bg: #ffffff; /* Matches dm-bg-elevated */
+
+
+  /* ── Semantic Status Colors (subtle backgrounds) ── */
+  --dm-success-bg: #ecfdf5;
+  --dm-success-text: #065f46;
+  --dm-success-border: #a7f3d0;
+  --dm-warning-bg: #fffbeb;
+  --dm-warning-text: #92400e;
+  --dm-warning-border: #fde68a;
+  --dm-error-bg: #fef2f2;
+  --dm-error-text: #991b1b;
+  --dm-error-border: #fecaca;
+  --dm-info-bg: #eff6ff;
+  --dm-info-text: #1e40af;
+  --dm-info-border: #bfdbfe;
+
+  /* ── Accent Surfaces (colored backgrounds for icons, etc) ── */
+  --dm-accent-blue-bg: #eff6ff;
+  --dm-accent-blue-text: #2563eb;
+  --dm-accent-indigo-bg: #eef2ff;
+  --dm-accent-indigo-text: #4f46e5;
+  --dm-accent-purple-bg: #faf5ff;
+  --dm-accent-purple-text: #7c3aed;
+  --dm-accent-emerald-bg: #ecfdf5;
+  --dm-accent-emerald-text: #059669;
+  --dm-accent-rose-bg: #fff1f2;
+  --dm-accent-rose-text: #e11d48;
+  --dm-accent-amber-bg: #fffbeb;
+  --dm-accent-amber-text: #d97706;
+
+  /* ── Notification Toast ── */
+  --dm-toast-bg: #ffffff;
+  --dm-toast-text: #0f172a;
+  --dm-toast-text-secondary: #475569;
+
+  /* ── Scrollbar ── */
+  --dm-scrollbar-track: rgba(0, 0, 0, 0.05);
+  --dm-scrollbar-thumb: rgba(0, 0, 0, 0.15);
+  --dm-scrollbar-thumb-hover: rgba(0, 0, 0, 0.25);
+
+  /* ── Chart ── */
+  --dm-chart-grid: #e2e8f0;
+  --dm-chart-text: #64748b;
+
+  /* ── Skeleton / Loading ── */
+  --dm-skeleton-base: #e2e8f0;
+  --dm-skeleton-shine: #f1f5f9;
+
+  /* ── Divider ── */
+  --dm-divider: #e2e8f0;
+}
+
+
+/* ═══════════════════════════════════════════════
+   2. DARK MODE OVERRIDES
+   ═══════════════════════════════════════════════ */
+.dark {
+  /* ── Page Surfaces ── */
+  --dm-bg-page: #0a0e1a;
+  --dm-bg-elevated: #111827;
+  --dm-bg-sunken: #070b14;
+  --dm-bg-overlay: rgba(0, 0, 0, 0.7);
+
+  /* ── Card Surfaces ── */
+  --dm-card-bg: #111827;
+  --dm-card-bg-hover: #1a2236;
+  --dm-card-border: rgba(148, 163, 184, 0.12);
+  --dm-card-border-hover: rgba(99, 102, 241, 0.5);
+  --dm-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 1px rgba(148, 163, 184, 0.1);
+  --dm-card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 1px rgba(99, 102, 241, 0.3);
+
+  /* ── Text ── */
+  --dm-text-primary: #f1f5f9;
+  --dm-text-secondary: #94a3b8;
+  --dm-text-muted: #64748b;
+  --dm-text-placeholder: #475569;
+  --dm-text-inverse: #0f172a;
+  --dm-text-link: #818cf8;          /* indigo-400 */
+  --dm-text-link-hover: #a5b4fc;   /* indigo-300 */
+
+  /* ── Borders ── */
+  --dm-border-default: rgba(148, 163, 184, 0.12);
+  --dm-border-subtle: rgba(148, 163, 184, 0.06);
+  --dm-border-strong: rgba(148, 163, 184, 0.2);
+  --dm-border-focus: rgba(129, 140, 248, 0.6);
+
+  /* ── Form Inputs ── */
+  --dm-input-bg: #0f172a;
+  --dm-input-border: rgba(148, 163, 184, 0.15);
+  --dm-input-border-hover: rgba(148, 163, 184, 0.25);
+  --dm-input-border-focus: #818cf8;
+  --dm-input-ring: rgba(129, 140, 248, 0.25);
+  --dm-input-text: #f1f5f9;
+  --dm-input-placeholder: #475569;
+  --dm-input-label: #94a3b8;
+  --dm-input-label-focus: #a5b4fc;
+  --dm-input-bg-disabled: #1e293b;
+
+  /* ── Sidebar ── */
+  --dm-sidebar-bg: #070b14;
+  --dm-sidebar-text: #e2e8f0;
+  --dm-sidebar-text-muted: #64748b;
+  --dm-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --dm-sidebar-active: linear-gradient(to right, rgba(99, 102, 241, 0.7), rgba(99, 102, 241, 0.4));
+  --dm-sidebar-border: rgba(148, 163, 184, 0.08);
+
+  /* ── Header ── */
+  --dm-header-bg: rgba(17, 24, 39, 0.85);
+  --dm-header-border: rgba(148, 163, 184, 0.08);
+  --dm-header-search-bg: #0f172a;
+  --dm-header-search-border: rgba(148, 163, 184, 0.12);
+
+  /* ── Dropdown / Popover ── */
+  --dm-dropdown-bg: #1e293b;
+  --dm-dropdown-border: rgba(148, 163, 184, 0.12);
+  --dm-dropdown-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --dm-dropdown-item-hover: rgba(99, 102, 241, 0.1);
+
+  /* ── Modal ── */
+  --dm-modal-bg: #111827;
+  --dm-modal-border: rgba(148, 163, 184, 0.12);
+  --dm-modal-header-bg: #1e293b;
+  --dm-modal-backdrop: rgba(0, 0, 0, 0.75);
+
+  /* ── Button Variants ── */
+  --dm-btn-secondary-bg: #1e293b;
+  --dm-btn-secondary-text: #e2e8f0;
+  --dm-btn-secondary-border: rgba(148, 163, 184, 0.15);
+  --dm-btn-secondary-hover: #334155;
+  --dm-btn-ghost-hover: rgba(148, 163, 184, 0.1);
+
+  /* ── Badges / Tags ── */
+  --dm-badge-bg: rgba(148, 163, 184, 0.1);
+  --dm-badge-text: #94a3b8;
+  --dm-badge-border: rgba(148, 163, 184, 0.15);
+
+  /* ── Table ── */
+  --dm-table-header-bg: #0f172a;
+  --dm-table-row-hover: rgba(99, 102, 241, 0.08);
+  --dm-table-border: rgba(148, 163, 184, 0.12);
+  --dm-table-sticky-bg: #111827; /* Matches dm-bg-elevated */
+
+
+  /* ── Semantic Status Colors (dark-mode adjusted) ── */
+  --dm-success-bg: rgba(16, 185, 129, 0.1);
+  --dm-success-text: #6ee7b7;
+  --dm-success-border: rgba(16, 185, 129, 0.2);
+  --dm-warning-bg: rgba(245, 158, 11, 0.1);
+  --dm-warning-text: #fcd34d;
+  --dm-warning-border: rgba(245, 158, 11, 0.2);
+  --dm-error-bg: rgba(239, 68, 68, 0.1);
+  --dm-error-text: #fca5a5;
+  --dm-error-border: rgba(239, 68, 68, 0.2);
+  --dm-info-bg: rgba(59, 130, 246, 0.1);
+  --dm-info-text: #93c5fd;
+  --dm-info-border: rgba(59, 130, 246, 0.2);
+
+  /* ── Accent Surfaces ── */
+  --dm-accent-blue-bg: rgba(59, 130, 246, 0.12);
+  --dm-accent-blue-text: #60a5fa;
+  --dm-accent-indigo-bg: rgba(99, 102, 241, 0.12);
+  --dm-accent-indigo-text: #818cf8;
+  --dm-accent-purple-bg: rgba(139, 92, 246, 0.12);
+  --dm-accent-purple-text: #a78bfa;
+  --dm-accent-emerald-bg: rgba(16, 185, 129, 0.12);
+  --dm-accent-emerald-text: #34d399;
+  --dm-accent-rose-bg: rgba(244, 63, 94, 0.12);
+  --dm-accent-rose-text: #fb7185;
+  --dm-accent-amber-bg: rgba(245, 158, 11, 0.12);
+  --dm-accent-amber-text: #fbbf24;
+
+  /* ── Notification Toast ── */
+  --dm-toast-bg: #1e293b;
+  --dm-toast-text: #f1f5f9;
+  --dm-toast-text-secondary: #94a3b8;
+
+  /* ── Scrollbar ── */
+  --dm-scrollbar-track: rgba(255, 255, 255, 0.03);
+  --dm-scrollbar-thumb: rgba(255, 255, 255, 0.12);
+  --dm-scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
+
+  /* ── Chart ── */
+  --dm-chart-grid: rgba(148, 163, 184, 0.1);
+  --dm-chart-text: #94a3b8;
+
+  /* ── Skeleton / Loading ── */
+  --dm-skeleton-base: #1e293b;
+  --dm-skeleton-shine: #334155;
+
+  /* ── Divider ── */
+  --dm-divider: rgba(148, 163, 184, 0.08);
+}
+
+
+/* ═══════════════════════════════════════════════
+   3. DARK MODE UTILITY CLASSES
+   Apply these to any element for auto-switching.
+   ═══════════════════════════════════════════════ */
+
+/* ── Surfaces ── */
+.dm-page {
+  background-color: var(--dm-bg-page);
+  color: var(--dm-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dm-elevated {
+  background-color: var(--dm-bg-elevated);
+  transition: background-color 0.3s ease;
+}
+
+.dm-sunken {
+  background-color: var(--dm-bg-sunken);
+  transition: background-color 0.3s ease;
+}
+
+/* ── Card ── */
+.dm-card {
+  background-color: var(--dm-card-bg);
+  border: 1px solid var(--dm-card-border);
+  box-shadow: var(--dm-card-shadow);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dm-card:hover {
+  border-color: var(--dm-card-border-hover);
+  box-shadow: var(--dm-card-shadow-hover);
+}
+
+/* ── Text ── */
+.dm-text { color: var(--dm-text-primary); transition: color 0.3s ease; }
+.dm-text-secondary { color: var(--dm-text-secondary); transition: color 0.3s ease; }
+.dm-text-muted { color: var(--dm-text-muted); transition: color 0.3s ease; }
+.dm-text-link { color: var(--dm-text-link); transition: color 0.2s ease; }
+.dm-text-link:hover { color: var(--dm-text-link-hover); }
+
+/* ── Border ── */
+.dm-border { border-color: var(--dm-border-default); transition: border-color 0.3s ease; }
+.dm-border-subtle { border-color: var(--dm-border-subtle); transition: border-color 0.3s ease; }
+.dm-border-strong { border-color: var(--dm-border-strong); transition: border-color 0.3s ease; }
+
+/* ── Divider ── */
+.dm-divider {
+  border-color: var(--dm-divider);
+  transition: border-color 0.3s ease;
+}
+
+/* ── Input ── */
+.dm-input {
+  background-color: var(--dm-input-bg);
+  border: 1px solid var(--dm-input-border);
+  color: var(--dm-input-text);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.dm-input::placeholder {
+  color: var(--dm-input-placeholder);
+}
+
+.dm-input:hover {
+  border-color: var(--dm-input-border-hover);
+}
+
+.dm-input:focus {
+  border-color: var(--dm-input-border-focus);
+  box-shadow: 0 0 0 3px var(--dm-input-ring);
+  outline: none;
+}
+
+.dm-input:disabled {
+  background-color: var(--dm-input-bg-disabled);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dm-input-label {
+  color: var(--dm-input-label);
+  transition: color 0.3s ease;
+}
+
+/* ── Header ── */
+.dm-header {
+  background-color: var(--dm-header-bg);
+  border-bottom: 1px solid var(--dm-header-border);
+  backdrop-filter: blur(16px) saturate(200%);
+  -webkit-backdrop-filter: blur(16px) saturate(200%);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.dm-header-search {
+  background-color: var(--dm-header-search-bg);
+  border: 1px solid var(--dm-header-search-border);
+  color: var(--dm-input-text);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.dm-header-search::placeholder {
+  color: var(--dm-input-placeholder);
+}
+
+/* ── Sidebar ── */
+.dm-sidebar {
+  background-color: var(--dm-sidebar-bg);
+  border-right: 1px solid var(--dm-sidebar-border);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── Dropdown ── */
+.dm-dropdown {
+  background-color: var(--dm-dropdown-bg);
+  border: 1px solid var(--dm-dropdown-border);
+  box-shadow: var(--dm-dropdown-shadow);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.dm-dropdown-item:hover {
+  background-color: var(--dm-dropdown-item-hover);
+}
+
+/* ── Modal ── */
+.dm-modal {
+  background-color: var(--dm-modal-bg);
+  border: 1px solid var(--dm-modal-border);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.dm-modal-header {
+  background-color: var(--dm-modal-header-bg);
+  border-bottom: 1px solid var(--dm-border-default);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.dm-modal-backdrop {
+  background-color: var(--dm-modal-backdrop);
+}
+
+/* ── Buttons ── */
+.dm-btn-secondary {
+  background-color: var(--dm-btn-secondary-bg);
+  color: var(--dm-btn-secondary-text);
+  border: 1px solid var(--dm-btn-secondary-border);
+  transition: all 0.2s ease;
+}
+
+.dm-btn-secondary:hover {
+  background-color: var(--dm-btn-secondary-hover);
+}
+
+.dm-btn-ghost {
+  color: var(--dm-text-secondary);
+  transition: all 0.2s ease;
+}
+
+.dm-btn-ghost:hover {
+  background-color: var(--dm-btn-ghost-hover);
+}
+
+/* ── Badges ── */
+.dm-badge {
+  background-color: var(--dm-badge-bg);
+  color: var(--dm-badge-text);
+  border: 1px solid var(--dm-badge-border);
+  transition: all 0.3s ease;
+}
+
+/* ── Table ── */
+.dm-table-header {
+  background-color: var(--dm-table-header-bg);
+  transition: background-color 0.3s ease;
+}
+
+.dm-table-row:hover {
+  background-color: var(--dm-table-row-hover);
+}
+
+.dm-table-border {
+  border-color: var(--dm-table-border);
+}
+
+.dm-table-sticky {
+  background-color: var(--dm-table-sticky-bg);
+  transition: background-color 0.3s ease;
+}
+
+
+/* ── Status Badges ── */
+.dm-status-success { background-color: var(--dm-success-bg); color: var(--dm-success-text); border: 1px solid var(--dm-success-border); }
+.dm-status-warning { background-color: var(--dm-warning-bg); color: var(--dm-warning-text); border: 1px solid var(--dm-warning-border); }
+.dm-status-error   { background-color: var(--dm-error-bg);   color: var(--dm-error-text);   border: 1px solid var(--dm-error-border); }
+.dm-status-info    { background-color: var(--dm-info-bg);    color: var(--dm-info-text);    border: 1px solid var(--dm-info-border); }
+
+/* ── Accent Surfaces ── */
+.dm-accent-blue    { background-color: var(--dm-accent-blue-bg);    color: var(--dm-accent-blue-text); }
+.dm-accent-indigo  { background-color: var(--dm-accent-indigo-bg);  color: var(--dm-accent-indigo-text); }
+.dm-accent-purple  { background-color: var(--dm-accent-purple-bg);  color: var(--dm-accent-purple-text); }
+.dm-accent-emerald { background-color: var(--dm-accent-emerald-bg); color: var(--dm-accent-emerald-text); }
+.dm-accent-rose    { background-color: var(--dm-accent-rose-bg);    color: var(--dm-accent-rose-text); }
+.dm-accent-amber   { background-color: var(--dm-accent-amber-bg);   color: var(--dm-accent-amber-text); }
+
+/* ── Notification Toast ── */
+.dm-toast {
+  background-color: var(--dm-toast-bg);
+  color: var(--dm-toast-text);
+  transition: all 0.3s ease;
+}
+
+.dm-toast-secondary {
+  color: var(--dm-toast-text-secondary);
+}
+
+/* ── Scrollbar (Dark Mode Aware) ── */
+.dm-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dm-scrollbar::-webkit-scrollbar-track {
+  background: var(--dm-scrollbar-track);
+  border-radius: 4px;
+}
+
+.dm-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--dm-scrollbar-thumb);
+  border-radius: 4px;
+}
+
+.dm-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--dm-scrollbar-thumb-hover);
+}
+
+/* ── Skeleton ── */
+.dm-skeleton {
+  background: linear-gradient(90deg, var(--dm-skeleton-base) 25%, var(--dm-skeleton-shine) 50%, var(--dm-skeleton-base) 75%);
+  background-size: 200% 100%;
+  animation: dm-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes dm-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Chart Text Override ── */
+.dm-chart-text {
+  color: var(--dm-chart-text);
+}
+
+/* ═══════════════════════════════════════════════
+   4. COMPOUND DARK MODE PATTERNS
+   Higher-level compositions for common UI sections.
+   ═══════════════════════════════════════════════ */
+
+/* Full-page dark mode aware wrapper */
+.dm-app-shell {
+  background-color: var(--dm-bg-page);
+  color: var(--dm-text-primary);
+  min-height: 100vh;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Section with sunken background */
+.dm-section-sunken {
+  background-color: var(--dm-bg-sunken);
+  transition: background-color 0.3s ease;
+}
+
+/* Stats card composition */
+.dm-stat-card {
+  background-color: var(--dm-card-bg);
+  border: 1px solid var(--dm-card-border);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: var(--dm-card-shadow);
+  transition: all 0.3s ease;
+}
+
+.dm-stat-card:hover {
+  box-shadow: var(--dm-card-shadow-hover);
+  border-color: var(--dm-card-border-hover);
+  transform: translateY(-2px);
+}
+
+/* Quick action card (used on dashboards) */
+.dm-action-card {
+  background-color: var(--dm-card-bg);
+  border: 1px solid var(--dm-card-border);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: var(--dm-card-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dm-action-card:hover {
+  box-shadow: var(--dm-card-shadow-hover);
+  transform: translateY(-4px);
+}
+
+/* Profile / Identity card gradient header (stays dark in both modes) */
+.dm-profile-header {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #ffffff;
+}
+
+/* Loading state container */
+.dm-loading-container {
+  background-color: var(--dm-bg-page);
+  color: var(--dm-text-muted);
+}

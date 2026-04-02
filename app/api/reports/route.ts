@@ -34,7 +34,7 @@ export async function GET() {
     let reports: any[] = [];
 
     if (userRole === "admin") {
-      const data = await hasuraQuery(GET_ALL_REPORTS);
+      const data = await hasuraQuery(GET_ALL_REPORTS, {});
       reports = data.reports;
     } else if (userRole === "mentor") {
       const internData = await hasuraQuery(GET_MENTOR_INTERN_IDS, { mentorId: userId });

@@ -4,8 +4,8 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/app/components/Card";
 import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
-import { Timer, ArrowLeft, RefreshCw } from "lucide-react";
+import { ShieldCheck, ArrowLeft, CheckCircle2, Timer, Zap } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function VerifyOTPContent() {
   const router = useRouter();
@@ -15,7 +15,7 @@ function VerifyOTPContent() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [timeLeft, setTimeLeft] = useState(600); 
+  const [timeLeft, setTimeLeft] = useState(600);
 
   useEffect(() => {
     if (!email) {
@@ -59,10 +59,10 @@ function VerifyOTPContent() {
       if (data.success && data.resetToken) {
         router.push(`/auth/reset-password?token=${data.resetToken}`);
       } else {
-        setError(data.error || 'Invalid code. Please check your email.');
+        setError(data.error || 'Invalid code.');
       }
     } catch (error) {
-      setError('Verification failed. Try again.');
+      setError('Verification failed.');
     } finally {
       setLoading(false);
     }
@@ -82,13 +82,13 @@ function VerifyOTPContent() {
       const data = await res.json();
 
       if (data.success) {
-        setTimeLeft(600); 
+        setTimeLeft(600);
         setOtp("");
       } else {
-        setError(data.error || 'Failed to resend code.');
+        setError(data.error || 'Failed to resend.');
       }
     } catch (error) {
-      setError('Network error. Try again.');
+      setError('Network error.');
     } finally {
       setLoading(false);
     }
@@ -97,73 +97,82 @@ function VerifyOTPContent() {
   if (!email) return null;
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4 overflow-hidden">
-      <div className="w-full max-w-sm space-y-6 animate-in fade-in duration-500">
-        <Card className="rounded-2xl border-gray-200 shadow-sm bg-white p-1">
-          <div className="p-6 space-y-6">
-            <div className="text-center pt-2">
-              <h2 className="text-xl font-bold text-gray-900 tracking-tight">Verify Code</h2>
-              <p className="text-[10px] text-gray-500 mt-1 max-w-55 mx-auto">
-                We sent a 6-digit code to <span className="font-bold text-gray-900">{email}</span>
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-4 text-center">
-                {error && <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest">{error}</p>}
-                
-                <Input
-                  label="Enter Code"
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  placeholder="000000"
-                  required
-                  autoComplete="one-time-code"
-                  className="text-center text-4xl font-extrabold tracking-[0.2em] h-16 border-gray-100 placeholder:text-gray-100"
-                  maxLength={6}
-                />
-                
-                <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    <Timer className={`w-3 h-3 ${timeLeft < 60 ? "text-red-400" : ""}`} />
-                    <span>{timeLeft > 0 ? `Expires in: ${formatTime(timeLeft)}` : "Expired"}</span>
-                </div>
+    <div className="flex items-center justify-center h-screen bg-slate-50 p-4 relative font-sans">
+      <div className="w-full max-w-lg relative z-10">
+        <motion.div
+           initial={{ opacity: 0, y: 10 }}
+           animate={{ opacity: 1, y: 0 }}
+        >
+          <Card className="rounded-4xl p-0 border border-slate-200 shadow-sm overflow-hidden bg-white">
+            <div className="p-10 md:p-14">
+               <div className="flex flex-col items-center mb-10">
+                <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase text-center mb-2 italic">
+                  Verify <span className="text-indigo-600">OTP</span>
+                </h1>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center italic opacity-60">
+                   Enter the code from your email
+                </p>
               </div>
 
-              <div className="space-y-4 pt-2">
-                <Button
-                  type="submit"
-                  disabled={loading || otp.length !== 6 || timeLeft === 0}
-                  className="w-full h-11 active:scale-95 transition-all font-bold uppercase tracking-widest text-xs"
-                >
-                  {loading ? "Verifying..." : "Verify Code"}
-                </Button>
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block text-center italic opacity-70">6-Digit Confirmation Code</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      maxLength={6}
+                      placeholder="000000"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                      className={`w-full h-16 text-center text-3xl font-black tracking-[0.5em] bg-slate-50 border border-slate-100 rounded-xl focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all placeholder:opacity-20`}
+                      required
+                    />
+                  </div>
+                  {error && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest text-center italic">{error}</p>}
+                  <div className="flex items-center justify-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-widest italic pt-2">
+                    <Timer className={`w-3.5 h-3.5 ${timeLeft < 60 ? "text-rose-500 animate-pulse" : "text-amber-500"}`} />
+                    <span>{timeLeft > 0 ? `Expires in ${formatTime(timeLeft)}` : "Expired"}</span>
+                  </div>
+                </div>
 
-                <div className="flex flex-col gap-2">
+                <div className="space-y-4">
+                  <Button
+                    type="submit"
+                    disabled={loading || otp.length !== 6 || timeLeft === 0}
+                    className="w-full h-12 bg-linear-to-r from-indigo-600 to-violet-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4 italic"
+                  >
+                    <span>{loading ? "Verifying..." : "Verify Code"}</span>
+                    {!loading && <CheckCircle2 className="w-3.5 h-3.5" />}
+                  </Button>
+
                   <button
                     type="button"
-                    onClick={() => router.push('/auth/forgot-password')}
-                    className="w-full text-[10px] text-gray-400 hover:text-gray-600 font-black uppercase tracking-widest flex items-center justify-center gap-1.5 transition-colors duration-300"
+                    onClick={() => router.push('/auth/login')}
+                    className="w-full py-4 text-[9px] font-black text-slate-500 uppercase tracking-widest hover:text-indigo-600 transition-colors flex items-center justify-center gap-3 italic"
                   >
-                    <ArrowLeft className="w-3 h-3" />
+                    <ArrowLeft className="w-4 h-4" />
                     Back to Login
                   </button>
-                  {timeLeft === 0 && (
-                    <button
-                      type="button"
-                      onClick={handleResendOTP}
-                      disabled={loading}
-                      className="w-full text-[10px] text-blue-600 hover:text-blue-700 font-black uppercase tracking-widest flex items-center justify-center gap-1.5"
-                    >
-                      <RefreshCw className={`w-3 h-3 ${loading ? "animate-spin" : ""}`} />
-                      Resend Code
-                    </button>
-                  )}
                 </div>
-              </div>
-            </form>
-          </div>
-        </Card>
+              </form>
+            </div>
+
+            <div className="bg-slate-50 p-8 border-t border-slate-100 text-center">
+              <button
+                type="button"
+                onClick={handleResendOTP}
+                disabled={loading}
+                className="text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-widest flex items-center justify-center gap-2 mx-auto disabled:opacity-50 italic"
+              >
+                {loading ? "Resending..." : "Resend Code"}
+              </button>
+            </div>
+          </Card>
+        </motion.div>
+
+        <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mt-12 italic">
+          © {new Date().getFullYear()} Intern Hub — Verification
+        </p>
       </div>
     </div>
   );
@@ -171,7 +180,7 @@ function VerifyOTPContent() {
 
 export default function VerifyOTPPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-300"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white">Loading...</div>}>
       <VerifyOTPContent />
     </Suspense>
   );

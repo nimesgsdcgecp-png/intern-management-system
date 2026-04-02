@@ -394,3 +394,198 @@ export const GET_RECENT_OTP_ATTEMPTS = gql`
     }
   }
 `;
+
+export const GET_INTERNS_WITHOUT_REPORT = gql`
+  query GetInternsWithoutReport($date: date!) {
+    users(
+      where: {
+        role: { _eq: "intern" }
+        intern: { status: { _eq: "active" } }
+        _not: { reports: { report_date: { _eq: $date } } }
+      }
+    ) {
+      id
+      email
+      profile {
+        name
+      }
+    }
+  }
+`;
+export const GET_ADMIN_STATS = gql`
+  query GetAdminStats {
+    users_aggregate(where: {role: {_eq: intern}}) {
+      aggregate {
+        count
+      }
+    }
+    mentors: users_aggregate(where: {role: {_eq: mentor}}) {
+      aggregate {
+        count
+      }
+    }
+    tasks_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_TASK_STATUS_STATS = gql`
+  query GetTaskStatusStats {
+    tasks_aggregate {
+      nodes {
+        status
+      }
+    }
+  }
+`;
+
+export const GET_DAILY_HOURS_STATS = gql`
+  query GetDailyHoursStats($startDate: date!) {
+    reports(where: {report_date: {_gte: $startDate}}, order_by: {report_date: asc}) {
+      report_date
+      hours_worked
+    }
+  }
+`;
+
+export const GLOBAL_SEARCH = gql`
+  query GlobalSearch($query: String!) {
+    interns: users(where: {
+      _and: [
+        {role: {_eq: "intern"}},
+        {_or: [
+          {profile: {name: {_ilike: $query}}},
+          {email: {_ilike: $query}}
+        ]}
+      ]
+    }, limit: 5) {
+      id
+      email
+      profile { name }
+    }
+    mentors: users(where: {
+      _and: [
+        {role: {_eq: "mentor"}},
+        {_or: [
+          {profile: {name: {_ilike: $query}}},
+          {email: {_ilike: $query}}
+        ]}
+      ]
+    }, limit: 5) {
+      id
+      email
+      profile { name }
+    }
+    tasks(where: {
+      _or: [
+        {title: {_ilike: $query}},
+        {description: {_ilike: $query}}
+      ]
+    }, limit: 5) {
+      id
+      title
+      status
+    }
+  }
+`;
+
+export const GET_USER_ATTENDANCE = gql`
+  query GetUserAttendance($userId: uuid!, $date: date!) {
+    attendance(where: { user_id: { _eq: $userId }, date: { _eq: $date } }) {
+      id
+      user_id
+      date
+      clock_in
+      clock_out
+      status
+      total_hours
+    }
+  }
+`;
+
+export const GET_ALL_ATTENDANCE = gql`
+  query GetAllAttendance($date: date!) {
+    attendance(where: { date: { _eq: $date } }, order_by: { clock_in: desc }) {
+      id
+      user_id
+      date
+      clock_in
+      clock_out
+      status
+      total_hours
+      user {
+        profile {
+          name
+        }
+      }
+    }
+  }
+`;
+
+export const GET_ACTIVITY_LOGS = gql`
+  query GetActivityLogs($limit: Int = 20) {
+    activity_logs(order_by: { created_at: desc }, limit: $limit) {
+      id
+      user_id
+      action
+      entity_type
+      entity_id
+      metadata
+      created_at
+      user {
+        profile {
+          name
+        }
+      }
+    }
+  }
+`;
+
+export const GET_ACTIVITY_LOGS_BY_DEPT = gql`
+  query GetActivityLogsByDept($limit: Int!, $department: String!) {
+    activity_logs(
+      where: { user: { profile: { department: { _eq: $department } } } }
+      order_by: { created_at: desc }
+      limit: $limit
+    ) {
+      id
+      user_id
+      action
+      entity_type
+      entity_id
+      metadata
+      created_at
+      user {
+        profile {
+          name
+        }
+      }
+    }
+  }
+`;
+
+export const GET_EVENTS = gql`
+  query GetEvents($where: events_bool_exp) {
+    events(where: $where, order_by: { start_time: asc }) {
+      id
+      title
+      description
+      start_time
+      end_time
+      location
+      type
+      department
+      created_by
+      created_at
+      creator: user {
+        profile {
+          name
+        }
+      }
+    }
+  }
+`;
+

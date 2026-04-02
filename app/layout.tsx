@@ -4,6 +4,8 @@ import "./globals.css";
 import { SessionProviderWrapper } from "./components/SessionProviderWrapper";
 import { ReduxProvider } from "./lib/redux/ReduxProvider";
 import { NotificationCenter } from "./components/NotificationCenter";
+import { ThemeProvider } from "./components/ThemeProvider";
+
 
 const outfit = Outfit({
   variable: "--font-outfit-sans",
@@ -30,16 +32,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${outfit.variable} ${inter.variable} font-sans antialiased`}
+        className={`${outfit.variable} ${inter.variable} font-sans antialiased transition-colors duration-300`}
       >
-        <ReduxProvider>
-          <SessionProviderWrapper>
-            {children}
-            <NotificationCenter />
-          </SessionProviderWrapper>
-        </ReduxProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ReduxProvider>
+            <SessionProviderWrapper>
+              {children}
+              <NotificationCenter />
+            </SessionProviderWrapper>
+          </ReduxProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 import React from "react";
 import { StatCard } from "./StatCard";
+import { StatCardSkeleton } from "./Skeleton";
 
 interface Stat {
   label: string;
@@ -16,9 +17,9 @@ interface StatsGridProps {
 export function StatsGrid({ stats, loading = false }: StatsGridProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 spacing-section-gap">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 spacing-section-gap mb-10">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-32 bg-gray-200 rounded-lg animate-pulse" />
+          <StatCardSkeleton key={i} />
         ))}
       </div>
     );
@@ -33,6 +34,7 @@ export function StatsGrid({ stats, loading = false }: StatsGridProps) {
           value={stat.value}
           icon={stat.icon}
           color={stat.color}
+          delay={index}
         />
       ))}
     </div>

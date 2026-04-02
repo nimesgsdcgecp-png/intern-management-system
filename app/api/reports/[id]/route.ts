@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { hasuraMutation, hasuraQuery } from "@/lib/hasura";
-import { GET_REPORT_BY_ID } from "@/lib/graphql/queries";
+import { GET_REPORT_BY_ID, GET_USER_BY_ID } from "@/lib/graphql/queries";
+import { getEmailService } from "@/lib/email/emailService";
 import { gql } from "@apollo/client/core";
 
 type ReportRow = {
@@ -146,6 +147,29 @@ export async function PUT(
 
     if (!updated.update_reports_by_pk) {
       return NextResponse.json({ error: "Report not found" }, { status: 404 });
+    }
+
+    // [MOD] Send Email Notification if requested
+    if (updates.sendEmail) {
+      const emailService = getEmailService();
+      const report = updated.update_reports_by_pk;
+      const internId = report.intern_id;
+      const mentorName = (session.user as any).name || "Your Mentor";
+
+      try {
+        const internData = await hasuraQuery(GET_USER_BY_ID, { id: internId });
+        const internUser = internData.users_by_pk;
+        if (internUser && internUser.email) {
+          await emailService.sendFeedbackNotification(
+            internUser.email,
+            internUser.profile?.name || "Intern",
+            report.report_date,
+            mentorName
+          );
+        }
+      } catch (e) {
+        console.error("Failed to send feedback email:", e);
+      }
     }
 
     return NextResponse.json(mapReportRow(updated.update_reports_by_pk));

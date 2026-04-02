@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { hasuraMutation, hasuraQuery } from "@/lib/hasura";
 import { GET_MENTOR_BY_ID } from "@/lib/graphql/queries";
 import { UPDATE_MENTOR_USER, DELETE_MENTOR_USER } from "@/lib/graphql/mutations";
+import { logActivity } from "@/services/activityService";
 
 /**
  * Manage individual mentor data.
@@ -49,6 +50,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       name: body.name.trim(),
       email: body.email.trim().toLowerCase(),
       department: body.department?.trim() || null,
+      phone: body.phone?.trim() || null,
     });
 
     if (!updated.update_users_by_pk) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -68,6 +70,18 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     const deleted = await hasuraMutation(DELETE_MENTOR_USER, { id });
 
     if (!deleted.delete_users_by_pk) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+    // [LOG] Record mentor deletion
+    if (session?.user) {
+      const mentorName = deleted.delete_profiles_by_pk?.name || "Mentor";
+      await logActivity({
+        userId: (session.user as any).id,
+        action: "delete_mentor",
+        entityType: "user",
+        entityId: id,
+        metadata: { name: mentorName }
+      });
+    }
 
     return NextResponse.json({ message: "Deleted successfully" });
   } catch (error) {

@@ -4,10 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/app/components/Card";
 import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
 import { addSuccess, addError } from "@/app/lib/redux/slices/notificationSlice";
-import { Mail, ArrowLeft, Send } from "lucide-react";
+import { Mail, ArrowLeft, Send, Zap } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -31,7 +31,7 @@ export default function ForgotPasswordPage() {
       if (data.success) {
         dispatch(addSuccess({
           title: "Code Sent",
-          message: "A verification code has been sent to your email."
+          message: "Check your email."
         }));
         setTimeout(() => {
           router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}`);
@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
       } else {
         dispatch(addSuccess({
           title: "Request Sent",
-          message: "Check your email for instructions if account exists."
+          message: "Check your email if account exists."
         }));
         setTimeout(() => {
           router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}`);
@@ -48,7 +48,7 @@ export default function ForgotPasswordPage() {
     } catch (error) {
       dispatch(addError({
         title: "Error",
-        message: "Failed to send reset code. Try again later."
+        message: "Failed to send reset code."
       }));
     } finally {
       setLoading(false);
@@ -56,54 +56,68 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4 overflow-hidden">
-      <div className="w-full max-w-sm space-y-6 animate-in fade-in duration-500">
-        <Card className="rounded-2xl border-gray-200 shadow-sm bg-white p-1">
-          <div className="p-6 space-y-6">
-            <div className="text-center pt-2">
-              <h2 className="text-xl font-bold text-gray-900 tracking-tight">Reset Password</h2>
-              <p className="text-xs text-gray-500 mt-1 max-w-50 mx-auto">Enter your email to receive a recovery code</p>
-            </div>
+    <div className="flex items-center justify-center h-screen bg-slate-50 p-4 relative font-sans">
+      <div className="w-full max-w-lg relative z-10">
+        <motion.div
+           initial={{ opacity: 0, y: 10 }}
+           animate={{ opacity: 1, y: 0 }}
+        >
+          <Card className="rounded-4xl p-0 border border-slate-200 shadow-sm overflow-hidden bg-white">
+            <div className="p-10 md:p-14">
+               <div className="flex flex-col items-center mb-10">
+                <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase text-center mb-2 italic">
+                  Reset <span className="text-indigo-600">Password</span>
+                </h1>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center italic opacity-60">
+                   Recover your account access
+                </p>
+              </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-               <div className="space-y-3">
-                 <Input
-                   label="Email Address"
-                   type="email"
-                   value={email}
-                   onChange={(e) => setEmail(e.target.value)}
-                   placeholder="you@email.com"
-                   required
-                   autoComplete="email"
-                 />
-                 <div className="flex items-center gap-2 px-1 text-[10px] text-gray-400 font-medium">
-                    <Mail className="w-3 h-3" />
-                    <span>A 6-digit code will be sent to this email</span>
-                 </div>
-               </div>
+                <form onSubmit={handleSubmit} className="space-y-8">
+                   <div className="space-y-3">
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block italic opacity-70">Email Address</label>
+                       <div className="relative">
+                          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                              <Mail className="w-4 h-4" />
+                          </div>
+                          <input
+                              type="email"
+                              placeholder="you@example.com"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              className="w-full h-12 pl-12 pr-4 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold tracking-tight focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+                              required
+                          />
+                       </div>
+                  </div>
 
-               <div className="space-y-4 pt-2">
-                  <Button
-                    type="submit"
-                    disabled={loading || !email}
-                    className="w-full h-11 active:scale-95 transition-all font-bold uppercase tracking-widest text-xs"
-                    icon={!loading && <Send className="w-3 h-3" />}
-                  >
-                    {loading ? "Sending..." : "Send Reset Code"}
-                  </Button>
+                  <div className="space-y-4">
+                      <Button
+                        type="submit"
+                        disabled={loading || !email}
+                        className="w-full h-12 bg-linear-to-r from-indigo-600 to-violet-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4 italic"
+                       >
+                        <span>{loading ? "Sending..." : "Send Reset Code"}</span>
+                        {!loading && <Send className="w-3.5 h-3.5" />}
+                      </Button>
 
-                  <button
-                    type="button"
-                    onClick={() => router.push('/auth/login')}
-                    className="w-full text-[10px] text-gray-400 hover:text-gray-600 font-bold uppercase tracking-widest flex items-center justify-center gap-2"
-                  >
-                    <ArrowLeft className="w-3 h-3" />
-                    Back to Login
-                  </button>
-               </div>
-            </form>
-          </div>
-        </Card>
+                      <button
+                        type="button"
+                        onClick={() => router.push('/auth/login')}
+                        className="w-full py-4 text-[9px] font-black text-slate-500 uppercase tracking-widest hover:text-indigo-600 transition-colors flex items-center justify-center gap-3 italic"
+                      >
+                        <ArrowLeft className="w-4 h-4" />
+                        Back to Login
+                      </button>
+                  </div>
+                </form>
+             </div>
+          </Card>
+        </motion.div>
+
+        <p className="text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mt-12 italic opacity-50">
+           Intern Hub — Secure Management
+        </p>
       </div>
     </div>
   );

@@ -13,50 +13,41 @@ interface StatCardProps {
 
 const colorStyles = {
   blue: {
-    gradient: "from-blue-500/20 to-blue-600/10",
-    border: "border-blue-500/30",
-    glow: "hover:shadow-blue-500/20",
+    gradient: "from-blue-500/10 to-blue-600/5",
+    border: "border-blue-500/20",
+    glow: "hover:shadow-blue-500/10",
     icon: "text-blue-600",
   },
   yellow: {
-    gradient: "from-yellow-500/20 to-yellow-600/10",
-    border: "border-yellow-500/30",
-    glow: "hover:shadow-yellow-500/20",
+    gradient: "from-yellow-500/10 to-yellow-600/5",
+    border: "border-yellow-500/20",
+    glow: "hover:shadow-yellow-500/10",
     icon: "text-yellow-600",
   },
   red: {
-    gradient: "from-red-500/20 to-red-600/10",
-    border: "border-red-500/30",
-    glow: "hover:shadow-red-500/20",
+    gradient: "from-red-500/10 to-red-600/5",
+    border: "border-red-500/20",
+    glow: "hover:shadow-red-500/10",
     icon: "text-red-600",
   },
   green: {
-    gradient: "from-emerald-500/20 to-emerald-600/10",
-    border: "border-emerald-500/30",
-    glow: "hover:shadow-emerald-500/20",
+    gradient: "from-emerald-500/10 to-emerald-600/5",
+    border: "border-emerald-500/20",
+    glow: "hover:shadow-emerald-500/10",
     icon: "text-emerald-600",
   },
   purple: {
-    gradient: "from-purple-500/20 to-purple-600/10",
-    border: "border-purple-500/30",
-    glow: "hover:shadow-purple-500/20",
+    gradient: "from-purple-500/10 to-purple-600/5",
+    border: "border-purple-500/20",
+    glow: "hover:shadow-purple-500/10",
     icon: "text-purple-600",
   },
 };
 
 const cardVariants = {
-  hidden: {
-    opacity: 0,
-    y: 10,
-    scale: 0.98,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-  },
+  hidden: { opacity: 0, y: 10, scale: 0.98 },
+  visible: { opacity: 1, y: 0, scale: 1 },
 };
-
 
 export function StatCard({
   label,
@@ -73,69 +64,47 @@ export function StatCard({
       initial="hidden"
       animate="visible"
       transition={{
-        duration: 0.3,
+        duration: 0.4,
+        delay: delay * 0.1,
         ease: "easeOut",
       }}
-      whileHover={{
-        y: -2,
-        scale: 1.01,
-        transition: {
-          duration: 0.2,
-          ease: "easeInOut",
-        },
-      }}
+      whileHover={{ y: -2, scale: 1.01, transition: { duration: 0.2 } }}
       className={`
-        glass-card relative overflow-hidden
+        glass-card relative overflow-hidden group
         bg-linear-to-br ${colors.gradient}
         border-l-4 ${colors.border}
-        p-6 cursor-pointer
+        p-7 cursor-pointer
         ${colors.glow}
-        hover:border-opacity-50
-        transform-gpu
+        hover:border-opacity-100
+        transition-all duration-300
+        shadow-sm hover:shadow-lg
       `}
     >
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 right-0 w-32 h-32 transform rotate-45 translate-x-16 -translate-y-16">
-          <div className={`w-full h-full bg-linear-to-br ${colors.gradient}`} />
-        </div>
-      </div>
-
-      <div className="relative flex items-start justify-between">
+      <div className="relative z-10 flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="text-sm font-medium text-gray-600 mb-2">
+          <h3 className="text-[10px] font-black dm-text-muted uppercase tracking-[0.2em] mb-2 transition-colors">
             {label}
           </h3>
-          <p className="text-3xl font-bold text-gray-900 leading-none">
+          <p className="text-3xl font-black dm-text tracking-tighter leading-none">
             {value}
           </p>
         </div>
 
         {icon && (
-          <motion.div
-            className={`
-              flex items-center justify-center
-              w-12 h-12 rounded-xl
-              ${colors.icon} bg-white/50
-              backdrop-blur-sm
-              shadow-sm
-            `}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              delay: 0.1,
-              duration: 0.3,
-            }}
-            whileHover={{
-              scale: 1.05,
-              transition: { duration: 0.15 }
-            }}
-          >
-            {icon}
-          </motion.div>
+          <div className={`
+            flex items-center justify-center
+            w-11 h-11 rounded-xl
+            ${colors.icon} backdrop-blur-sm
+            shadow-sm border dm-border
+            transition-transform duration-500
+            group-hover:scale-110
+          `}>
+             {React.isValidElement(icon) 
+              ? React.cloneElement(icon as React.ReactElement<any>, { size: 20, strokeWidth: 2.5 }) 
+              : icon}
+          </div>
         )}
       </div>
-
     </motion.div>
   );
 }

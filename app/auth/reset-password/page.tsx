@@ -4,8 +4,8 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/app/components/Card";
 import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
-import { CheckCircle2, XCircle, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { CheckCircle2, Eye, EyeOff, ArrowRight, ShieldCheck, Zap, Lock, ShieldAlert } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 function ResetPasswordContent() {
   const router = useRouter();
@@ -27,7 +27,7 @@ function ResetPasswordContent() {
 
   const validatePassword = (pwd: string) => {
     const requirements = [
-      { id: 1, label: "8+ characters", valid: pwd.length >= 8 },
+      { id: 1, label: "8+ chars", valid: pwd.length >= 8 },
       { id: 2, label: "Lowercase", valid: /(?=.*[a-z])/.test(pwd) },
       { id: 3, label: "Uppercase", valid: /(?=.*[A-Z])/.test(pwd) },
       { id: 4, label: "Number", valid: /(?=.*\d)/.test(pwd) },
@@ -43,7 +43,7 @@ function ResetPasswordContent() {
     e.preventDefault();
 
     if (!isPasswordValid || !isConfirmPasswordValid) {
-      setError("Please ensure security requirements are met.");
+      setError("Please check requirements.");
       return;
     }
 
@@ -69,10 +69,10 @@ function ResetPasswordContent() {
           router.push('/auth/login');
         }, 2000);
       } else {
-        setError(data.error || 'Reset failed. Token might be expired.');
+        setError(data.error || 'Failed to reset.');
       }
     } catch (error) {
-      setError('System error during reset.');
+      setError('Something went wrong.');
     } finally {
       setLoading(false);
     }
@@ -82,109 +82,117 @@ function ResetPasswordContent() {
 
   if (success) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
-        <div className="w-full max-w-sm animate-in zoom-in-95 duration-500">
-          <Card className="text-center p-8 rounded-2xl shadow-sm border-gray-100 bg-white">
-            <h2 className="text-xl font-bold text-gray-900 mb-2 tracking-tight">Success!</h2>
-            <p className="text-gray-500 text-xs mb-8">
-              Your password has been updated. You will be redirected to the login page shortly.
-            </p>
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
-          </Card>
+      <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6">
+        <div className="w-full max-w-lg relative z-10">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+            <Card className="rounded-4xl p-12 text-center border border-slate-200 shadow-sm bg-white">
+              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+              </div>
+              <h1 className="text-2xl font-black text-slate-900 tracking-tighter uppercase mb-2 italic">Password <span className="text-emerald-600">Updated</span></h1>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8 italic">
+                Redirecting to login...
+              </p>
+              <div className="w-8 h-8 border-4 border-emerald-600/20 border-t-emerald-600 rounded-full animate-spin mx-auto"></div>
+            </Card>
+          </motion.div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4 overflow-hidden">
-      <div className="w-full max-w-sm space-y-6 animate-in fade-in duration-500">
-        <Card className="rounded-2xl border-gray-200 shadow-sm bg-white p-1 overflow-hidden">
-          <div className="p-6 space-y-6">
-            <div className="text-center pt-2">
-              <h2 className="text-xl font-bold text-gray-900 tracking-tight">Setup New Password</h2>
-              <p className="text-xs text-gray-500 mt-1 max-w-50 mx-auto">Create a secure password for your account</p>
-            </div>
+    <div className="flex items-center justify-center h-screen bg-slate-50 p-4 relative font-sans">
+      <div className="w-full max-w-lg relative z-10">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="rounded-4xl p-0 border border-slate-200 shadow-sm overflow-hidden bg-white">
+            <div className="p-10 md:p-14">
+              <div className="flex flex-col items-center mb-10">
+                <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase text-center mb-2 italic">
+                  New <span className="text-indigo-600">Password</span>
+                </h1>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center italic opacity-60">
+                  Secure Account Update
+                </p>
+              </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-6">
-                 <div className="space-y-3">
-                   <div className="relative">
-                      <Input
-                        label="New Password"
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-5">
+                  <div className="space-y-2 relative">
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-1 block italic opacity-70">New Password</label>
+                    <div className="relative">
+                      <input
                         type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
+                        className="w-full h-12 pl-12 pr-12 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all italic"
                         required
-                        autoComplete="new-password"
                       />
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-8.75 text-gray-300 hover:text-gray-600 transition-colors"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
                       >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                       </button>
-                   </div>
+                    </div>
 
-                   <div className="grid grid-cols-2 gap-y-1 gap-x-2 px-1">
+                    <div className="grid grid-cols-2 gap-2">
                       {requirements.map(req => (
-                        <div key={req.id} className="flex items-center gap-1.5">
+                        <div key={req.id} className="flex items-center gap-1.5 p-1.5 rounded-lg bg-slate-50 border border-slate-100">
                           {req.valid ? (
-                            <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />
+                            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
                           ) : (
-                            <XCircle className="w-2.5 h-2.5 text-gray-200" />
+                            <ShieldAlert className="w-3 h-3 text-slate-200" />
                           )}
-                          <span className={`text-[9px] font-bold uppercase tracking-tight ${req.valid ? "text-emerald-700" : "text-gray-400"}`}>
+                          <span className={`text-[8px] font-black uppercase tracking-widest ${req.valid ? "text-slate-900" : "text-slate-300"}`}>
                             {req.label}
                           </span>
                         </div>
                       ))}
-                   </div>
-                 </div>
-
-                 <div className="space-y-2">
-                   <Input
-                      label="Confirm Password"
-                      type={showPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      autoComplete="new-password"
-                   />
-                   {confirmPassword && (
-                    <div className={`text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-md border ${
-                      password === confirmPassword ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-red-50 border-red-100 text-red-600"
-                    }`}>
-                      {password === confirmPassword ? "Match" : "Mismatch"}
                     </div>
-                   )}
-                 </div>
-              </div>
+                  </div>
 
-              <div className="space-y-4 pt-4 border-t border-gray-50">
-                <Button
-                  type="submit"
-                  disabled={loading || !isPasswordValid || !isConfirmPasswordValid}
-                  className="w-full h-11 active:scale-95 transition-all font-bold uppercase tracking-widest text-xs"
-                  icon={!loading && <ArrowRight className="w-4 h-4" />}
-                >
-                  {loading ? "Processing..." : "Reset Password"}
-                </Button>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-1 block italic opacity-70">Confirm Password</label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="w-full h-12 pl-12 pr-4 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all italic"
+                        required
+                      />
+                      <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    </div>
+                  </div>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => router.push('/auth/login')}
-                  className="w-full text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center justify-center gap-1"
-                >
-                  Back to Login
-                </button>
-              </div>
-            </form>
-          </div>
-        </Card>
+                {error && (
+                  <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest text-center italic">{error}</p>
+                )}
+
+                <div className="space-y-3">
+                  <Button
+                    type="submit"
+                    disabled={loading || !isPasswordValid || !isConfirmPasswordValid}
+                    className="w-full h-12 bg-linear-to-r from-indigo-600 to-violet-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4 italic"
+                  >
+                    <span>{loading ? "Updating..." : "Update Password"}</span>
+                    {!loading && <ArrowRight className="w-3.5 h-3.5" />}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </Card>
+        </motion.div>
+
+        <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mt-12 italic">
+          © {new Date().getFullYear()} Intern Hub — Secure Portal
+        </p>
       </div>
     </div>
   );
@@ -192,7 +200,7 @@ function ResetPasswordContent() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-300"></div></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white">Loading...</div>}>
       <ResetPasswordContent />
     </Suspense>
   );

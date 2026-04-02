@@ -2,14 +2,9 @@ import { generateId, getTaskById, mapTaskRow } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { hasuraMutation, hasuraQuery } from "@/lib/hasura";
-import {
-  GET_ALL_INTERN_IDS,
-  GET_CREATOR_TASKS,
-  GET_INTERN_TASKS,
-  GET_TASK_ASSIGNMENTS_BY_TASK_IDS,
-  GET_TASK_IDS_FOR_INTERN,
-} from "@/lib/graphql/queries";
+import { GET_ALL_INTERN_IDS, GET_CREATOR_TASKS, GET_INTERN_TASKS, GET_TASK_ASSIGNMENTS_BY_TASK_IDS, GET_TASK_IDS_FOR_INTERN, GET_USER_BY_ID } from "@/lib/graphql/queries";
 import { CREATE_TASK, INSERT_TASK_ASSIGNMENTS } from "@/lib/graphql/mutations";
+import { getEmailService } from "@/lib/email/emailService";
 
 /**
  * API route for managing tasks.
@@ -32,8 +27,10 @@ export async function GET() {
       // Interns see tasks assigned to them
       const idData = await hasuraQuery(GET_TASK_IDS_FOR_INTERN, { internId: userId });
       const taskIds = idData.task_assignments.map((r: any) => r.task_id);
-      const data = await hasuraQuery(GET_INTERN_TASKS, { taskIds });
-      tasks = data.tasks;
+      if (taskIds.length > 0) {
+        const data = await hasuraQuery(GET_INTERN_TASKS, { taskIds });
+        tasks = data.tasks;
+      }
     }
 
     if (tasks.length === 0) return NextResponse.json([]);
@@ -41,7 +38,7 @@ export async function GET() {
     // Fetch assignments separately to keep the main query simple
     const taskIds = tasks.map(t => t.id);
     const assignData = await hasuraQuery(GET_TASK_ASSIGNMENTS_BY_TASK_IDS, { taskIds });
-    
+
     // Map assignments back to tasks
     const mappedTasks = tasks.map(task => mapTaskRow({
       ...task,
@@ -68,8 +65,8 @@ export async function POST(request: NextRequest) {
     // 1. Determine assigned interns
     let internIds: string[] = Array.isArray(body.assignedInterns) ? body.assignedInterns : [];
     if (body.assignedToAll) {
-      const AllData = await hasuraQuery(GET_ALL_INTERN_IDS);
-      internIds = AllData.interns.map((i: any) => i.id);
+      const AllData = await hasuraQuery(GET_ALL_INTERN_IDS, {});
+      internIds = AllData.users.map((i: any) => i.id);
     } else if (internIds.length === 0 && body.assignedIntern) {
       internIds = [body.assignedIntern];
     }
@@ -95,6 +92,29 @@ export async function POST(request: NextRequest) {
       await hasuraMutation(INSERT_TASK_ASSIGNMENTS, {
         objects: internIds.map(id => ({ task_id: taskId, intern_id: id }))
       });
+    }
+
+    // 4. Send Email Notifications if requested
+    if (body.sendEmail && internIds.length > 0) {
+      const emailService = getEmailService();
+      // Fetch details for each intern and send email
+      Promise.all(internIds.map(async (id) => {
+        try {
+          const internData = await hasuraQuery(GET_USER_BY_ID, { id });
+          const user = internData.users_by_pk;
+          if (user && user.email) {
+            await emailService.sendTaskNotification(
+              user.email,
+              user.profile?.name || "Intern",
+              body.title,
+              body.deadline,
+              body.priority || "medium"
+            );
+          }
+        } catch (e) {
+          console.error(`Failed to send task email to intern ${id}:`, e);
+        }
+      })).catch(e => console.error("Batch email sending failed:", e));
     }
 
     const newTask = await getTaskById(taskId);

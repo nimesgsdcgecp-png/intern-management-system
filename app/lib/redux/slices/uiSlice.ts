@@ -9,7 +9,7 @@ export interface UIState {
 }
 
 const initialState: UIState = {
-  sidebarCollapsed: false,
+  sidebarCollapsed: true,
   animationsEnabled: true,
   theme: 'light',
   glassIntensity: 'medium',

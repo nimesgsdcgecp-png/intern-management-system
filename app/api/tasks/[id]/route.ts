@@ -9,6 +9,7 @@ import {
   UPDATE_TASK_BY_CREATOR,
   UPDATE_TASK_STATUS,
 } from "@/lib/graphql/mutations";
+import { logActivity } from "@/services/activityService";
 
 
 export async function GET(
@@ -160,6 +161,17 @@ export async function DELETE(
       DELETE_TASK,
       { id }
     );
+
+    // [LOG] Record task deletion
+    if (session?.user) {
+      await logActivity({
+        userId: (session.user as any).id,
+        action: "delete_task",
+        entityType: "task",
+        entityId: id,
+        metadata: { title: task.title }
+      });
+    }
 
     return NextResponse.json({ message: "Task deleted" });
   } catch (error) {

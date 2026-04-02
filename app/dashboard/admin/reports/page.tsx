@@ -8,6 +8,7 @@ import { SearchHeader } from "@/app/components/SearchHeader";
 import { Input } from "@/app/components/Input";
 import { Select } from "@/app/components/Select";
 import { Button } from "@/app/components/Button";
+import { AttendanceTable } from "@/app/components/AttendanceTable";
 import {
   FileText,
   Clock,
@@ -20,6 +21,7 @@ import {
   ChevronDown,
   ChevronUp,
   Building2,
+  Search,
 } from "lucide-react";
 
 interface Report {
@@ -60,6 +62,7 @@ export default function AdminReportsPage() {
     feedbackStatus: "all",
     dateFrom: "",
   });
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Report | 'intern'; direction: 'asc' | 'desc' } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,6 +124,31 @@ export default function AdminReportsPage() {
     return true;
   });
 
+  // Sort reports
+  const sortedReports = [...filteredReports].sort((a, b) => {
+    if (!sortConfig) return 0;
+    
+    let aValue: any = a[sortConfig.key as keyof Report];
+    let bValue: any = b[sortConfig.key as keyof Report];
+
+    if (sortConfig.key === 'intern') {
+      aValue = getInternInfo(a.internId).name;
+      bValue = getInternInfo(b.internId).name;
+    }
+
+    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const handleSort = (key: keyof Report | 'intern') => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
   // Calculate stats
   const totalReports = reports.length;
   const totalHours = reports.reduce((sum, r) => sum + (r.hoursWorked || 0), 0);
@@ -171,47 +199,95 @@ export default function AdminReportsPage() {
   return (
     <DashboardLayout>
       <div className="w-full">
-        <SearchHeader title="Report Analytics">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 p-2 items-end">
-            <Input
-              label="Search Intern"
-              placeholder="Ex: John Doe"
-              value={filters.internName}
-              onChange={(e) => setFilters({ ...filters, internName: e.target.value })}
-              compact
-            />
-            <Select
-              label="Department Filter"
-              value={filters.department}
-              onChange={(e) => setFilters({ ...filters, department: e.target.value })}
-              compact
-            >
-              <option value="">All Streams</option>
-              {DEPARTMENTS.map((d) => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </Select>
-
-            <Select
-              label="Review Status"
-              value={filters.feedbackStatus}
-              onChange={(e) => setFilters({ ...filters, feedbackStatus: e.target.value as any })}
-              compact
-            >
-              <option value="all">All Status</option>
-              <option value="pending">Pending Feedback</option>
-              <option value="reviewed">Reviewed</option>
-            </Select>
-            <Input
-              label="From Date"
-              type="date"
-              value={filters.dateFrom}
-              onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
-              compact
-            />
+        {/* Page Header */}
+        <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+              Insight Reports
+            </h1>
+            <p className="text-gray-500 mt-1 font-medium italic">Analyze performance metrics and review technical submissions.</p>
           </div>
-        </SearchHeader>
+          <div className="flex gap-4 no-print">
+            <Button
+              onClick={() => window.print()}
+              icon={<FileText className="w-4 h-4" />}
+              className="rounded-2xl py-3 px-8 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all"
+            >
+              Export PDF
+            </Button>
+          </div>
+        </div>
 
+        <style jsx global>{`
+          @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+            .DashboardLayout_content__vh8m2 { padding: 0 !important; margin: 0 !important; }
+            table { border-collapse: collapse !important; width: 100% !important; }
+            th, td { border: 1px solid #e2e8f0 !important; padding: 12px !important; font-size: 10px !important; }
+            .bg-white { border: none !important; box-shadow: none !important; }
+            h1 { font-size: 24px !important; margin-bottom: 20px !important; }
+            .StatsGrid_grid__x9j3k { display: none !important; }
+            tr { page-break-inside: avoid; }
+          }
+        `}</style>
+
+        {/* Filter Section */}
+        <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Search Intern</label>
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                <input
+                  type="text"
+                  placeholder="Ex: John Doe"
+                  value={filters.internName}
+                  onChange={(e) => setFilters({ ...filters, internName: e.target.value })}
+                  className="w-full bg-gray-50 border-none rounded-2xl py-3 pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-gray-300 outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Stream Filter</label>
+              <select
+                value={filters.department}
+                onChange={(e) => setFilters({ ...filters, department: e.target.value })}
+                className="w-full bg-gray-50 border-none rounded-2xl py-3 px-6 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer outline-none"
+              >
+                <option value="">All Streams</option>
+                {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Review Status</label>
+              <select
+                value={filters.feedbackStatus}
+                onChange={(e) => setFilters({ ...filters, feedbackStatus: e.target.value as any })}
+                className="w-full bg-gray-50 border-none rounded-2xl py-3 px-6 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all appearance-none cursor-pointer outline-none"
+              >
+                <option value="all">Full Lifecycle</option>
+                <option value="pending">Awaiting Review</option>
+                <option value="reviewed">Evaluated</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">History Range</label>
+              <div className="relative group">
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                <input
+                  type="date"
+                  value={filters.dateFrom}
+                  onChange={(e) => setFilters({ ...filters, dateFrom: e.target.value })}
+                  className="w-full bg-gray-50 border-none rounded-2xl py-3 pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder:text-gray-300 outline-none cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="space-y-10">
           {/* Stats Grid */}
           <StatsGrid stats={statsData} loading={loading} />
@@ -233,136 +309,146 @@ export default function AdminReportsPage() {
               </p>
             </Card>
           ) : (
-            <Card className="overflow-hidden border-gray-200 shadow-xl rounded-2xl">
+            <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
               <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+                <table className="w-full text-left">
                   <thead>
-                    <tr className="bg-gray-50/80 border-b border-gray-200">
-                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">ID</th>
-                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Intern</th>
-                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Department</th>
-                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Report Date</th>
-                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Hours</th>
-                      <th className="px-8 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Feedback</th>
-                      <th className="px-8 py-5 text-center text-xs font-bold text-gray-500 uppercase tracking-widest sticky right-0 bg-gray-50/80 backdrop-blur-sm shadow-[-12px_0_15px_-3px_rgba(0,0,0,0.05)] min-w-37.5">Actions</th>
+                    <tr className="bg-gray-50/50 border-b border-gray-100 uppercase">
+                      <th 
+                        className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] cursor-pointer hover:bg-gray-100 transition-colors group"
+                        onClick={() => handleSort('intern')}
+                      >
+                        <div className="flex items-center gap-2">
+                          Operational Resource
+                          {sortConfig?.key === 'intern' ? (
+                            sortConfig.direction === 'asc' ? <ChevronUp className="w-3.5 h-3.5 text-indigo-600" /> : <ChevronDown className="w-3.5 h-3.5 text-indigo-600" />
+                          ) : (
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          )}
+                        </div>
+                      </th>
+                      <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Deployment Stream</th>
+                      <th 
+                        className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] cursor-pointer hover:bg-gray-100 transition-colors group"
+                        onClick={() => handleSort('date')}
+                      >
+                        <div className="flex items-center gap-2">
+                          Log Timestamp
+                          {sortConfig?.key === 'date' ? (
+                            sortConfig.direction === 'asc' ? <ChevronUp className="w-3.5 h-3.5 text-indigo-600" /> : <ChevronDown className="w-3.5 h-3.5 text-indigo-600" />
+                          ) : (
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          )}
+                        </div>
+                      </th>
+                      <th 
+                        className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] cursor-pointer hover:bg-gray-100 transition-colors group"
+                        onClick={() => handleSort('hoursWorked')}
+                      >
+                        <div className="flex items-center gap-2">
+                          Effort Log
+                          {sortConfig?.key === 'hoursWorked' ? (
+                            sortConfig.direction === 'asc' ? <ChevronUp className="w-3.5 h-3.5 text-indigo-600" /> : <ChevronDown className="w-3.5 h-3.5 text-indigo-600" />
+                          ) : (
+                            <ChevronDown className="w-3.5 h-3.5 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          )}
+                        </div>
+                      </th>
+                      <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Lifecycle State</th>
+                      <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right no-print">Intelligence</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {filteredReports.map((report) => {
+                  <tbody className="divide-y divide-gray-50">
+                    {sortedReports.map((report) => {
                       const intern = getInternInfo(report.internId);
                       const isExpanded = expandedReportId === report.id;
 
                       return (
                         <Fragment key={report.id}>
-                          <tr className="group hover:bg-blue-50/30 transition-all duration-200">
-                            {/* ID */}
-                            <td className="px-8 py-6">
-                              <code className="text-[10px] font-mono font-bold text-gray-400 bg-gray-100 px-2.5 py-1 rounded-md" title={report.id}>
-                                {report.id.split("-")[0].toUpperCase()}
-                              </code>
-                            </td>
-
-                            {/* Intern */}
-                            <td className="px-8 py-6">
+                          <tr className={`group transition-all duration-300 hover:bg-gray-50/30 ${isExpanded ? 'bg-indigo-50/20' : ''}`}>
+                            <td className="px-8 py-4 min-w-[250px]">
                               <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                  <Users className="w-5 h-5" />
+                                <div className="w-12 h-12 rounded-2xl bg-slate-900 border-4 border-white flex items-center justify-center text-white font-bold shadow-xl group-hover:rotate-6 transition-all duration-300">
+                                  {intern.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                                 </div>
                                 <div className="flex flex-col">
-                                  <span className="font-bold text-gray-900 group-hover:text-blue-700 transition-colors uppercase tracking-tight">
-                                    {intern.name}
-                                  </span>
-                                  <span className="text-xs text-gray-500 flex items-center gap-1.5">
-                                    <Mail className="w-3 h-3" /> {intern.email}
-                                  </span>
+                                  <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors text-base tracking-tight italic">{intern.name}</span>
+                                  <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{intern.email}</span>
                                 </div>
                               </div>
                             </td>
-
-                            {/* Department */}
-                            <td className="px-8 py-6">
-                              <span className="px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-extrabold uppercase tracking-wider border border-indigo-100">
+                            <td className="px-8 py-4">
+                              <span className="px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-[0.15em] border border-indigo-100">
                                 {intern.department}
                               </span>
                             </td>
-
-                            {/* Report Date */}
-                            <td className="px-8 py-6">
-                              <div className="flex items-center gap-2 text-gray-700">
-                                <Calendar className="w-4 h-4 text-gray-400" />
-                                <span className="font-medium">{formatDate(report.date)}</span>
+                            <td className="px-8 py-4">
+                              <div className="flex items-center gap-2.5 text-sm font-bold text-gray-700 italic">
+                                <Calendar className="w-4 h-4 text-indigo-400" />
+                                <span>{formatDate(report.date)}</span>
                               </div>
                             </td>
-
-                            {/* Hours */}
-                            <td className="px-8 py-6">
-                              <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-100">
-                                {report.hoursWorked}h
-                              </span>
-                            </td>
-
-                            {/* Feedback Status */}
-                            <td className="px-8 py-6">
-                              <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                                report.mentorFeedback
-                                  ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
-                                  : "bg-amber-100 text-amber-700 border border-amber-200"
-                              }`}>
-                                {report.mentorFeedback ? "Reviewed" : "Pending"}
-                              </span>
-                            </td>
-
-                            {/* Actions */}
-                            <td className="px-8 py-6 sticky right-0 bg-white/60 group-hover:bg-blue-50/60 backdrop-blur-md shadow-[-12px_0_15px_-3px_rgba(0,0,0,0.05)] transition-all">
-                              <div className="flex items-center justify-center">
-                                <button
-                                  onClick={() => toggleExpand(report.id)}
-                                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-50 text-gray-600 hover:bg-blue-600 hover:text-white transition-all duration-300 font-bold text-xs shadow-sm"
-                                >
-                                  <Eye className="w-3.5 h-3.5" />
-                                  <span>{isExpanded ? "Hide" : "View"}</span>
-                                  {isExpanded ? (
-                                    <ChevronUp className="w-3.5 h-3.5" />
-                                  ) : (
-                                    <ChevronDown className="w-3.5 h-3.5" />
-                                  )}
-                                </button>
+                            <td className="px-8 py-4">
+                              <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-indigo-400" />
+                                <span className="text-sm font-black text-indigo-600">
+                                  {report.hoursWorked}h
+                                </span>
                               </div>
+                            </td>
+                            <td className="px-8 py-4 text-center">
+                              <span className={`inline-flex px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                                  report.mentorFeedback ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-amber-50 text-amber-600 border-amber-100"
+                                }`}>
+                                {report.mentorFeedback ? "Verified" : "Pending Intel"}
+                              </span>
+                            </td>
+                            <td className="px-8 py-4 text-right no-print">
+                              <button
+                                onClick={() => toggleExpand(report.id)}
+                                className={`w-10 h-10 inline-flex items-center justify-center rounded-xl transition-all border border-gray-100 active:scale-95 shadow-sm ${
+                                    isExpanded ? 'bg-indigo-600 text-white shadow-indigo-100' : 'bg-gray-50 text-gray-400 hover:bg-indigo-50 hover:text-indigo-600 hover:rotate-12'
+                                  }`}
+                              >
+                                {isExpanded ? <ChevronUp className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                              </button>
                             </td>
                           </tr>
-
-                          {/* Expandable Details Row */}
                           {isExpanded && (
-                            <tr key={`${report.id}-details`} className="bg-gray-50/50">
-                              <td colSpan={7} className="px-8 py-6">
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                  {/* Work Description */}
-                                  <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-                                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                      <FileText className="w-4 h-4" /> Work Description
-                                    </h4>
-                                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                      {report.workDescription || "No description provided."}
-                                    </p>
+                            <tr className="bg-indigo-50/10">
+                              <td colSpan={6} className="px-0 sm:px-8 py-8 animate-in slide-in-from-top-4 fade-in duration-500">
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                                  <div className="space-y-4">
+                                    <div className="flex items-center justify-between px-2">
+                                      <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                                        <FileText className="w-4 h-4 text-indigo-500" /> Operational Narrative
+                                      </h4>
+                                    </div>
+                                    <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm min-h-[140px] relative overflow-hidden group/card hover:shadow-md transition-shadow">
+                                      <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 opacity-20" />
+                                      <p className="text-sm text-gray-600 leading-relaxed font-medium italic relative z-10">
+                                        "{report.workDescription || "No detailed logs synthesized."}"
+                                      </p>
+                                      <Search className="absolute -bottom-4 -right-4 w-24 h-24 text-gray-50 opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 -rotate-12" />
+                                    </div>
                                   </div>
-
-                                  {/* Mentor Feedback */}
-                                  <div className={`rounded-xl p-5 border shadow-sm ${
-                                    report.mentorFeedback
-                                      ? "bg-emerald-50/50 border-emerald-200"
-                                      : "bg-amber-50/50 border-amber-200"
-                                  }`}>
-                                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                      {report.mentorFeedback ? (
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                                      ) : (
-                                        <AlertCircle className="w-4 h-4 text-amber-600" />
-                                      )}
-                                      Mentor Feedback
-                                    </h4>
-                                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                      {report.mentorFeedback || "Awaiting mentor review."}
-                                    </p>
+                                  <div className="space-y-4">
+                                    <div className="flex items-center justify-between px-2">
+                                      <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                                        <AlertCircle className="w-4 h-4 text-emerald-500" /> Command Assessment
+                                      </h4>
+                                    </div>
+                                    <div className={`p-8 rounded-[2.5rem] border min-h-[140px] relative overflow-hidden group/feedback hover:shadow-md transition-shadow ${
+                                        report.mentorFeedback ? "bg-emerald-50/30 border-emerald-100" : "bg-amber-50/30 border-amber-100"
+                                      }`}>
+                                      <div className={`absolute top-0 left-0 w-1.5 h-full opacity-30 ${report.mentorFeedback ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                                      <p className="text-sm text-gray-700 leading-relaxed font-bold relative z-10 italic">
+                                        {report.mentorFeedback || "Waiting for mentor session authentication."}
+                                      </p>
+                                      <CheckCircle2 className={`absolute -bottom-4 -right-4 w-24 h-24 opacity-0 group-hover/feedback:opacity-100 transition-opacity duration-700 -rotate-12 ${
+                                          report.mentorFeedback ? 'text-emerald-100' : 'text-amber-100'
+                                        }`} />
+                                    </div>
                                   </div>
                                 </div>
                               </td>
@@ -374,7 +460,7 @@ export default function AdminReportsPage() {
                   </tbody>
                 </table>
               </div>
-            </Card>
+            </div>
           )}
         </div>
       </div>

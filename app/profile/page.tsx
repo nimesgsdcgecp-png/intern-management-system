@@ -9,6 +9,8 @@ import { Card } from "@/app/components/Card";
 import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
 import { addSuccess, addError } from "@/app/lib/redux/slices/notificationSlice";
+import { User, Mail, ShieldCheck, Key, Building2, UserCircle, Save, Loader2, Sparkles, Activity } from "lucide-react";
+import { PremiumStatCard } from "@/app/components/PremiumStatCard";
 
 interface UserProfile {
   id: string;
@@ -27,12 +29,14 @@ export default function ProfilePage() {
 
   // Email update state
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordFieldErrors, setPasswordFieldErrors] = useState<{ current?: string; new?: string; confirm?: string }>({});
   const [passwordLoading, setPasswordLoading] = useState(false);
 
   useEffect(() => {
@@ -40,12 +44,6 @@ export default function ProfilePage() {
 
     if (!session) {
       router.push("/auth/login");
-      return;
-    }
-
-    // Redirect admin users
-    if ((session.user as any)?.role === "admin") {
-      router.push("/dashboard");
       return;
     }
 
@@ -78,6 +76,17 @@ export default function ProfilePage() {
 
   const handleEmailUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEmailError("");
+
+    if (!email) {
+      setEmailError("Email is required");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+
     setEmailLoading(true);
 
     try {
@@ -99,6 +108,7 @@ export default function ProfilePage() {
         }));
         setProfile(prev => prev ? { ...prev, email } : null);
       } else {
+        setEmailError(data.error || "Failed to update email");
         dispatch(addError({
           title: "Update Failed",
           message: data.error || "Failed to update email"
@@ -116,7 +126,25 @@ export default function ProfilePage() {
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newErrors: typeof passwordFieldErrors = {};
+
+    if (!currentPassword) newErrors.current = "Current password is required";
+    if (!newPassword) newErrors.new = "New password is required";
+    else {
+      const requirements = validatePassword(newPassword);
+      if (requirements.length > 0) {
+        newErrors.new = `Missing: ${requirements.join(", ")}`;
+      }
+    }
+    if (newPassword !== confirmPassword) newErrors.confirm = "Passwords do not match";
+
+    if (Object.keys(newErrors).length > 0) {
+      setPasswordFieldErrors(newErrors);
+      return;
+    }
+
     setPasswordLoading(true);
+    setPasswordFieldErrors({});
 
     try {
       const res = await fetch("/api/profile", {
@@ -145,6 +173,9 @@ export default function ProfilePage() {
           title: "Password Change Failed",
           message: data.error || "Failed to change password"
         }));
+        if (data.error?.toLowerCase().includes("current")) {
+          setPasswordFieldErrors({ current: "Incorrect current password" });
+        }
       }
     } catch (err) {
       dispatch(addError({
@@ -165,7 +196,7 @@ export default function ProfilePage() {
     return errors;
   };
 
-  const passwordErrors = validatePassword(newPassword);
+  const requirements = validatePassword(newPassword);
   const passwordsMatch = newPassword === confirmPassword;
 
   if (status === "loading" || loading) {
@@ -186,165 +217,223 @@ export default function ProfilePage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
-          <p className="text-gray-600 mt-2">Manage your account information</p>
+      <div className="space-y-12">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-2 h-12 bg-indigo-600 rounded-full" />
+            <div>
+              <h1 className="text-4xl font-extrabold dm-text tracking-tight">
+                Profile <span className="text-indigo-600">Settings</span>
+              </h1>
+              <p className="dm-text-muted mt-1 font-medium italic">Manage your digital identity and account security.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-2xl text-xs font-bold flex items-center gap-2 border border-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20">
+              <ShieldCheck className="w-4 h-4" />
+              Verified Account
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Profile Information */}
-          <Card>
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              Profile Information
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  User ID
-                </label>
-                <div className="mt-1 p-3 bg-gray-100 border border-gray-300 rounded-md">
-                  {profile.id}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2 space-y-10">
+            {/* Identity Profile */}
+            <Card className="overflow-hidden border-none shadow-2xl rounded-[2.5rem]">
+              <div className="p-10 bg-linear-to-br from-indigo-600 to-indigo-900 text-white relative">
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                  <div className="w-24 h-24 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center relative group overflow-hidden">
+                    <User className="w-12 h-12 text-white" />
+                    <div className="absolute inset-0 bg-indigo-500/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                      <Sparkles className="w-6 h-6" />
+                    </div>
+                  </div>
+                  <div className="text-center md:text-left">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70 mb-2">Member Since 2024</p>
+                    <h4 className="text-3xl font-black mb-4 tracking-tight">{profile.name}</h4>
+                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                      <span className="px-4 py-1.5 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/5 backdrop-blur-sm truncate">
+                        ID: {profile.id}
+                      </span>
+                      <span className="px-4 py-1.5 bg-emerald-500/20 text-emerald-300 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-500/30 backdrop-blur-sm">
+                        {profile.role}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Your unique identifier (cannot be changed)
+                <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
+                  <UserCircle className="w-48 h-48" />
+                </div>
+              </div>
+              <div className="p-10 space-y-10 dm-elevated">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-6">
+                    <h3 className="text-xs font-black dm-text-muted uppercase tracking-widest flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-indigo-500" /> Professional Affiliation
+                    </h3>
+                    <div className="dm-sunken rounded-2xl p-6 border dm-border">
+                      <p className="text-[10px] font-black dm-text-muted uppercase tracking-widest mb-1">Department</p>
+                      <p className="text-lg font-bold dm-text">{profile.department || "Organization Wide"}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <h3 className="text-xs font-black dm-text-muted uppercase tracking-widest flex items-center gap-2">
+                      <Mail className="w-4 h-4 text-indigo-500" /> Contact Channel
+                    </h3>
+                    <div className="dm-sunken rounded-2xl p-6 border dm-border">
+                      <p className="text-[10px] font-black dm-text-muted uppercase tracking-widest mb-1">Primary Email</p>
+                      <p className="text-lg font-bold dm-text">{profile.email}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Change Password */}
+            <div className="space-y-6">
+              <h2 className="text-xl font-black dm-text uppercase tracking-wider">Security Initialization</h2>
+              <Card className="rounded-[2.5rem] p-10 border dm-border shadow-2xl">
+                <form onSubmit={handlePasswordChange} className="space-y-8">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <Input
+                      type="password"
+                      label="Current Authentication"
+                      value={currentPassword}
+                      onChange={(e) => {
+                        setCurrentPassword(e.target.value);
+                        if (passwordFieldErrors.current) setPasswordFieldErrors(prev => ({ ...prev, current: undefined }));
+                      }}
+                      error={passwordFieldErrors.current}
+                      required
+                      disabled={passwordLoading}
+                    />
+                    <Input
+                      type="password"
+                      label="New Secret Code"
+                      value={newPassword}
+                      onChange={(e) => {
+                        setNewPassword(e.target.value);
+                        if (passwordFieldErrors.new) setPasswordFieldErrors(prev => ({ ...prev, new: undefined }));
+                      }}
+                      error={passwordFieldErrors.new}
+                      required
+                      disabled={passwordLoading}
+                    />
+                    <Input
+                      type="password"
+                      label="Confirm Secret"
+                      value={confirmPassword}
+                      onChange={(e) => {
+                        setConfirmPassword(e.target.value);
+                        if (passwordFieldErrors.confirm) setPasswordFieldErrors(prev => ({ ...prev, confirm: undefined }));
+                      }}
+                      error={passwordFieldErrors.confirm}
+                      required
+                      disabled={passwordLoading}
+                    />
+                  </div>
+
+                  {newPassword && (
+                    <div className="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border dm-border">
+                      <p className="text-[10px] font-black dm-text-muted uppercase tracking-widest mb-4">Complexity Analysis</p>
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap gap-4">
+                          {requirements.map((error: string, index: number) => (
+                            <div key={index} className="flex items-center gap-2 px-3 py-1 bg-rose-50 dark:bg-rose-500/10 text-rose-600 text-[10px] font-bold rounded-full border border-rose-100 dark:border-rose-500/20">
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
+                              Missing: {error}
+                            </div>
+                          ))}
+                          {requirements.length === 0 && (
+                            <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 text-[10px] font-bold rounded-full border border-emerald-100 dark:border-emerald-500/20">
+                              <ShieldCheck className="w-3 h-3" />
+                              Complexity Verified
+                            </div>
+                          )}
+                          {confirmPassword && (
+                            <div className={`flex items-center gap-2 px-3 py-1 text-[10px] font-bold rounded-full border ${passwordsMatch ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 border-emerald-100 dark:border-emerald-500/20" : "bg-rose-50 dark:bg-rose-500/10 text-rose-600 border-rose-100 dark:border-rose-500/20"}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${passwordsMatch ? "bg-emerald-600" : "bg-rose-600"}`} />
+                              {passwordsMatch ? "Identifiers Match" : "Mismatch Detected"}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <Button
+                    type="submit"
+                    className="w-full md:w-auto px-12 py-4 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 shadow-xl shadow-indigo-500/20"
+                    disabled={
+                      passwordLoading ||
+                      !currentPassword ||
+                      !newPassword ||
+                      !confirmPassword ||
+                      requirements.length > 0 ||
+                      !passwordsMatch
+                    }
+                  >
+                    {passwordLoading ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Key className="w-4 h-4" />
+                    )}
+                    {passwordLoading ? "Processing..." : "Update Security Credentials"}
+                  </Button>
+                </form>
+              </Card>
+            </div>
+          </div>
+
+          <div className="space-y-10">
+            {/* Update Email */}
+            <div className="space-y-6">
+              <h2 className="text-xl font-black dm-text uppercase tracking-wider">Communication Channel</h2>
+              <Card className="rounded-[2.5rem] p-8 border dm-border shadow-2xl">
+                <form onSubmit={handleEmailUpdate} className="space-y-6">
+                  <Input
+                    type="email"
+                    label="Primary Correspondence"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailError) setEmailError("");
+                    }}
+                    error={emailError}
+                    required
+                    disabled={emailLoading}
+                  />
+
+                  <Button
+                    type="submit"
+                    variant="secondary"
+                    className="w-full py-4 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3"
+                    disabled={emailLoading || email === profile.email}
+                  >
+                    {emailLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    {emailLoading ? "Synchronizing..." : "Update Email Address"}
+                  </Button>
+                </form>
+              </Card>
+            </div>
+
+            {/* Quick Status Card */}
+            <div className="bg-linear-to-br from-indigo-600 to-indigo-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                <Activity className="w-32 h-32" />
+              </div>
+              <div className="relative z-10">
+                <h3 className="font-extrabold text-2xl tracking-tighter italic mb-4">System Protocol</h3>
+                <p className="text-xs font-medium opacity-70 leading-relaxed mb-6">
+                  Profile updates are synchronized across all modules including attendance logs and activity streams instantly.
                 </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Name
-                </label>
-                <div className="mt-1 p-3 bg-gray-100 border border-gray-300 rounded-md">
-                  {profile.name}
-                </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Contact admin to change your name
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Role
-                </label>
-                <div className="mt-1 p-3 bg-gray-100 border border-gray-300 rounded-md capitalize">
-                  {profile.role}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Department
-                </label>
-                <div className="mt-1 p-3 bg-gray-100 border border-gray-300 rounded-md">
-                  {profile.department}
+                <div className="w-full py-3 bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center border border-white/10 backdrop-blur-sm">
+                  Profile Integrity: Active
                 </div>
               </div>
             </div>
-          </Card>
-
-          {/* Update Email */}
-          <Card>
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              Update Email
-            </h2>
-
-            <form onSubmit={handleEmailUpdate}>
-              <Input
-                type="email"
-                label="Email Address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={emailLoading}
-              />
-
-              <Button
-                type="submit"
-                className="w-full mt-4"
-                disabled={emailLoading || email === profile.email}
-              >
-                {emailLoading ? "Updating..." : "Update Email"}
-              </Button>
-            </form>
-          </Card>
-
-          {/* Change Password */}
-          <Card className="lg:col-span-2">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
-              Change Password
-            </h2>
-
-            <form onSubmit={handlePasswordChange}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Input
-                  type="password"
-                  label="Current Password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  required
-                  disabled={passwordLoading}
-                />
-
-                <Input
-                  type="password"
-                  label="New Password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  disabled={passwordLoading}
-                />
-
-                <Input
-                  type="password"
-                  label="Confirm New Password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  disabled={passwordLoading}
-                />
-              </div>
-
-              {newPassword && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-md">
-                  <p className="text-sm font-medium text-gray-700 mb-2">
-                    Password Requirements:
-                  </p>
-                  <ul className="text-sm space-y-1">
-                    {passwordErrors.map((error, index) => (
-                      <li key={index} className="text-red-600">
-                        ✗ Missing: {error}
-                      </li>
-                    ))}
-                    {passwordErrors.length === 0 && (
-                      <li className="text-green-600">✓ Password meets all requirements</li>
-                    )}
-                    {confirmPassword && (
-                      <li className={passwordsMatch ? "text-green-600" : "text-red-600"}>
-                        {passwordsMatch ? "✓" : "✗"} Passwords match
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full md:w-auto mt-6"
-                disabled={
-                  passwordLoading ||
-                  !currentPassword ||
-                  !newPassword ||
-                  !confirmPassword ||
-                  passwordErrors.length > 0 ||
-                  !passwordsMatch
-                }
-              >
-                {passwordLoading ? "Changing..." : "Change Password"}
-              </Button>
-            </form>
-          </Card>
+          </div>
         </div>
       </div>
     </DashboardLayout>

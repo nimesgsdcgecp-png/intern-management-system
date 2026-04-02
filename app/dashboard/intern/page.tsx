@@ -4,10 +4,14 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { StatsGrid } from "@/app/components/StatsGrid";
+import { QuickActionCard } from "@/app/components/QuickActionCard";
 import { Card } from "@/app/components/Card";
-import { SearchHeader } from "@/app/components/SearchHeader";
 import { Button } from "@/app/components/Button";
-import { CheckSquare, Clock, FileText, Target, Users } from "lucide-react";
+import { CheckSquare, Clock, FileText, Target, Users, LayoutDashboard, Rocket, Zap, Sparkles, ShieldCheck, Activity, GraduationCap, BarChart3, Calendar } from "lucide-react";
+import { AttendanceCard } from "@/app/components/AttendanceCard";
+import { ActivityFeed } from "@/app/components/ActivityFeed";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface DashboardStats {
   totalTasks: number;
@@ -58,8 +62,8 @@ export default function InternDashboard() {
           const assignedIds = Array.isArray(t.assignedInterns)
             ? t.assignedInterns
             : t.assignedIntern
-            ? [t.assignedIntern]
-            : [];
+              ? [t.assignedIntern]
+              : [];
           return assignedIds.includes(userId);
         });
         const myReports = reports.filter((r: any) => r.internId === userId);
@@ -92,115 +96,199 @@ export default function InternDashboard() {
       }
     };
 
-    fetchStats();
+    if (session?.user) fetchStats();
   }, [session]);
 
   const statsData = [
     {
-      label: "Total Tasks",
-      value: stats.totalTasks,
-      icon: <Target className="w-6 h-6" />,
+      label: "My Tasks",
+      value: loading ? "..." : stats.totalTasks,
+      icon: <Target />,
       color: "blue" as const,
     },
     {
-      label: "Completed Tasks",
-      value: stats.completedTasks,
-      icon: <CheckSquare className="w-6 h-6" />,
+      label: "Completed",
+      value: loading ? "..." : stats.completedTasks,
+      icon: <CheckSquare />,
       color: "green" as const,
     },
     {
-      label: "Pending Tasks",
-      value: stats.pendingTasks,
-      icon: <Clock className="w-6 h-6" />,
-      color: "red" as const,
+      label: "Pending",
+      value: loading ? "..." : stats.pendingTasks,
+      icon: <Clock />,
+      color: "yellow" as const,
     },
     {
-      label: "Reports Submitted",
-      value: stats.submittedReports,
-      icon: <FileText className="w-6 h-6" />,
+      label: "Total Reports",
+      value: loading ? "..." : stats.submittedReports,
+      icon: <FileText />,
       color: "purple" as const,
+    },
+  ];
+
+  const quickActions = [
+    {
+      label: "Daily Report",
+      href: "/dashboard/intern/submit-report",
+      icon: <FileText className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />,
+      bgColor: "bg-indigo-50 dark:bg-indigo-500/10 dark:text-indigo-400",
+    },
+    {
+      label: "Tasks",
+      href: "/dashboard/intern/tasks",
+      icon: <Target className="w-6 h-6 text-violet-600 dark:text-violet-400" />,
+      bgColor: "bg-violet-50 dark:bg-violet-500/10 dark:text-violet-400",
+    },
+    {
+      label: "My Mentor",
+      href: "/dashboard/calendar",
+      icon: <GraduationCap className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />,
+      bgColor: "bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400",
     },
   ];
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl">
-        <SearchHeader title="Intern Dashboard" />
-        
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="premium-spinner mb-4"></div>
-            <p className="text-gray-400 font-bold text-sm uppercase tracking-widest">Synchronizing Workspace...</p>
+      <div className="space-y-12 pb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 text-slate-900">
+          <div>
+            <h1 className="text-5xl font-black tracking-tight italic">
+              Intern <span className="text-indigo-600">Workspace</span>
+            </h1>
+            <p className="text-gray-500 mt-2 font-medium italic opacity-80">Welcome back. Manage your projects and track your professional growth.</p>
           </div>
-        ) : (
-          <StatsGrid stats={statsData} loading={loading} />
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
-          <div className="lg:col-span-2 space-y-8">
-            <h3 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Recommended Actions</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {[
-                { label: "Daily Report", href: "/dashboard/intern/submit-report", icon: <FileText className="w-5 h-5" />, color: "bg-indigo-50 text-indigo-600", desc: "Log today's work" },
-                { label: "My Tasks", href: "/dashboard/intern/tasks", icon: <Target className="w-5 h-5" />, color: "bg-blue-50 text-blue-600", desc: "View assignments" },
-                { label: "Feedback", href: "/dashboard/intern/reports", icon: <CheckSquare className="w-5 h-5" />, color: "bg-emerald-50 text-emerald-600", desc: "Review comments" }
-              ].map((action, i) => (
-                <a key={i} href={action.href} className="group p-6 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <div className={`w-12 h-12 rounded-2xl ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    {action.icon}
-                  </div>
-                  <h4 className="text-sm font-black text-gray-900 mb-1">{action.label}</h4>
-                  <p className="text-[11px] text-gray-500 font-medium">{action.desc}</p>
-                </a>
-              ))}
+          <div className="flex items-center gap-3">
+            <div className="px-6 py-3 bg-emerald-50 text-emerald-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-emerald-100 uppercase tracking-[0.2em] italic shadow-sm relative overflow-hidden group">
+              <div className="absolute inset-0 bg-emerald-600/5 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+              <Rocket className="w-4 h-4 shadow-sm relative z-10" />
+              <span className="relative z-10">Resource Verified</span>
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse relative z-10 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
             </div>
-            
-            <Card title="Workspace Notifications" className="bg-gray-50/50 border-dashed">
-              <div className="py-12 flex flex-col items-center text-center">
-                 <div className="p-4 bg-white rounded-full shadow-sm mb-4">
-                   <Target className="w-6 h-6 text-gray-300" />
-                 </div>
-                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">No critical alerts at this time.</p>
-              </div>
-            </Card>
           </div>
+        </div>
 
-          <div className="space-y-8">
-            <h3 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Identity Profile</h3>
-            <Card className="overflow-hidden border-none shadow-2xl shadow-gray-200/50">
-              <div className="p-6 bg-linear-to-br from-indigo-600 to-blue-700 text-white relative">
-                 <div className="relative z-10">
-                   <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70 mb-1">Authenticated Identifier</p>
-                   <h4 className="text-xl font-black mb-4">{session?.user?.name}</h4>
-                   <div className="flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full w-fit">
-                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                     <span className="text-[10px] font-black uppercase tracking-widest">Status: Active Intern</span>
-                   </div>
-                 </div>
-                 <div className="absolute top-0 right-0 p-8 opacity-10">
-                    <Users className="w-24 h-24" />
-                 </div>
+        <StatsGrid stats={statsData} loading={loading} />
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
+          <div className="xl:col-span-2 space-y-10">
+            <div className="bg-white rounded-[2.5rem] border border-gray-100 p-10 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden relative group">
+              <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:rotate-6 transition-transform">
+                <LayoutDashboard className="w-40 h-40 text-indigo-600" />
               </div>
-              <div className="p-6 space-y-6 bg-white">
-                {[
-                   { label: "Email Address", value: session?.user?.email },
-                   { label: "Operational Dept", value: profile?.department },
-                   { label: "Educational Inst", value: profile?.collegeName },
-                   { label: "Primary Mentor", value: profile?.mentorName },
-                   { label: "Lead Admin", value: profile?.adminName }
-                ].map((item, i) => (
-                  <div key={i} className="flex flex-col gap-1">
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{item.label}</p>
-                    <p className="text-xs font-bold text-gray-700">{item.value || "N/A"}</p>
-                  </div>
+              <div className="flex items-center justify-between mb-10 relative z-10">
+                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3 italic">
+                  <span className="w-8 h-1 bg-indigo-600 rounded-full" />
+                  Productivity Hub
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative z-10">
+                {quickActions.map((action) => (
+                  <QuickActionCard key={action.label} {...action} />
                 ))}
-                <div className="pt-6 border-t border-gray-50">
-                   <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest text-center">
-                     Session initialized: {new Date().toLocaleDateString()}
-                   </p>
+              </div>
+            </div>
+
+            <div className="bg-slate-900 rounded-[2.5rem] p-12 text-white shadow-xl relative overflow-hidden group border-none">
+              <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:scale-125 transition-transform duration-1000 group-hover:rotate-12">
+                <Sparkles className="w-64 h-64" />
+              </div>
+              <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 mb-6">
+                    <Zap className="w-6 h-6 text-amber-400 animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-amber-400 italic">Professional Development</span>
+                  </div>
+                  <h3 className="text-4xl font-black mb-6 tracking-tight uppercase italic underline decoration-indigo-500 decoration-4 underline-offset-8">Accelerate Growth</h3>
+                  <p className="text-slate-400 font-medium leading-relaxed mb-10 max-w-lg italic text-lg">
+                    Consistent performance and "Tactical Reporting" are key to unlocking full-time opportunities within the organization.
+                  </p>
+                  <Link href="/dashboard/intern/tasks">
+                    <button className="bg-white text-slate-900 border-none px-12 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-50 transition-all active:scale-95 shadow-2xl flex items-center gap-3 italic">
+                      My Roadmap
+                      <Rocket className="w-4 h-4" />
+                    </button>
+                  </Link>
                 </div>
               </div>
-            </Card>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="space-y-6">
+                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-3">
+                  <Activity className="w-4 h-4 text-indigo-600" />
+                  Presence
+                </h2>
+                <AttendanceCard />
+              </div>
+              <div className="space-y-6">
+                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-3">
+                  <Clock className="w-4 h-4 text-indigo-600" />
+                  Timeline
+                </h2>
+                <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm h-full">
+                  <ActivityFeed />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-10">
+            <div className="space-y-6">
+              <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] italic flex items-center gap-3 ml-2">
+                <span className="w-4 h-1 bg-gray-400 rounded-full" />
+                Identity Card
+              </h2>
+              <div className="overflow-hidden border border-gray-100 shadow-sm rounded-[2.5rem] bg-white group hover:shadow-xl transition-all duration-500">
+                <div className="p-10 bg-slate-900 text-white relative overflow-hidden">
+                  <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+                  <div className="relative z-10">
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-3 italic">Active Deployed Unit</p>
+                    <h4 className="text-3xl font-black tracking-tight mb-8 uppercase italic leading-tight">{session?.user?.name}</h4>
+                    <div className="flex items-center gap-3 px-6 py-3 bg-white/5 rounded-2xl w-fit border border-white/10 backdrop-blur-md italic font-black shadow-inner">
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                      <span className="text-[10px] font-black uppercase tracking-widest leading-none">Status: Active</span>
+                    </div>
+                  </div>
+                  <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none group-hover:rotate-12 transition-transform duration-700">
+                    <Users className="w-32 h-32" />
+                  </div>
+                </div>
+                <div className="p-10 space-y-8 bg-white">
+                  {[
+                    { label: "Direct Intel", value: session?.user?.email },
+                    { label: "Assigned Stream", value: profile?.department },
+                    { label: "Original Nexus", value: profile?.collegeName },
+                    { label: "Command Lead", value: profile?.mentorName }
+                  ].map((item, i) => (
+                    <div key={i} className="flex flex-col gap-2 group/field">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic opacity-60 group-hover/field:text-indigo-600 transition-colors">{item.label}</p>
+                      <p className="text-sm font-bold text-slate-900 italic tracking-tight">{item.value || "Not Set"}</p>
+                    </div>
+                  ))}
+                  <div className="pt-10 border-t border-gray-50 text-center relative">
+                    <div className="absolute -top-px left-1/2 -translate-x-1/2 w-16 h-1 bg-indigo-500 rounded-full opacity-20" />
+                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest italic leading-relaxed">
+                      SYNCHRONIZED DATE <br/> {new Date().toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-sm group relative overflow-hidden">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/10 shadow-sm">
+                  <Sparkles className="w-6 h-6 text-indigo-500" />
+                </div>
+                <div>
+                  <h3 className="font-black text-gray-400 uppercase tracking-widest text-[10px] italic">Quick Tips</h3>
+                  <p className="text-[9px] text-gray-300 font-black uppercase tracking-widest opacity-40 italic">Consistency</p>
+                </div>
+              </div>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed italic">
+                Submitting daily reports on time is the best way to demonstrate reliability to your mentor.
+              </p>
+            </div>
           </div>
         </div>
       </div>

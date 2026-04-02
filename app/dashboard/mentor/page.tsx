@@ -5,10 +5,12 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { DashboardLayout } from "@/app/components/DashboardLayout";
 import { StatsGrid } from "@/app/components/StatsGrid";
+import { QuickActionCard } from "@/app/components/QuickActionCard";
+import { Users, FileText, Clock, CheckSquare, Target, Activity, LayoutDashboard, UserCheck, ShieldCheck, Sparkles, GraduationCap, BarChart3 } from "lucide-react";
 import { Card } from "@/app/components/Card";
-import { SearchHeader } from "@/app/components/SearchHeader";
 import { Button } from "@/app/components/Button";
-import { Users, FileText, Clock, CheckSquare } from "lucide-react";
+import { ActivityFeed } from "@/app/components/ActivityFeed";
+import { motion } from "framer-motion";
 
 interface DashboardStats {
   myInterns: number;
@@ -74,119 +76,169 @@ export default function MentorDashboard() {
       }
     };
 
-    fetchStats();
+    if (session?.user) fetchStats();
   }, [session]);
 
   const statsData = [
     {
       label: "My Interns",
-      value: stats.myInterns,
-      icon: <Users className="w-6 h-6" />,
+      value: loading ? "..." : stats.myInterns,
+      icon: <Users />,
       color: "blue" as const,
     },
     {
-      label: "Assigned Tasks",
-      value: stats.assignedTasks,
-      icon: <FileText className="w-6 h-6" />,
+      label: "Total Tasks",
+      value: loading ? "..." : stats.assignedTasks,
+      icon: <FileText />,
+      color: "purple" as const,
+    },
+    {
+      label: "Reviews Needed",
+      value: loading ? "..." : stats.pendingReports,
+      icon: <Clock />,
       color: "yellow" as const,
     },
     {
-      label: "Pending Reviews",
-      value: stats.pendingReports,
-      icon: <Clock className="w-6 h-6" />,
-      color: "red" as const,
+      label: "Finished Tasks",
+      value: loading ? "..." : stats.completedTasks,
+      icon: <CheckSquare />,
+      color: "green" as const,
+    },
+  ];
+
+  const quickActions = [
+    {
+      label: "Interns",
+      href: "/dashboard/mentor/interns",
+      icon: <Users className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />,
+      bgColor: "bg-indigo-50 dark:bg-indigo-500/10 dark:text-indigo-400",
     },
     {
-      label: "Completed Tasks",
-      value: stats.completedTasks,
-      icon: <CheckSquare className="w-6 h-6" />,
-      color: "green" as const,
+      label: "Tasks",
+      href: "/dashboard/mentor/tasks",
+      icon: <FileText className="w-6 h-6 text-violet-600 dark:text-violet-400" />,
+      bgColor: "bg-violet-50 dark:bg-violet-500/10 dark:text-violet-400",
+    },
+    {
+      label: "Reports",
+      href: "/dashboard/mentor/reports",
+      icon: <CheckSquare className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />,
+      bgColor: "bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400",
     },
   ];
 
   return (
     <DashboardLayout>
-      <div className="max-w-6xl">
-        <SearchHeader title="Mentor Dashboard" />
-
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <div className="premium-spinner mb-4"></div>
-            <p className="text-gray-400 font-bold text-sm uppercase tracking-widest">Accessing Supervision Portal...</p>
+      <div className="space-y-12 pb-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 text-slate-900">
+          <div>
+            <h1 className="text-5xl font-black tracking-tight italic">
+              Mentor <span className="text-indigo-600">Workspace</span>
+            </h1>
+            <p className="text-gray-500 mt-1 font-medium italic opacity-80">Welcome back. Oversee your assigned interns and evaluate their performance.</p>
           </div>
-        ) : (
-          <StatsGrid stats={statsData} loading={loading} />
-        )}
+          <div className="flex items-center gap-3">
+             <div className="px-6 py-3 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-[0.2em] italic shadow-sm relative overflow-hidden group">
+                <div className="absolute inset-0 bg-indigo-600/5 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
+                <ShieldCheck className="w-4 h-4 shadow-sm relative z-10" />
+                <span className="relative z-10">Mentorship Verified</span>
+                <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse relative z-10 shadow-[0_0_8px_rgba(79,70,229,0.8)]" />
+             </div>
+          </div>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
-          <div className="lg:col-span-2 space-y-8">
-            <h3 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Supervision Controls</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {[
-                { label: "My Interns", href: "/dashboard/mentor/interns", icon: <Users className="w-5 h-5" />, color: "bg-blue-50 text-blue-600", desc: "Manage your team" },
-                { label: "Assign Tasks", href: "/dashboard/mentor/tasks", icon: <FileText className="w-5 h-5" />, color: "bg-indigo-50 text-indigo-600", desc: "Delegate objectives" },
-                { label: "Review Reports", href: "/dashboard/mentor/reports", icon: <CheckSquare className="w-5 h-5" />, color: "bg-emerald-50 text-emerald-600", desc: "Evaluate progress" }
-              ].map((action, i) => (
-                <a key={i} href={action.href} className="group p-6 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <div className={`w-12 h-12 rounded-2xl ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    {action.icon}
-                  </div>
-                  <h4 className="text-sm font-black text-gray-900 mb-1">{action.label}</h4>
-                  <p className="text-[11px] text-gray-500 font-medium">{action.desc}</p>
-                </a>
-              ))}
+        <StatsGrid stats={statsData} loading={loading} />
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
+          <div className="xl:col-span-2 space-y-10">
+            <div className="bg-white rounded-[2.5rem] border border-gray-100 p-10 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden relative group font-black">
+              <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:rotate-6 transition-transform">
+                <Target className="w-40 h-40 text-indigo-600" />
+              </div>
+              <div className="flex items-center justify-between mb-10 relative z-10">
+                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3 italic">
+                  <span className="w-8 h-1 bg-indigo-600 rounded-full" />
+                  Mentorship Hub
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative z-10">
+                {quickActions.map((action) => (
+                  <QuickActionCard key={action.label} {...action} />
+                ))}
+              </div>
             </div>
 
-            <Card className="bg-linear-to-r from-gray-900 to-slate-800 text-white overflow-hidden border-none shadow-2xl">
-              <div className="p-8 relative">
-                 <div className="relative z-10 max-w-sm">
-                   <h3 className="text-xl font-black mb-3">Professional Mentorship</h3>
-                   <p className="text-xs text-gray-400 font-medium leading-relaxed mb-6">
-                     Consistency in feedback is key to intern growth. Ensure reports are reviewed within 24 hours of submission for optimal guidance.
-                   </p>
-                   <Link href="/dashboard/mentor/reports">
-                     <Button variant="secondary" className="bg-white/10 hover:bg-white/20 border-none text-white px-6">Supervision Guidelines</Button>
-                   </Link>
-                 </div>
-                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                    <CheckSquare className="w-48 h-48" />
-                 </div>
-              </div>
-            </Card>
+            <div className="bg-slate-900 rounded-[2.5rem] p-12 text-white shadow-xl relative overflow-hidden group border-none">
+                <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:scale-125 transition-transform duration-1000 group-hover:rotate-12">
+                   <GraduationCap className="w-64 h-64" />
+                </div>
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                  <div className="flex-1">
+                     <h3 className="text-4xl font-black mb-6 tracking-tight uppercase italic underline decoration-indigo-500 decoration-4 underline-offset-8">Mentorship Guidelines</h3>
+                     <p className="text-slate-400 font-medium leading-relaxed mb-10 max-w-lg italic text-lg">
+                        Guidance is key to intern growth. Execute human audit and provide "Technical Narrative" feedback within 24 hours of submission.
+                     </p>
+                     <Link href="/dashboard/mentor/reports">
+                        <button className="bg-white text-slate-900 border-none px-12 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-50 transition-all active:scale-95 shadow-2xl flex items-center gap-3 italic">
+                          Review Deliverables
+                          <FileText className="w-4 h-4" />
+                        </button>
+                     </Link>
+                  </div>
+                </div>
+            </div>
+
+            <div className="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-sm overflow-hidden relative group hover:shadow-xl transition-all duration-500">
+                <div className="absolute right-0 top-0 p-8 opacity-5 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">
+                   <Sparkles className="w-48 h-48 text-indigo-600" />
+                </div>
+                <div className="flex items-center justify-between mb-10 relative z-10">
+                   <h3 className="font-black text-gray-400 uppercase tracking-[0.4em] text-[10px] italic flex items-center gap-3">
+                       <span className="w-8 h-1 bg-indigo-500 rounded-full" />
+                       Squad Statistics
+                   </h3>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 relative z-10">
+                  <div className="rounded-[2.5rem] p-10 border border-gray-50 bg-gray-50/50 shadow-sm group/card hover:bg-white transition-all duration-300">
+                    <div className="text-5xl font-black text-slate-900 tracking-tighter italic group-hover/card:text-indigo-600 transition-colors uppercase">{loading ? "..." : stats.myInterns} <span className="text-xs opacity-40 not-italic">Units</span></div>
+                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 opacity-60">Assigned Resources</div>
+                  </div>
+                  <div className="rounded-[2.5rem] p-10 border border-gray-50 bg-gray-50/50 shadow-sm group/card hover:bg-white transition-all duration-300">
+                    <div className="text-5xl font-black text-amber-500 tracking-tighter italic group-hover/card:text-amber-600 transition-colors uppercase">{loading ? "..." : stats.pendingReports} <span className="text-xs opacity-40 not-italic">Logs</span></div>
+                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 opacity-60">Pending Human Evaluation</div>
+                  </div>
+                </div>
+            </div>
           </div>
 
-          <div className="space-y-8">
-            <h3 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em] ml-2">Lead Identifier</h3>
-            <Card className="overflow-hidden border-none shadow-2xl shadow-gray-200/50">
-              <div className="p-6 bg-linear-to-br from-blue-700 to-indigo-800 text-white relative">
-                 <div className="relative z-10">
-                   <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-70 mb-1">Authenticated Account</p>
-                   <h4 className="text-xl font-black mb-4">{session?.user?.name}</h4>
-                   <div className="flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full w-fit">
-                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                     <span className="text-[10px] font-black uppercase tracking-widest">Status: active Supervisor</span>
-                   </div>
-                 </div>
+          <div className="space-y-10">
+            <div className="space-y-6">
+              <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] italic flex items-center gap-3 ml-2">
+                <span className="w-4 h-1 bg-gray-400 rounded-full" />
+                Operational History
+              </h2>
+              <div className="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-sm h-fit hover:shadow-xl transition-all duration-500">
+                  <ActivityFeed />
               </div>
-              <div className="p-6 space-y-6 bg-white">
-                {[
-                   { label: "Email Address", value: session?.user?.email },
-                   { label: "Primary Role", value: "Training Mentor" },
-                   { label: "Access Level", value: "Standard Supervision" },
-                   { label: "Department", value: (session?.user as any)?.department || "Cross-Functional" }
-                ].map((item, i) => (
-                  <div key={i} className="flex flex-col gap-1">
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">{item.label}</p>
-                    <p className="text-xs font-bold text-gray-700">{item.value || "N/A"}</p>
-                  </div>
-                ))}
-                <div className="pt-6 border-t border-gray-50 text-center">
-                   <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest">
-                     System Security: Standard SSL Enabled
-                   </p>
+            </div>
+
+            {/* Guide Card */}
+            <div className="bg-slate-900 rounded-[2.5rem] p-12 text-white shadow-xl relative overflow-hidden group border-none">
+               <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform duration-1000 group-hover:-rotate-12">
+                  <CheckSquare className="w-48 h-48" />
+               </div>
+               <div className="relative z-10 font-black">
+                  <h3 className="font-black text-3xl tracking-tight mb-4 italic uppercase underline decoration-indigo-500 decoration-4 underline-offset-8">Resource Nexus</h3>
+                  <p className="text-sm font-medium opacity-60 leading-relaxed mb-10 italic">
+                    Access standard evaluation protocols and tactical platform documentation.
+                  </p>
+                  <Link href="/dashboard/help" className="block w-full">
+                    <button className="w-full py-5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border border-white/10 shadow-2xl active:scale-95 italic">
+                       Deploy Guide
+                    </button>
+                   </Link>
                 </div>
-              </div>
-            </Card>
+            </div>
           </div>
         </div>
       </div>

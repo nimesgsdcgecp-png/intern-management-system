@@ -51,13 +51,13 @@ export function Input({
   const shouldHideLabel = labelPosition === "hidden";
   const shouldFloat = !shouldUseTopLabel && !shouldHideLabel && (isFocused || hasValue || type === "date" || type === "datetime-local");
 
-  const borderColor = error ? "border-red-500 ring-4 ring-red-500/10" : 
-                    success ? "border-emerald-500 ring-4 ring-emerald-500/10" : 
-                    isFocused ? "border-blue-500 ring-4 ring-blue-500/10" : "border-gray-200 hover:border-gray-300";
+  const borderColor = error ? "border-red-500 ring-4 ring-red-500/10" :
+    success ? "border-emerald-500 ring-4 ring-emerald-500/10" :
+      isFocused ? "border-blue-500 ring-4 ring-blue-500/10" : "";
 
-  const iconColor = error ? "text-red-500" : 
-                   success ? "text-emerald-500" : 
-                   isFocused ? "text-blue-500" : "text-gray-400";
+  const iconColor = error ? "text-red-500" :
+    success ? "text-emerald-500" :
+      isFocused ? "text-blue-500" : "dm-text-muted";
 
   return (
     <div className={`relative ${compact ? "" : "mb-6"} ${className}`}>
@@ -78,7 +78,7 @@ export function Input({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           className={`
-            w-full px-4 py-3 border rounded-xl text-sm transition-all outline-none bg-white font-medium
+            w-full px-4 py-3 border rounded-xl text-sm transition-all outline-none dm-input font-medium
             ${borderColor}
             ${leftIcon ? "pl-10" : ""}
             ${(rightIcon || (isPassword && showPasswordToggle)) ? "pr-10" : ""}
@@ -97,10 +97,11 @@ export function Input({
               <label
                 htmlFor={inputId}
                 className={`
-                  absolute -top-2 left-3 text-[10px] font-bold bg-white px-1 z-10 uppercase tracking-widest transition-colors
+                  absolute -top-2 left-3 text-[10px] font-bold px-1 z-10 uppercase tracking-widest transition-colors
                   ${leftIcon ? "left-10" : "left-3"}
-                  ${error ? "text-red-500" : success ? "text-emerald-500" : isFocused ? "text-blue-600" : "text-gray-400"}
+                  ${error ? "text-red-500" : success ? "text-emerald-500" : isFocused ? "text-blue-600" : "dm-text-muted"}
                 `}
+                style={{ background: 'var(--dm-input-bg)' }}
               >
                 {label} {required && <span className="text-red-500">*</span>}
               </label>
@@ -116,8 +117,9 @@ export function Input({
                 className={`
                   absolute left-3 font-medium pointer-events-none z-10 origin-left transition-colors
                   ${leftIcon ? "left-10" : "left-4"}
-                  ${shouldFloat ? "top-0 px-1 bg-white" : "top-1/2 -translate-y-1/2"}
+                  ${shouldFloat ? "top-0 px-1" : "top-1/2 -translate-y-1/2"}
                 `}
+                style={shouldFloat ? { background: 'var(--dm-input-bg)' } : undefined}
               >
                 {label} {required && <span className="text-red-500">*</span>}
               </motion.label>

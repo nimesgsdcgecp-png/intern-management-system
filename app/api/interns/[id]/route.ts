@@ -6,6 +6,7 @@ import {
   DELETE_INTERN_AND_USER,
   UPDATE_INTERN_AND_USER,
 } from "@/lib/graphql/mutations";
+import { logActivity } from "@/services/activityService";
 
 export async function GET(
   request: NextRequest,
@@ -83,6 +84,21 @@ export async function PUT(
       }
     );
 
+    // [LOG] Record mentor reassignment
+    if (updates?.mentorId && updates.mentorId !== existing.mentorId) {
+      await logActivity({
+        userId: (session.user as any).id,
+        action: "reassign_mentor",
+        entityType: "intern",
+        entityId: id,
+        metadata: {
+          internName: existing.name,
+          oldMentorId: existing.mentorId,
+          newMentorId: updates.mentorId
+        }
+      });
+    }
+
     const updated = await getInternById(id);
     return NextResponse.json(updated);
   } catch (error) {
@@ -114,6 +130,15 @@ export async function DELETE(
       DELETE_INTERN_AND_USER,
       { id }
     );
+
+    // [LOG] Record intern deletion
+    await logActivity({
+      userId: (session.user as any).id,
+      action: "delete_intern",
+      entityType: "user",
+      entityId: id,
+      metadata: { name: existing.name, email: existing.email }
+    });
 
     return NextResponse.json({ message: "Intern deleted" });
   } catch (error) {

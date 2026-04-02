@@ -11,17 +11,20 @@ interface SearchHeaderProps {
 
 export function SearchHeader({ title, children, actions }: SearchHeaderProps) {
   return (
-    <div className="sticky top-0 z-30 mb-8 pt-4 pb-2 bg-gray-50/80 backdrop-blur-md -mx-4 px-4 sm:-mx-6 sm:px-6">
-      <div className="flex flex-col gap-6 max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{title}</h1>
-          {actions && <div className="flex items-center gap-3 w-full sm:w-auto">{actions}</div>}
+    <div className="sticky top-0 z-40 mb-6 pt-1 pb-1 dm-elevated -mx-6 px-6 sm:-mx-10 sm:px-10 lg:-mx-16 lg:px-16 border-b dm-border shadow-sm">
+      <div className="flex flex-col gap-1.5 max-w-[1600px] mx-auto">
+        <div className="flex flex-row justify-between items-center h-10">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-6 bg-indigo-600 rounded-full" />
+            <h1 className="text-base font-black dm-text tracking-tight">{title}</h1>
+          </div>
+          {actions && <div className="flex items-center gap-2">{actions}</div>}
         </div>
-        
+
         {children && (
-          <Card className="shadow-sm border-gray-200/60 bg-white/70 backdrop-blur-xs">
+          <div className="dm-sunken rounded-xl border dm-border p-1">
             {children}
-          </Card>
+          </div>
         )}
       </div>
     </div>

@@ -27,7 +27,7 @@ export async function GET() {
     let data: any = { users: [] };
 
     if (userRole === "admin") {
-      data = await hasuraQuery(GET_ALL_INTERNS);
+      data = await hasuraQuery(GET_ALL_INTERNS, {});
     } else if (userRole === "mentor") {
       data = await hasuraQuery(GET_MENTOR_INTERNS, { mentorId: userId });
     } else if (userRole === "intern") {

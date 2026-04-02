@@ -21,6 +21,11 @@ import {
   Shield,
   GraduationCap,
   Menu,
+  ClipboardList,
+  CalendarDays,
+  Building2,
+  Bell,
+  MessageSquare,
 } from "lucide-react";
 
 interface NavLink {
@@ -77,23 +82,43 @@ export function Sidebar() {
         },
         {
           href: "/dashboard/admin/interns",
-          label: "Manage Interns",
+          label: "Interns",
           icon: <Users className="w-5 h-5" />,
         },
         {
           href: "/dashboard/admin/mentors",
-          label: "Manage Mentors",
+          label: "Mentors",
           icon: <UserCheck className="w-5 h-5" />,
         },
         {
           href: "/dashboard/admin/tasks",
-          label: "Create Tasks",
-          icon: <PlusCircle className="w-5 h-5" />,
+          label: "Tasks",
+          icon: <CheckSquare className="w-5 h-5" />,
         },
         {
           href: "/dashboard/admin/reports",
-          label: "View Reports",
+          label: "Reports",
           icon: <BarChart3 className="w-5 h-5" />,
+        },
+        {
+          href: "/dashboard/admin/logs",
+          label: "Logs",
+          icon: <ClipboardList className="w-5 h-5" />,
+        },
+        {
+          href: "/dashboard/admin/attendance",
+          label: "Attendance",
+          icon: <Menu className="w-5 h-5" />,
+        },
+        {
+          href: "/dashboard/calendar",
+          label: "Calendar",
+          icon: <CalendarDays className="w-5 h-5" />,
+        },
+        {
+          href: "/dashboard/admin/import",
+          label: "Import",
+          icon: <PlusCircle className="w-5 h-5" />,
         },
       ];
     }
@@ -120,6 +145,16 @@ export function Sidebar() {
           icon: <BarChart3 className="w-5 h-5" />,
         },
         {
+          href: "/dashboard/admin/attendance",
+          label: "Attendance Monitor",
+          icon: <UserCheck className="w-5 h-5" />,
+        },
+        {
+          href: "/dashboard/calendar",
+          label: "Event Calendar",
+          icon: <CalendarDays className="w-5 h-5" />,
+        },
+        {
           href: "/profile",
           label: "Profile Settings",
           icon: <User className="w-5 h-5" />,
@@ -144,9 +179,14 @@ export function Sidebar() {
           icon: <FileText className="w-5 h-5" />,
         },
         {
-          href: "/dashboard/intern/reports",
-          label: "My Reports",
-          icon: <BarChart3 className="w-5 h-5" />,
+          href: "/dashboard/intern/attendance",
+          label: "Attendance History",
+          icon: <UserCheck className="w-5 h-5" />,
+        },
+        {
+          href: "/dashboard/calendar",
+          label: "Event Calendar",
+          icon: <CalendarDays className="w-5 h-5" />,
         },
         {
           href: "/profile",
@@ -164,285 +204,103 @@ export function Sidebar() {
     <aside
       className={`
         ${isCollapsed ? 'w-20' : 'w-72'}
-        h-screen flex flex-col relative
+        h-full flex flex-col relative
         transition-all duration-300 ease-in-out
         ${deviceType === 'mobile' && !isCollapsed ? 'fixed z-50' : ''}
+        bg-[var(--nav-bg)] border-r border-white/5
       `}
-      style={{
-        background: `linear-gradient(180deg,
-          hsl(222, 47%, 11%) 0%,
-          hsl(217, 33%, 17%) 100%)`,
-      }}
     >
-      {/* Glassmorphism Overlay */}
-      <div className="absolute inset-0 bg-linear-to-b from-white/5 via-transparent to-black/20 pointer-events-none" />
+      {/* Subtle Glow Overlay */}
+      <div className="absolute inset-0 bg-linear-to-b from-indigo-500/5 via-transparent to-transparent pointer-events-none" />
 
       {/* Header Section */}
-      <div className={`relative ${isCollapsed ? 'p-4' : 'p-6'} border-b border-white/10`}>
-        <div className={`flex ${isCollapsed ? 'flex-col' : 'flex-row'} items-center gap-4 mb-8`}>
-          {/* Toggle Button First */}
+      <div className={`relative ${isCollapsed ? 'p-4' : 'p-6'} border-b border-white/5`}>
+        <div className={`flex ${isCollapsed ? 'flex-col' : 'flex-row'} items-center gap-4`}>
           <motion.button
             onClick={handleToggleSidebar}
-            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-white/70 hover:text-white transition-colors border border-white/10 shrink-0"
+            className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all border border-white/5 active:scale-95"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <Menu className="w-5 h-5" />
           </motion.button>
 
-          {/* Logo Second */}
-          <motion.div
-            className="bg-linear-to-br from-blue-500 to-indigo-600 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0"
-            whileHover={{ rotate: 5, scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-          >
-            <span className="text-white font-bold text-2xl">IM</span>
-          </motion.div>
-          
           {!isCollapsed && (
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="overflow-hidden flex-1"
-            >
-              <h1 className="text-xl font-bold text-white tracking-tight whitespace-nowrap leading-tight">
-                Intern <br />
-                <span className="text-blue-400">Management</span>
-              </h1>
-            </motion.div>
-          )}
-        </div>
-
-        <div className={`
-          relative rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 transition-all duration-300
-          ${isCollapsed ? 'p-2 flex justify-center' : 'p-3'}
-        `}>
-          {isCollapsed ? (
-            /* Collapsed Profile - Compact Avatar with Status */
-            <motion.div
-              className="relative group cursor-pointer flex items-center justify-center"
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center relative shadow-lg shadow-blue-500/20">
-                <User className="w-5 h-5 text-white" />
-                {/* Status Indicator */}
-                <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-[#111827] flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                </div>
-              </div>
-
-              {/* Enhanced Tooltip for Collapsed State */}
-              <motion.div
-                className="absolute left-full ml-4 top-0 z-50 opacity-0 group-hover:opacity-100 pointer-events-none"
-                initial={{ opacity: 0, x: -10 }}
-                whileHover={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="bg-gray-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap border border-white/10">
-                  <div className="font-medium">{session?.user?.name || "User"}</div>
-                  <div className="flex items-center space-x-2 mt-1">
-                    {roleIcons[role as keyof typeof roleIcons]}
-                    <span className="text-xs text-gray-300 capitalize">{role}</span>
-                    <div className="flex items-center">
-                      <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-                      <span className="text-xs text-emerald-400 ml-1">Online</span>
-                    </div>
-                  </div>
-                  {/* Tooltip Arrow */}
-                  <div className="absolute top-3 -left-1 w-2 h-2 bg-gray-900/95 rotate-45 border-l border-t border-white/10"></div>
-                </div>
-              </motion.div>
-            </motion.div>
-          ) : (
-            /* Expanded Profile - Full Details */
-            <div className="flex items-center space-x-3">
-              <div className="relative">
-                <div className="w-10 h-10 bg-linear-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-                {/* Status Indicator */}
-                <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-[#111827] flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                </div>
-              </div>
-
-              <motion.div
-                className="flex-1 min-w-0"
+             <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-              >
-                <p className="text-sm font-bold text-white truncate leading-tight">
-                  {session?.user?.name || "User"}
-                </p>
-                <div className="flex items-center space-x-2 mt-0.5">
-                  <div className="flex items-center space-x-1 px-1.5 py-0.5 rounded-md bg-white/5 text-[10px] uppercase tracking-wider text-gray-400 font-bold border border-white/5">
-                    {roleIcons[role as keyof typeof roleIcons]}
-                    <span className="capitalize">{role}</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-sm shadow-emerald-500/50" />
-                    <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-wider">Online</span>
-                  </div>
+                className="flex items-center gap-3"
+             >
+                <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                  <Building2 className="w-5 h-5 text-white" />
                 </div>
-              </motion.div>
-            </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-black text-[var(--nav-text)] uppercase tracking-wider">Menu</span>
+                  <span className="text-[10px] font-bold text-[var(--nav-text-muted)] uppercase tracking-widest">System</span>
+                </div>
+             </motion.div>
           )}
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className={`flex-1 ${isCollapsed ? 'px-2 py-4' : 'p-4'} transition-all duration-300`}>
-        <ul className={`space-y-${isCollapsed ? '1' : '2'}`}>
-          {navLinks.map((link, index) => {
+      <nav className="flex-1 px-4 py-8 overflow-y-auto dm-scrollbar">
+        <ul className="space-y-2">
+          {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <li key={link.href}>
-                  <Link href={link.href}>
-                    <motion.div
-                      className={`
-                        relative group flex items-center rounded-xl
-                        transition-all duration-300 ease-in-out cursor-pointer
-                        ${isCollapsed
-                          ? 'justify-center px-3 py-3 mx-1'
-                          : 'px-4 py-3 space-x-3'
-                        }
-                        ${
-                          isActive
-                            ? "bg-linear-to-r from-blue-600/90 to-blue-500/70 text-white shadow-lg shadow-blue-500/25 backdrop-blur-sm"
-                            : "text-gray-300 hover:text-white hover:bg-white/10 hover:backdrop-blur-sm"
-                        }
-                      `}
-                      whileHover={{
-                        scale: isCollapsed ? 1.05 : 1.02,
-                        x: isCollapsed ? 0 : 4,
-                        transition: { duration: 0.2 },
-                      }}
-                      whileTap={{ scale: 0.98 }}
-                      title={isCollapsed ? link.label : undefined}
-                    >
-                      {/* Active Indicator for Expanded Sidebar */}
-                      {isActive && !isCollapsed && (
-                        <motion.div
-                          className="absolute left-0 top-0 bottom-0 w-1 bg-linear-to-b from-blue-400 to-emerald-400 rounded-r-full"
-                          layoutId="activeIndicator"
-                          initial={false}
-                          transition={{
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 40,
-                          }}
-                        />
-                      )}
+                <Link href={link.href}>
+                  <motion.div
+                    className={`
+                      relative group flex items-center rounded-xl p-3
+                      transition-all duration-200 cursor-pointer
+                      ${isCollapsed ? 'justify-center mx-0' : 'gap-4'}
+                      ${isActive 
+                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' 
+                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                      }
+                    `}
+                    whileHover={{ x: isCollapsed ? 0 : 4 }}
+                    whileTap={{ scale: 0.98 }}
+                    title={isCollapsed ? link.label : undefined}
+                  >
+                    <div className={`${isActive ? 'text-white' : 'text-gray-400 group-hover:text-indigo-400 transition-colors'}`}>
+                      {link.icon}
+                    </div>
+                    
+                    {!isCollapsed && (
+                      <span className="text-xs font-bold tracking-tight uppercase">
+                        {link.label}
+                      </span>
+                    )}
 
-                      {/* Active Indicator for Collapsed Sidebar */}
-                      {isActive && isCollapsed && (
-                        <motion.div
-                          className="absolute inset-0 bg-linear-to-r from-blue-500/20 to-emerald-500/20 rounded-xl ring-2 ring-blue-400/50"
-                          layoutId="activeIndicatorCollapsed"
-                          initial={false}
-                          transition={{
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 30,
-                          }}
-                        />
-                      )}
-
-                      {/* Icon */}
-                      <motion.div
-                        className={`
-                          relative z-10 flex items-center justify-center
-                          ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}
-                          ${isCollapsed ? 'w-5 h-5' : ''}
-                        `}
-                        whileHover={{
-                          rotate: isActive ? 5 : 0,
-                          scale: isCollapsed ? 1.1 : 1.0
-                        }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        {link.icon}
-                      </motion.div>
-
-                      {/* Label */}
-                      {!isCollapsed && (
-                        <motion.span
-                          className="relative z-10 font-medium text-sm"
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -10 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          {link.label}
-                        </motion.span>
-                      )}
-
-                      {/* Enhanced Tooltip for Collapsed State */}
-                      {isCollapsed && (
-                        <motion.div
-                          className="absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 pointer-events-none"
-                          initial={{ opacity: 0, x: -10 }}
-                          whileHover={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <div className="bg-gray-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap border border-white/10 shadow-lg shadow-black/20">
-                            {link.label}
-                            {/* Tooltip Arrow */}
-                            <div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-gray-900/95 rotate-45 border-l border-t border-white/10"></div>
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {/* Hover Glow Effect */}
-                      {!isActive && (
-                        <motion.div
-                          className="absolute inset-0 bg-linear-to-r from-blue-500/0 via-blue-500/5 to-blue-500/0 rounded-xl opacity-0 group-hover:opacity-100"
-                          transition={{ duration: 0.3 }}
-                        />
-                      )}
-                    </motion.div>
-                  </Link>
-                </li>
-              );
-            })}
+                    {isCollapsed && (
+                      <div className="absolute left-full ml-4 px-3 py-2 bg-[#1e293b] text-white text-[10px] font-black uppercase rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-2xl border border-white/5 translate-x-2 group-hover:translate-x-0">
+                        {link.label}
+                      </div>
+                    )}
+                  </motion.div>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
 
-      {/* Footer */}
-      <div className={`border-t border-white/10 ${isCollapsed ? 'p-2' : 'p-4'} transition-all duration-300`}>
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <Button
-            onClick={handleLogout}
-            variant="secondary"
-            icon={<LogOut className={`${isCollapsed ? 'w-4 h-4' : 'w-4 h-4'}`} />}
-            className={`
-              w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm
-              transition-all duration-300 group
-              ${isCollapsed ? 'px-3 py-3 justify-center relative' : 'justify-start space-x-2'}
-            `}
-            title={isCollapsed ? "Sign Out" : undefined}
-          >
-            {!isCollapsed && <span className="font-medium">Sign Out</span>}
-
-            {/* Enhanced Tooltip for Collapsed Logout */}
-            {isCollapsed && (
-              <motion.div
-                className="absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 pointer-events-none"
-                initial={{ opacity: 0, x: -10 }}
-                whileHover={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="bg-gray-900/95 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap border border-white/10 shadow-lg shadow-black/20">
-                  Sign Out
-                  {/* Tooltip Arrow */}
-                  <div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-gray-900/95 rotate-45 border-l border-t border-white/10"></div>
-                </div>
-              </motion.div>
+      {/* Footer Profile */}
+      <div className={`p-4 border-t border-white/5 bg-black/20 ${isCollapsed ? 'items-center' : ''}`}>
+         <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center' : 'p-2 rounded-2xl bg-white/5 border border-white/5'}`}>
+            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-white font-bold border border-white/10">
+               {session?.user?.name?.charAt(0) || "A"}
+            </div>
+            {!isCollapsed && (
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-black text-white truncate">{session?.user?.name || "Administrator"}</span>
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Super Admin</span>
+              </div>
             )}
-          </Button>
-        </motion.div>
+         </div>
       </div>
     </aside>
   );

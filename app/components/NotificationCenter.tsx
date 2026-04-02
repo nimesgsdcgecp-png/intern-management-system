@@ -89,16 +89,16 @@ const NotificationToast: React.FC<{ notification: any }> = ({ notification }) =>
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-gray-900 mb-1">
+                <h4 className="text-sm font-semibold dm-text mb-1">
                   {notification.title}
                 </h4>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-sm dm-text-secondary leading-relaxed">
                   {notification.message}
                 </p>
 
                 {notification.action && (
                   <motion.button
-                    className="mt-3 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                    className="mt-3 text-sm font-medium dm-text-link transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       notification.action.onClick();
@@ -113,7 +113,7 @@ const NotificationToast: React.FC<{ notification: any }> = ({ notification }) =>
               </div>
 
               <motion.button
-                className="ml-4 text-gray-400 hover:text-gray-600 transition-colors opacity-0 group-hover:opacity-100"
+                className="ml-4 dm-text-muted transition-colors opacity-0 group-hover:opacity-100"
                 onClick={(e) => {
                   e.stopPropagation();
                   dispatch(removeNotification(notification.id));

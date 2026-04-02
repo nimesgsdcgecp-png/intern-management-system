@@ -14,11 +14,11 @@ interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
 }
 
 const variantStyles = {
-  primary: "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md hover:shadow-lg hover:from-blue-700 hover:to-indigo-700 focus:ring-blue-500/50",
-  secondary: "bg-white text-gray-700 border-gray-200 shadow-sm hover:bg-gray-50 hover:border-gray-300 focus:ring-gray-300/50",
-  danger: "bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-md hover:shadow-lg focus:ring-red-500/50",
-  ghost: "bg-transparent text-gray-600 hover:bg-gray-100 focus:ring-gray-200/50",
-  glass: "glass-surface text-gray-700 border-white/20 shadow-lg hover:bg-white/80 focus:ring-blue-500/50",
+  primary: "bg-linear-to-r from-blue-600 to-indigo-600 text-white shadow-md hover:shadow-lg hover:from-blue-700 hover:to-indigo-700 focus:ring-blue-500/50",
+  secondary: "dm-btn-secondary shadow-sm focus:ring-gray-300/50",
+  danger: "bg-linear-to-r from-red-600 to-rose-600 text-white shadow-md hover:shadow-lg focus:ring-red-500/50",
+  ghost: "dm-btn-ghost focus:ring-gray-200/50",
+  glass: "glass-surface dm-text-secondary border-white/20 shadow-lg focus:ring-blue-500/50",
 };
 
 const sizeStyles = {

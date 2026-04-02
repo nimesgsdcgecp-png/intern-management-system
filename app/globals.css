@@ -1,46 +1,99 @@
 @import "tailwindcss";
+@import "./styles/dark-mode-system.css";
 
 :root {
-  --background: hsl(0, 0%, 98%); /* Soft Pearl */
-  --foreground: hsl(222, 47%, 11%); /* Deep Space Indigo */
+  /* Premium Light Mode - "Soft Pearl" */
+  --background: hsl(0, 0%, 98%);
+  --foreground: hsl(222, 47%, 11%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(222, 47%, 11%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(222, 47%, 11%);
+  --primary: hsl(217, 91%, 60%);
+  --primary-foreground: hsl(210, 40%, 98%);
+  
+  /* Brand Palette - Snapshot Inspired */
+  --brand-header: hsl(222, 47%, 4%); /* Deep Obsidian for Header (Original) */
+  --brand-sidebar: hsl(210, 40%, 99%); /* Soft White for Sidebar (Original) */
+  --brand-primary: hsl(211, 100%, 50%); /* Snapshot Blue */
+  --brand-active-item: hsla(211, 100%, 50%, 0.1); 
 
-  /* Nature-Inspired Color Palette */
-  --deep-space-indigo: hsl(222, 47%, 11%);
-  --electric-blue: hsl(217, 91%, 60%);
-  --emerald: hsl(142, 70%, 45%);
-  --soft-pearl: hsl(0, 0%, 98%);
+  /* Specialized Navigation Colors (Modernized) */
+  --nav-bg: #475569; /* Slate-600 (Light dark tone for light mode) */
+  --nav-header-bg: #334155; /* Slate-700 */
+  --nav-text: #f8fafc;
+  --nav-text-muted: #cbd5e1;
+  --nav-item-hover: rgba(255, 255, 255, 0.1);
+  --nav-item-active: rgba(255, 255, 255, 0.15);
+  
+  /* Stats Card Gradients */
+  --gradient-indigo-purple: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --gradient-purple-pink: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  --gradient-emerald-green: linear-gradient(135deg, #10b981 0%, #059669 100%);
 
-  /* Systematic Spacing Scale */
-  --space-1: 0.25rem;  /* 4px */
-  --space-2: 0.5rem;   /* 8px */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1rem;     /* 16px - base unit */
-  --space-5: 1.25rem;  /* 20px */
-  --space-6: 1.5rem;   /* 24px - section spacing */
-  --space-8: 2rem;     /* 32px - page spacing */
-  --space-10: 2.5rem;  /* 40px */
-  --space-12: 3rem;    /* 48px - major sections */
-  --space-16: 4rem;    /* 64px */
-  --space-20: 5rem;    /* 80px */
+  /* Quick Action Backgrounds */
+  --action-blue: #f0f7ff;
+  --action-purple: #f5f3ff;
+  --action-yellow: #fffdf2;
+  --action-green: #f0fdf4;
 
-  /* Glassmorphism Variables */
-  --glass-surface: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-highlight: rgba(255, 255, 255, 0.1);
+  /* Spacing Scale */
+  --space-1: 0.25rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
 
-  /* Animation Variables */
-  --animation-duration-fast: 150ms;
-  --animation-duration-normal: 250ms;
-  --animation-duration-slow: 350ms;
-  --animation-easing-premium: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* Glassmorphism 2.0 (Light) */
+  --glass-surface: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(99, 102, 241, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.4);
 }
+
+.dark {
+  /* "Deep Space" Dark Mode */
+  --background: hsl(222, 47%, 6%);
+  /* Deep Obsidian */
+  --foreground: hsl(210, 40%, 98%);
+  --card: hsl(222, 47%, 10%);
+  --card-foreground: hsl(210, 40%, 98%);
+  --popover: hsl(222, 47%, 8%);
+  --popover-foreground: hsl(210, 40%, 98%);
+  --primary: hsl(217, 91%, 65%);
+  --primary-foreground: hsl(222, 47%, 11%);
+
+  /* Theme-specific Overrides */
+  --deep-space-indigo: hsl(222, 47%, 15%);
+  --electric-blue: hsl(217, 91%, 70%);
+  --emerald: hsl(142, 70%, 60%);
+  --soft-pearl: hsl(222, 47%, 18%);
+
+  /* Glassmorphism 2.0 (Deep Space) */
+  --glass-surface: rgba(15, 23, 42, 0.7);
+  --glass-border: rgba(99, 102, 241, 0.3);
+  /* Indigo glow border */
+  --glass-highlight: rgba(255, 255, 255, 0.08); /* Inner shine */
+
+  /* Navigation Overrides for Dark Mode */
+  --nav-bg: #0f172a; /* Slate-950 (Deeper for Dark Mode) */
+  --nav-header-bg: #020617; /* Slate-1000 */
+  --nav-text: #f1f5f9;
+  --nav-text-muted: #94a3b8;
+}
+
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-glass: var(--glass-surface);
+  --color-glass-border: var(--glass-border);
   --font-sans: var(--font-outfit-sans);
   --font-mono: var(--font-jetbrains-mono);
 }
+
 
 /* Premium body styling */
 body {
@@ -52,33 +105,43 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glassmorphism Utility Classes */
+/* Glassmorphism 2.0 Utility Classes */
 .glass-surface {
   background: var(--glass-surface);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(200%);
+  -webkit-backdrop-filter: blur(16px) saturate(200%);
   border: 1px solid var(--glass-border);
-  box-shadow:
-    0 8px 32px 0 rgba(31, 38, 135, 0.37),
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.1),
     inset 0 1px 1px 0 var(--glass-highlight);
 }
 
 .glass-card {
   background: var(--glass-surface);
-  backdrop-filter: blur(12px) saturate(180%);
-  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(200%);
+  -webkit-backdrop-filter: blur(16px) saturate(200%);
   border: 1px solid var(--glass-border);
-  border-radius: 1rem; /* rounded-2xl equivalent */
-  box-shadow:
-    0 4px 16px 0 rgba(0, 0, 0, 0.1),
+  border-radius: 1.25rem;
+  box-shadow: 
+    0 12px 40px 0 rgba(0, 0, 0, 0.15),
     inset 0 1px 1px 0 var(--glass-highlight);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 50px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px 0 var(--glass-highlight);
+  border-color: rgba(99, 102, 241, 0.5); /* Glowing border on hover */
 }
 
 .glass-overlay {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(8px) saturate(120%);
-  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
+
 
 /* Premium Loading Spinner */
 .premium-spinner {
@@ -88,8 +151,13 @@ body {
 }
 
 @keyframes premium-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Premium Focus States */
@@ -154,6 +222,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -161,8 +230,13 @@ body {
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scale-in {
@@ -170,6 +244,7 @@ body {
     opacity: 0;
     transform: scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -248,9 +323,203 @@ body {
 
 /* Mobile-specific optimizations */
 @media (max-width: 768px) {
+
   .glass-surface,
   .glass-card {
     backdrop-filter: blur(8px) saturate(150%);
     -webkit-backdrop-filter: blur(8px) saturate(150%);
   }
 }
+
+/* ═══════════════════════════════════════════════
+   DARK MODE OVERRIDES FOR MODERNIZED PAGES
+   These override the hardcoded bg-white, text-gray-*
+   classes used in the card-based layouts.
+   ═══════════════════════════════════════════════ */
+
+/* Page headings */
+.dark h1.text-slate-900,
+.dark .text-slate-900 {
+  color: var(--dm-text-primary) !important;
+}
+
+.dark h2.text-gray-900,
+.dark .text-gray-900 {
+  color: var(--dm-text-primary) !important;
+}
+
+.dark .text-gray-500,
+.dark .text-slate-500 {
+  color: var(--dm-text-muted) !important;
+}
+
+.dark .text-gray-400,
+.dark .text-slate-400 {
+  color: var(--dm-text-muted) !important;
+}
+
+.dark .text-gray-700,
+.dark .text-slate-700 {
+  color: var(--dm-text-secondary) !important;
+}
+
+.dark .text-gray-600,
+.dark .text-slate-600 {
+  color: var(--dm-text-secondary) !important;
+}
+
+/* Card containers and filter sections */
+.dark .bg-white {
+  background-color: var(--dm-card-bg) !important;
+}
+
+.dark .border-gray-100,
+.dark .border-slate-100 {
+  border-color: var(--dm-border-default) !important;
+}
+
+.dark .border-gray-50,
+.dark .border-slate-50 {
+  border-color: var(--dm-border-subtle) !important;
+}
+
+.dark .border-gray-200,
+.dark .border-slate-200 {
+  border-color: var(--dm-border-default) !important;
+}
+
+/* Filter inputs and selects */
+.dark .bg-gray-50,
+.dark .bg-slate-50 {
+  background-color: var(--dm-input-bg) !important;
+}
+
+.dark .bg-gray-100,
+.dark .bg-slate-100 {
+  background-color: rgba(148, 163, 184, 0.1) !important;
+}
+
+.dark input.bg-gray-50,
+.dark select.bg-gray-50,
+.dark input.bg-slate-50,
+.dark select.bg-slate-50,
+.dark [class*="bg-slate-50/50"] {
+  background-color: var(--dm-input-bg) !important;
+  color: var(--dm-input-text) !important;
+}
+
+.dark input.bg-gray-50::placeholder,
+.dark input.bg-slate-50::placeholder {
+  color: var(--dm-input-placeholder) !important;
+}
+
+/* Table header backgrounds */
+.dark [class*="bg-gray-50/50"],
+.dark [class*="bg-slate-50/50"] {
+  background-color: var(--dm-table-header-bg) !important;
+}
+
+.dark [class*="bg-gray-50/30"],
+.dark [class*="bg-slate-50/30"],
+.dark [class*="bg-slate-50/80"] {
+  background-color: var(--dm-table-row-hover) !important;
+}
+
+/* Status badges and accent tones */
+.dark .bg-indigo-50 {
+  background-color: var(--dm-accent-indigo-bg) !important;
+}
+
+.dark .text-indigo-600 {
+  color: var(--dm-accent-indigo-text) !important;
+}
+
+.dark .bg-emerald-50 {
+  background-color: var(--dm-accent-emerald-bg) !important;
+}
+
+.dark .text-emerald-600 {
+  color: var(--dm-accent-emerald-text) !important;
+}
+
+.dark .bg-rose-50 {
+  background-color: var(--dm-accent-rose-bg) !important;
+}
+
+.dark .text-rose-600 {
+  color: var(--dm-accent-rose-text) !important;
+}
+
+.dark .bg-amber-50 {
+  background-color: var(--dm-accent-amber-bg) !important;
+}
+
+.dark .text-amber-600 {
+  color: var(--dm-accent-amber-text) !important;
+}
+
+.dark .bg-purple-100 {
+  background-color: var(--dm-accent-purple-bg) !important;
+}
+
+.dark .text-purple-600 {
+  color: var(--dm-accent-purple-text) !important;
+}
+
+.dark .bg-emerald-100 {
+  background-color: var(--dm-accent-emerald-bg) !important;
+}
+
+.dark .text-emerald-700 {
+  color: var(--dm-accent-emerald-text) !important;
+}
+
+/* Divider lines */
+.dark .divide-gray-50 > :not(:last-child) {
+  border-color: var(--dm-border-subtle) !important;
+}
+
+/* Cards hover state */
+.dark .hover\:bg-gray-50\/30:hover {
+  background-color: var(--dm-table-row-hover) !important;
+}
+
+/* Selection states */
+.dark .bg-indigo-50\/30 {
+  background-color: rgba(99, 102, 241, 0.1) !important;
+}
+
+.dark .bg-indigo-50\/20 {
+  background-color: rgba(99, 102, 241, 0.08) !important;
+}
+
+.dark .bg-indigo-50\/10 {
+  background-color: rgba(99, 102, 241, 0.05) !important;
+}
+
+/* Shadow adjustments for dark mode */
+.dark .shadow-sm {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Kills the glowing colored shadows on buttons and elements in dark mode, keeping the UI clean */
+.dark [class*="shadow-indigo-"],
+.dark [class*="shadow-blue-"],
+.dark [class*="shadow-emerald-"],
+.dark [class*="shadow-purple-"],
+.dark [class*="shadow-red-"],
+.dark [class*="shadow-yellow-"],
+.dark [class*="shadow-rose-"],
+.dark [class*="shadow-cyan-"] {
+  box-shadow: none !important;
+}
+
+/* Calendar cell borders in dark */
+.dark .border-r.border-b.border-gray-50 {
+  border-color: var(--dm-border-subtle) !important;
+}
+
+/* Placeholder text in inputs */
+.dark .placeholder\:text-gray-300::placeholder {
+  color: var(--dm-input-placeholder) !important;
+}

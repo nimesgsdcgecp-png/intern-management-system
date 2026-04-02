@@ -35,7 +35,16 @@ type UserRow = {
 
 export async function GET() {
   try {
-    const data = await hasuraQuery<{ users: UserRow[] }>(GET_USERS);
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    if ((session.user as any).role !== "admin") {
+      return NextResponse.json({ error: "Forbidden: Admins only" }, { status: 403 });
+    }
+
+    const data = await hasuraQuery<{ users: UserRow[] }>(GET_USERS, {});
 
     const safeUsers = data.users.map(({ password_hash, ...user }) => ({
       id: user.id,
@@ -125,7 +134,6 @@ export async function POST(request: NextRequest) {
       email,
       password: hashedPassword,
       role,
-      name,
       department,
       phone,
     });

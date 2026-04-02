@@ -13,10 +13,10 @@ interface CardProps extends Omit<HTMLMotionProps<"div">, "children"> {
 }
 
 const variantStyles = {
-  default: "bg-white shadow-md border border-gray-100",
+  default: "dm-card",
   glass: "glass-card border-white/20 backdrop-blur-md",
-  bordered: "bg-white border-2 border-gray-100 shadow-sm hover:border-blue-500/30",
-  floating: "bg-white shadow-xl border border-gray-50 hover:-translate-y-1",
+  bordered: "dm-card border-2 hover:border-blue-500/30",
+  floating: "dm-card shadow-xl hover:-translate-y-1",
 };
 
 const paddingStyles = {
@@ -70,12 +70,12 @@ export function Card({
       {(title || subtitle) && (
         <div className="mb-5 relative z-10">
           {title && (
-            <h3 className="text-lg font-bold text-gray-900 tracking-tight">
+            <h3 className="text-lg font-bold dm-text tracking-tight">
               {title}
             </h3>
           )}
           {subtitle && (
-            <p className="text-sm text-gray-500 mt-0.5">
+            <p className="text-sm dm-text-secondary mt-0.5">
               {subtitle}
             </p>
           )}
