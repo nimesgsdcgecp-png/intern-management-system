@@ -4,18 +4,6 @@
 
 BEGIN;
 
--- -----------------------------------------------------------------------------
--- 1. UTILITY FUNCTIONS & TRIGGERS
--- -----------------------------------------------------------------------------
-
--- Automatically update updated_at timestamp
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
 
 -- -----------------------------------------------------------------------------
 -- 2. ENUMS
@@ -223,23 +211,6 @@ CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON notifications(is_read);
 CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_email ON password_reset_tokens(email);
 CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON password_reset_tokens(token);
 
--- -----------------------------------------------------------------------------
--- 5. ATTACH TRIGGERS
--- -----------------------------------------------------------------------------
-DO $$
-DECLARE
-    t text;
-BEGIN
-    FOR t IN 
-        SELECT table_name FROM information_schema.columns 
-        WHERE column_name = 'updated_at' 
-        AND table_schema = 'public'
-        AND table_name != 'users' -- already has it if initialized differently, but safe to add
-    LOOP
-        EXECUTE format('DROP TRIGGER IF EXISTS trg_update_updated_at ON %I', t);
-        EXECUTE format('CREATE TRIGGER trg_update_updated_at BEFORE UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()', t);
-    END LOOP;
-END $$;
 
 -- -----------------------------------------------------------------------------
 -- 6. SEEDING
