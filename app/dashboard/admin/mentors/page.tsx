@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
+import { Input } from "@/app/components/ui/Input";
 import { Edit3, Trash2, PlusCircle, Users, Mail, GraduationCap, Search, ShieldCheck } from "lucide-react";
-import { SearchHeader } from "@/app/components/SearchHeader";
-import { Select } from "@/app/components/Select";
-import { Modal } from "@/app/components/Modal";
-import { QuickViewModal } from "@/app/components/QuickViewModal";
-import { BulkActionBar } from "@/app/components/BulkActionBar";
+import { SearchHeader } from "@/app/components/features/SearchHeader";
+import { Select } from "@/app/components/ui/Select";
+import { Modal } from "@/app/components/ui/Modal";
+import { QuickViewModal } from "@/app/components/features/QuickViewModal";
+import { BulkActionBar } from "@/app/components/features/BulkActionBar";
 import { showToast } from "@/lib/notifications";
 import { downloadCSV } from "@/lib/utils/csv-utils";
 import Swal from "sweetalert2";
@@ -143,6 +143,11 @@ export default function MentorsPage() {
     return Object.keys(errors).length === 0;
   };
 
+  /**
+   * Logic: Mentor Onboarding & Update
+   * Orchestrates the registration of specialized mentors 
+   * and handles credential delivery for secure access.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -207,6 +212,11 @@ export default function MentorsPage() {
     setIsFormOpen(true);
   };
 
+  /**
+   * Logic: Access Revocation
+   * Removes mentor administrative privileges and purges 
+   * identity records from the active directory.
+   */
   const handleDelete = async (id: string) => {
     const result = await Swal.fire({
       title: "Remove Manager Access?",
@@ -324,14 +334,14 @@ export default function MentorsPage() {
                    <ShieldCheck className="w-32 h-32 text-indigo-600" />
                 </div>
                 <div className="relative z-10">
-                   <p className="text-[11px] font-black text-indigo-900 uppercase tracking-[0.2em] mb-8 italic">Access credentials for <span className="text-indigo-600">{credentialNotice.name}</span></p>
+                   <p className="text-[11px] font-black text-indigo-900 uppercase tracking-[0.2em] mb-8">Access credentials for <span className="text-indigo-600">{credentialNotice.name}</span></p>
                    <div className="space-y-6">
                      <div className="space-y-3">
-                       <label className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 ml-1 italic">Access ID</label>
+                       <label className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 ml-1">Access ID</label>
                        <div className="bg-white px-6 py-4 rounded-2xl border border-indigo-100 font-mono font-bold text-slate-800 text-xl tracking-widest shadow-sm group-hover:shadow-indigo-100 transition-all">{credentialNotice.id}</div>
                      </div>
                      <div className="space-y-3">
-                       <label className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 ml-1 italic">Default Password</label>
+                       <label className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400 ml-1">Default Password</label>
                        <div className="bg-white px-6 py-4 rounded-2xl border border-indigo-100 font-mono font-bold text-slate-800 text-xl tracking-widest shadow-sm group-hover:shadow-indigo-100 transition-all">{credentialNotice.password}</div>
                      </div>
                    </div>
@@ -340,13 +350,13 @@ export default function MentorsPage() {
               <div className="flex flex-col gap-4">
                 <button 
                   onClick={copyCredentials} 
-                  className="w-full bg-slate-900 text-white rounded-2xl py-5 text-[11px] font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] active:scale-95 transition-all outline-none italic"
+                  className="w-full bg-slate-900 text-white rounded-2xl py-5 text-[11px] font-black uppercase tracking-widest shadow-2xl hover:scale-[1.02] active:scale-95 transition-all outline-none"
                 >
                   Copy Credentials
                 </button>
                 <button 
                   onClick={() => setCredentialNotice(null)} 
-                  className="w-full bg-white text-indigo-600 border border-indigo-100 rounded-2xl py-5 text-[11px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-all outline-none italic"
+                  className="w-full bg-white text-indigo-600 border border-indigo-100 rounded-2xl py-5 text-[11px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-all outline-none"
                 >
                   Close
                 </button>
@@ -358,16 +368,16 @@ export default function MentorsPage() {
         {/* Page Header */}
         <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight uppercase italic">
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight uppercase">
               Manager <span className="text-indigo-600">Directory</span>
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Manage and coordinate your mentoring team.</p>
+            <p className="text-gray-500 mt-1 font-medium">Manage and coordinate your mentoring team.</p>
           </div>
           <div className="flex items-center gap-3">
             <Button
               onClick={() => { setEditingId(null); setIsFormOpen(true); }}
               icon={<PlusCircle className="w-5 h-5" />}
-              className="py-3 px-8 shadow-xl shadow-indigo-200 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold italic uppercase tracking-widest text-[10px]"
+              className="py-3 px-8 shadow-xl shadow-indigo-200 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest text-[10px]"
             >
               Add Manager
             </Button>
@@ -448,9 +458,9 @@ export default function MentorsPage() {
                           />
                         </div>
                       </th>
-                      <th className="px-4 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic">Manager Details</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic">Department</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right italic">Actions</th>
+                      <th className="px-4 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Manager Details</th>
+                      <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Department</th>
+                      <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
@@ -472,7 +482,7 @@ export default function MentorsPage() {
                               {mentor.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                             </div>
                             <div className="flex flex-col">
-                              <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight text-base italic">{mentor.name}</span>
+                              <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight text-base">{mentor.name}</span>
                               <div className="flex items-center gap-2">
                                 <Mail className="w-3 h-3 text-indigo-400" />
                                 <span className="text-[11px] text-gray-400 font-bold uppercase tracking-tighter opacity-80">{mentor.email}</span>

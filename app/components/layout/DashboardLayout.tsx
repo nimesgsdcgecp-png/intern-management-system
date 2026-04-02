@@ -2,7 +2,7 @@
 
 import { Sidebar } from "./Sidebar";
 import { DashboardHeader } from "./DashboardHeader";
-import { ChatWidget } from "./ChatWidget";
+import { ChatWidget } from "../features/ChatWidget";
 import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -43,7 +43,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="flex flex-col h-screen overflow-hidden dm-page relative">
       <DashboardHeader />
-      
+
       <div className="flex flex-1 overflow-hidden transition-all duration-300 pt-20">
         <Sidebar />
 

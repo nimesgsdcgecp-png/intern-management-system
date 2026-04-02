@@ -1,11 +1,24 @@
 -- Intern Management System - PostgreSQL Schema
--- Comprehensive Single Source of Truth
+-- Refactored for consistency, performance, and maintainability.
 -- Compatible with PostgreSQL 15+
 
 BEGIN;
 
 -- -----------------------------------------------------------------------------
--- 1. ENUMS
+-- 1. UTILITY FUNCTIONS & TRIGGERS
+-- -----------------------------------------------------------------------------
+
+-- Automatically update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- -----------------------------------------------------------------------------
+-- 2. ENUMS
 -- -----------------------------------------------------------------------------
 DO $$
 BEGIN
@@ -24,16 +37,20 @@ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'intern_status') THEN
     CREATE TYPE intern_status AS ENUM ('active', 'inactive');
   END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'report_type') THEN
+    CREATE TYPE report_type AS ENUM ('daily', 'weekly', 'monthly');
+  END IF;
 END $$;
 
 -- -----------------------------------------------------------------------------
--- 2. TABLES
+-- 3. TABLES
 -- -----------------------------------------------------------------------------
 
 -- Core Users table - Authentication data
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL UNIQUE CHECK (email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'),
   password_hash TEXT NOT NULL,
   role user_role NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -88,11 +105,12 @@ CREATE TABLE IF NOT EXISTS task_assignments (
   PRIMARY KEY (task_id, intern_id)
 );
 
--- Intern daily/weekly reports
+-- Intern reports
 CREATE TABLE IF NOT EXISTS reports (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   intern_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   report_date DATE NOT NULL,
+  type report_type NOT NULL DEFAULT 'daily',
   work_description TEXT NOT NULL,
   hours_worked NUMERIC(4,2) NOT NULL CHECK (hours_worked >= 0 AND hours_worked <= 24),
   mentor_feedback TEXT,
@@ -125,7 +143,19 @@ CREATE TABLE IF NOT EXISTS activity_logs (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Events table (New)
+-- Notifications
+CREATE TABLE IF NOT EXISTS notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('info', 'success', 'warning', 'error')),
+  is_read BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Events
 CREATE TABLE IF NOT EXISTS events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -136,8 +166,8 @@ CREATE TABLE IF NOT EXISTS events (
   type TEXT NOT NULL,
   department TEXT,
   created_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Password reset tokens
@@ -149,13 +179,15 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
   type TEXT NOT NULL CHECK (type IN ('otp', 'reset')),
   expires_at TIMESTAMPTZ NOT NULL,
   attempts INTEGER DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   used_at TIMESTAMPTZ
 );
 
 -- -----------------------------------------------------------------------------
--- 3. INDEXES
+-- 4. INDEXES
 -- -----------------------------------------------------------------------------
+-- Core Indexes
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
@@ -185,12 +217,32 @@ CREATE INDEX IF NOT EXISTS idx_activity_logs_created_at ON activity_logs(created
 CREATE INDEX IF NOT EXISTS idx_events_created_by ON events(created_by);
 CREATE INDEX IF NOT EXISTS idx_events_start_time ON events(start_time);
 
+CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON notifications(is_read);
+
 CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_email ON password_reset_tokens(email);
 CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token ON password_reset_tokens(token);
-CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_type ON password_reset_tokens(type);
 
 -- -----------------------------------------------------------------------------
--- 4. SEEDING (Optional)
+-- 5. ATTACH TRIGGERS
+-- -----------------------------------------------------------------------------
+DO $$
+DECLARE
+    t text;
+BEGIN
+    FOR t IN 
+        SELECT table_name FROM information_schema.columns 
+        WHERE column_name = 'updated_at' 
+        AND table_schema = 'public'
+        AND table_name != 'users' -- already has it if initialized differently, but safe to add
+    LOOP
+        EXECUTE format('DROP TRIGGER IF EXISTS trg_update_updated_at ON %I', t);
+        EXECUTE format('CREATE TRIGGER trg_update_updated_at BEFORE UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()', t);
+    END LOOP;
+END $$;
+
+-- -----------------------------------------------------------------------------
+-- 6. SEEDING
 -- -----------------------------------------------------------------------------
 -- Insert admin user (safely)
 INSERT INTO users (id, email, password_hash, role)
@@ -209,4 +261,6 @@ VALUES (
   'Aarav Shah',
   'AI'
 )
+ON CONFLICT (user_id) DO NOTHING;
+
 COMMIT;

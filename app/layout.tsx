@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
-import { SessionProviderWrapper } from "./components/SessionProviderWrapper";
+import { SessionProviderWrapper } from "./components/providers/SessionProviderWrapper";
 import { ReduxProvider } from "./lib/redux/ReduxProvider";
-import { NotificationCenter } from "./components/NotificationCenter";
-import { ThemeProvider } from "./components/ThemeProvider";
+import { NotificationCenter } from "./components/features/NotificationCenter";
+import { ThemeProvider } from "./components/providers/ThemeProvider";
 
 
 const outfit = Outfit({

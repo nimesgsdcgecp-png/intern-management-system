@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, RefreshCw, Home, ChevronDown, ChevronUp, Terminal } from "lucide-react";
-import { Button } from "./components/Button";
+import { Button } from "./components/ui/Button";
 import Link from "next/link";
 
 export default function Error({
@@ -109,7 +109,7 @@ export default function Error({
                     )}
 
                     {error.digest && (
-                      <div className="pt-2 flex items-center gap-2 text-[10px] text-gray-500 italic">
+                      <div className="pt-2 flex items-center gap-2 text-[10px] text-gray-500">
                         <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10">Digest ID: {error.digest}</span>
                       </div>
                     )}

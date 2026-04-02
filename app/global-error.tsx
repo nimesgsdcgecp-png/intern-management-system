@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { AlertTriangle, RefreshCw, Terminal } from "lucide-react";
-import { Button } from "./components/Button";
+import { Button } from "./components/ui/Button";
 
 /**
  * Fallback error UI for errors that occur in the root layout.

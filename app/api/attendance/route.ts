@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { hasuraMutation, hasuraQuery } from "@/lib/hasura";
 import { GET_USER_ATTENDANCE } from "@/lib/graphql/queries";
 import { INSERT_ATTENDANCE, UPDATE_ATTENDANCE } from "@/lib/graphql/mutations";
-import { logActivity } from "@/services/activityService";
+import { logActivity } from "@/lib/activityService";
 
 export async function GET(request: NextRequest) {
   try {

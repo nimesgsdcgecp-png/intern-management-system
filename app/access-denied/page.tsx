@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { ShieldAlert, ArrowLeft, Home, Lock } from "lucide-react";
-import { Button } from "@/app/components/Button";
-import { Card } from "@/app/components/Card";
+import { Button } from "@/app/components/ui/Button";
+import { Card } from "@/app/components/ui/Card";
 import { motion } from "framer-motion";
 
 export default function AccessDeniedPage() {

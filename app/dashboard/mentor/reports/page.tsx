@@ -2,17 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
-import { Select } from "@/app/components/Select";
-import { TextArea } from "@/app/components/TextArea";
-import { Modal } from "@/app/components/Modal";
-import { SearchHeader } from "@/app/components/SearchHeader";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
+import { Input } from "@/app/components/ui/Input";
+import { Select } from "@/app/components/ui/Select";
+import { TextArea } from "@/app/components/ui/TextArea";
+import { Modal } from "@/app/components/ui/Modal";
+import { SearchHeader } from "@/app/components/features/SearchHeader";
 import { FileText, Clock, MessageSquare, Target, ShieldCheck, Sparkles, Activity, CheckCircle2, AlertCircle, ExternalLink, Timer, Gauge, Search, Calendar, User, Mail, Loader2, ClipboardCheck } from "lucide-react";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { PremiumStatCard } from "@/app/components/PremiumStatCard";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
 
@@ -42,6 +41,11 @@ export default function MentorReportsPage() {
   const [filters, setFilters] = useState({ internName: "", feedbackStatus: "" });
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 
+  /**
+   * Effect: Relational Data Mapping
+   * Synchronizes intern profiles and work reports, establishing a 
+   * mentor-centric view of all submitted technical documentation.
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -89,6 +93,11 @@ export default function MentorReportsPage() {
     });
   };
 
+  /**
+   * Logic: Feedback Synchronization
+   * Publishes mentor evaluations for specific work reports.
+   * Supports asynchronous submission with optional email broadcast.
+   */
   const handleSubmitFeedback = async (reportId: string) => {
     const feedback = feedbackData[reportId]?.trim();
 
@@ -179,7 +188,7 @@ export default function MentorReportsPage() {
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               Review Reports
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Review and provide feedback for work reports submitted by your interns.</p>
+            <p className="text-gray-500 mt-1 font-medium">Review and provide feedback for work reports submitted by your interns.</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="px-5 py-2.5 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-widest shadow-sm">
@@ -258,7 +267,7 @@ export default function MentorReportsPage() {
                               </div>
                               <div className="flex flex-col">
                                 <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight text-base">{interns.get(report.internId)}</span>
-                                <span className="text-xs text-gray-400 font-medium italic">Performance Analyst</span>
+                                <span className="text-xs text-gray-400 font-medium">Performance Analyst</span>
                               </div>
                             </div>
                           </td>
@@ -312,28 +321,28 @@ export default function MentorReportsPage() {
                           {interns.get(selectedReport.internId)?.charAt(0)}
                         </div>
                         <div>
-                          <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">{interns.get(selectedReport.internId)}</h3>
+                          <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase">{interns.get(selectedReport.internId)}</h3>
                           <div className="flex items-center gap-2 mt-1">
                              <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.5)]" />
-                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Submitted on {new Date(selectedReport.submittedAt).toLocaleDateString()}</p>
+                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Submitted on {new Date(selectedReport.submittedAt).toLocaleDateString()}</p>
                           </div>
                         </div>
                      </div>
 
                      <div className="space-y-4">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1 italic block">Work Description</label>
-                        <div className="p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100 italic text-gray-600 leading-relaxed text-sm shadow-sm relative overflow-hidden group">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1 block">Work Description</label>
+                        <div className="p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100 text-gray-600 leading-relaxed text-sm shadow-sm relative overflow-hidden group">
                            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-125 transition-transform duration-700">
                               <FileText className="w-24 h-24" />
                            </div>
-                           <p className="relative z-10 italic">"{selectedReport.workDescription}"</p>
+                           <p className="relative z-10">"{selectedReport.workDescription}"</p>
                         </div>
                      </div>
 
                      {selectedReport.mentorFeedback ? (
                         <div className="space-y-4">
-                          <label className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] ml-1 block italic">Mentor Feedback</label>
-                          <div className="p-8 bg-emerald-50 rounded-[2.5rem] border border-emerald-100 text-emerald-900 italic leading-relaxed text-sm shadow-sm relative overflow-hidden">
+                          <label className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] ml-1 block">Mentor Feedback</label>
+                          <div className="p-8 bg-emerald-50 rounded-[2.5rem] border border-emerald-100 text-emerald-900 leading-relaxed text-sm shadow-sm relative overflow-hidden">
                             <div className="absolute top-0 right-0 p-8 opacity-10">
                                <ClipboardCheck className="w-24 h-24" />
                             </div>
@@ -343,13 +352,13 @@ export default function MentorReportsPage() {
                      ) : (
                         <div className="space-y-8">
                           <div className="space-y-4">
-                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1 block italic">Provide Feedback</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1 block">Provide Feedback</label>
                             <textarea
                               value={feedbackData[selectedReport.id] || ""}
                               onChange={(e) => handleFeedbackChange(selectedReport.id, e.target.value)}
                               placeholder="Write constructive feedback to help your intern grow..."
                               rows={5}
-                              className="w-full rounded-[2.5rem] p-8 border border-gray-100 bg-gray-50 text-gray-900 text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none italic shadow-sm"
+                              className="w-full rounded-[2.5rem] p-8 border border-gray-100 bg-gray-50 text-gray-900 text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none shadow-sm"
                             />
                           </div>
 
@@ -363,7 +372,7 @@ export default function MentorReportsPage() {
                                 />
                                 <div className="flex flex-col">
                                   <span className="text-xs font-black text-gray-900 uppercase tracking-tight">Email Notify</span>
-                                  <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest italic leading-none">Inform intern via mail</span>
+                                  <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">Inform intern via mail</span>
                                 </div>
                              </label>
 

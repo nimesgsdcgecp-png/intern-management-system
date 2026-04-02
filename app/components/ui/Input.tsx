@@ -45,7 +45,7 @@ export function Input({
   const actualType = isPassword && showPassword ? "text" : type;
   const hasValue = value !== undefined && value !== null && value.toString().length > 0;
 
-  // Determine label behavior based on placeholder presence and labelPosition prop
+  // Determine label behavior based on placeholder Attendance and labelPosition prop
   const hasPlaceholder = !!placeholder;
   const shouldUseTopLabel = labelPosition === "top" || (labelPosition === "float" && hasPlaceholder);
   const shouldHideLabel = labelPosition === "hidden";

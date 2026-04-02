@@ -54,8 +54,8 @@ export default function Home() {
             <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
               <Zap className="text-white w-5 h-5" fill="currentColor" />
             </div>
-            <span className="text-xl font-black text-slate-900 tracking-tight uppercase italic">
-              Intern <span className="text-indigo-600">Hub</span>
+            <span className="text-xl font-bold text-slate-900 tracking-tight uppercase">
+              Internship <span className="text-indigo-600">Management System</span>
             </span>
           </div>
 
@@ -70,7 +70,7 @@ export default function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleCTA}
-              className="bg-slate-900 text-white px-8 py-3.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-slate-800 transition-all flex items-center gap-2 group italic"
+              className="bg-slate-900 text-white px-8 py-3.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg hover:bg-slate-800 transition-all flex items-center gap-2 group"
             >
               {status === "authenticated" ? "Dashboard" : "Get Started"}
               <ArrowRight className="w-4 h-4" />
@@ -92,9 +92,9 @@ export default function Home() {
                 Internship Management
               </motion.div>
               
-              <motion.h1 variants={fadeInUp} className="text-6xl lg:text-7xl font-black tracking-tighter text-slate-900 leading-tight uppercase italic">
-                Modern <br />
-                <span className="text-indigo-600">Internship Hub</span>
+              <motion.h1 variants={fadeInUp} className="text-6xl lg:text-7xl font-black tracking-tighter text-slate-900 leading-tight uppercase">
+                Internship <br />
+                <span className="text-indigo-600">Management System</span>
               </motion.h1>
 
               <motion.p variants={fadeInUp} className="text-lg text-slate-500 leading-relaxed max-w-xl font-medium">
@@ -104,7 +104,7 @@ export default function Home() {
               <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
                 <button 
                   onClick={handleCTA}
-                  className="flex items-center justify-center gap-3 bg-indigo-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all italic"
+                  className="flex items-center justify-center gap-3 bg-indigo-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all"
                 >
                   Start Now
                   <ArrowRight className="w-5 h-5" />
@@ -147,28 +147,28 @@ export default function Home() {
         <section id="features" className="py-32 relative border-t border-slate-50">
           <div className="max-w-7xl mx-auto px-8">
             <div className="text-center max-w-3xl mx-auto mb-24">
-              <h2 className="text-indigo-600 font-black tracking-[0.3em] uppercase text-[10px] mb-6 italic">Platform Features</h2>
-              <h3 className="text-5xl lg:text-6xl font-black text-slate-900 mb-8 tracking-tighter uppercase italic">Designed for Everyone.</h3>
+              <h2 className="text-indigo-600 font-bold tracking-[0.3em] uppercase text-[10px] mb-6">Platform Features</h2>
+              <h3 className="text-5xl lg:text-6xl font-black text-slate-900 mb-8 tracking-tighter uppercase">Simple and easy to use.</h3>
               <p className="text-lg text-slate-500 font-medium leading-relaxed">A simple platform bridging the gap between interns and their mentors.</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-10">
               {[
                 {
-                  role: "The Managers",
-                  title: "Admins",
+                  role: "Admins",
+                  title: "Dashboard",
                   desc: "Complete control over users, departments, and system settings.",
                   icon: <Shield className="w-8 h-8 text-indigo-600" />
                 },
                 {
-                  role: "The Guides",
-                  title: "Mentors",
+                  role: "Mentors",
+                  title: "Advisors",
                   desc: "Monitor intern progress, review logs, and provide expert feedback.",
                   icon: <Target className="w-8 h-8 text-indigo-600" />
                 },
                 {
-                  role: "The Performers",
-                  title: "Interns",
+                  role: "Interns",
+                  title: "Experience",
                   desc: "Log daily work, track tasks, and follow their own growth journey.",
                   icon: <Command className="w-8 h-8 text-indigo-600" />
                 }
@@ -180,8 +180,8 @@ export default function Home() {
                   <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-10 group-hover:bg-indigo-50 transition-colors">
                     {card.icon}
                   </div>
-                  <div className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-4 italic">{card.role}</div>
-                  <h4 className="text-2xl font-black text-slate-900 mb-6 tracking-tight uppercase italic">{card.title}</h4>
+                  <div className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-4">{card.role}</div>
+                  <h4 className="text-2xl font-black text-slate-900 mb-6 tracking-tight uppercase">{card.title}</h4>
                   <p className="text-slate-500 font-medium mb-10 leading-relaxed">{card.desc}</p>
                 </div>
               ))}
@@ -193,21 +193,21 @@ export default function Home() {
         <section className="py-48 bg-slate-900 relative overflow-hidden">
           <div className="max-w-5xl mx-auto px-8 relative z-10 text-center">
             <div className="text-white">
-              <h2 className="text-5xl lg:text-7xl font-black mb-10 tracking-tighter uppercase italic leading-none">
-                Ready to manage <br className="hidden md:block" /> your interns?
+              <h2 className="text-5xl lg:text-7xl font-black mb-10 tracking-tighter uppercase leading-none">
+                Ready to <br className="hidden md:block" /> get started?
               </h2>
               <p className="text-xl text-slate-400 mb-16 max-w-2xl mx-auto font-medium">
-                Join organizations worldwide using Intern Hub to build the workforce of tomorrow.
+                Join organizations using our system to build the workforce of tomorrow.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-8 justify-center items-center relative z-10">
                 <button 
                   onClick={handleCTA}
-                  className="bg-white text-slate-900 px-12 py-6 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-100 transition-all active:scale-95 italic"
+                  className="bg-white text-slate-900 px-12 py-6 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] hover:bg-slate-100 transition-all active:scale-95"
                 >
                   Get Started
                 </button>
-                <Link href="#" className="text-slate-400 hover:text-white font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 group italic">
+                <Link href="#" className="text-slate-400 hover:text-white font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 group">
                   Learn More
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                 </Link>
@@ -226,26 +226,26 @@ export default function Home() {
                 <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
                   <Zap className="text-white w-5 h-5" fill="currentColor" />
                 </div>
-                <span className="text-xl font-black text-slate-900 uppercase italic tracking-widest leading-none">
-                  Intern <span className="text-indigo-600">Hub</span>
+                <span className="text-xl font-bold text-slate-900 uppercase tracking-widest leading-none">
+                  Internship <span className="text-indigo-600">Management System</span>
                 </span>
               </div>
               <p className="text-slate-500 font-medium leading-relaxed">
-                Empowering the next generation of talent through simple and effective management tools.
+                Helping interns and mentors work better together through simple management tools.
               </p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-2 gap-20">
                <div className="space-y-6">
                   <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Platform</div>
-                  <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
+                  <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
                      <li className="hover:text-indigo-600 cursor-pointer transition-colors">Analytics</li>
                      <li className="hover:text-indigo-600 cursor-pointer transition-colors">Management</li>
                   </ul>
                </div>
                <div className="space-y-6">
                   <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Connect</div>
-                  <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest text-slate-500 italic">
+                  <ul className="space-y-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
                      <li className="hover:text-indigo-600 cursor-pointer transition-colors">Support</li>
                      <li className="hover:text-indigo-600 cursor-pointer transition-colors">Contact</li>
                   </ul>
@@ -254,8 +254,8 @@ export default function Home() {
           </div>
           
           <div className="pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] italic">
-              © {new Date().getFullYear()} Intern Hub — Modern Support
+            <div className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">
+              © {new Date().getFullYear()} Internship Management System
             </div>
           </div>
         </div>

@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { SearchHeader } from "@/app/components/SearchHeader";
-import { KanbanBoard } from "@/app/components/KanbanBoard";
-import { Modal } from "@/app/components/Modal";
-import { Card } from "@/app/components/Card";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { SearchHeader } from "@/app/components/features/SearchHeader";
+import { KanbanBoard } from "@/app/components/features/KanbanBoard";
+import { Modal } from "@/app/components/ui/Modal";
+import { Card } from "@/app/components/ui/Card";
 import { FileText, Target, AlertCircle, Clock, Calendar, User, Layout, Grid, List, CheckCircle2, Timer, Gauge, ShieldCheck, Sparkles, Activity, Loader2, X, ClipboardList } from "lucide-react";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
 import { addSuccess, addError } from "@/app/lib/redux/slices/notificationSlice";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { PremiumStatCard } from "@/app/components/PremiumStatCard";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
 
@@ -33,6 +32,11 @@ export default function MyTasksPage() {
   const [viewMode, setViewMode] = useState<"table">("table");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
+  /**
+   * Effect: Task Synchronization
+   * Fetches assigned projects and technical tasks from the central 
+   * repository to populate the intern's active workspace.
+   */
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -50,6 +54,11 @@ export default function MyTasksPage() {
     fetchTasks();
   }, []);
 
+  /**
+   * Logic: Status Lifecycle Management
+   * Updates the progress state of a specific task.
+   * Broadcasts outcome to the notification system for UI feedback.
+   */
   const handleStatusChange = async (taskId: string, newStatus: string) => {
     try {
       const res = await fetch(`/api/tasks/${taskId}`, {
@@ -104,7 +113,7 @@ export default function MyTasksPage() {
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               My <span className="text-indigo-600">Tasks</span>
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Track your assignments and maintain your project momentum.</p>
+            <p className="text-gray-500 mt-1 font-medium">Track your assignments and maintain your project momentum.</p>
           </div>
           <div className="flex items-center gap-3">
              <div className="px-5 py-2.5 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-widest shadow-sm">
@@ -124,8 +133,8 @@ export default function MyTasksPage() {
                 <Sparkles className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-gray-900 tracking-tighter uppercase italic">Project Workflow</h3>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Review your assigned work and tracking details</p>
+                <h3 className="text-xl font-black text-gray-900 tracking-tighter uppercase">Project Workflow</h3>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Review your assigned work and tracking details</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-1.5 bg-gray-50 rounded-2xl border border-gray-100">
@@ -170,7 +179,7 @@ export default function MyTasksPage() {
                           <td className="px-8 py-4 min-w-[300px]">
                             <div className="flex flex-col">
                               <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight text-base">{task.title}</span>
-                              <span className="text-xs text-gray-400 font-medium line-clamp-1 italic">{task.description}</span>
+                              <span className="text-xs text-gray-400 font-medium line-clamp-1">{task.description}</span>
                             </div>
                           </td>
                           <td className="px-6 py-4">
@@ -214,7 +223,7 @@ export default function MyTasksPage() {
             <div className="space-y-10">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-gray-50 p-10 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden group">
                 <div className="z-10 space-y-3">
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic">Priority Level</p>
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Priority Level</p>
                   <span className={`px-6 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest font-black shadow-sm flex items-center gap-2 border ${
                     selectedTask.priority === 'high' ? 'bg-rose-50 text-rose-600 border-rose-100' :
                     selectedTask.priority === 'medium' ? 'bg-amber-50 text-amber-600 border-amber-100' :
@@ -225,8 +234,8 @@ export default function MyTasksPage() {
                   </span>
                 </div>
                 <div className="z-10 text-left md:text-right space-y-3">
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic">Submission Deadline</p>
-                  <div className="flex items-center md:justify-end gap-3 font-black text-lg text-gray-900 uppercase tracking-tight italic">
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Submission Deadline</p>
+                  <div className="flex items-center md:justify-end gap-3 font-black text-lg text-gray-900 uppercase tracking-tight">
                     <Clock className="w-5 h-5 text-indigo-500" />
                     {selectedTask.deadline}
                   </div>
@@ -241,22 +250,22 @@ export default function MyTasksPage() {
                   <div className="w-14 h-14 bg-indigo-600 rounded-[1.25rem] flex items-center justify-center text-white shadow-xl shadow-indigo-100 group-hover:scale-110 transition-transform">
                     <ClipboardList className="w-7 h-7" />
                   </div>
-                  <h4 className="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">{selectedTask.title}</h4>
+                  <h4 className="text-3xl font-black text-gray-900 tracking-tighter uppercase">{selectedTask.title}</h4>
                 </div>
                 <div className="bg-gray-50 rounded-[2.5rem] p-10 border border-gray-100 relative overflow-hidden group">
                    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-150 transition-transform duration-700">
                       <FileText className="w-32 h-32 text-indigo-600" />
                    </div>
-                   <p className="text-sm font-medium text-gray-700 leading-relaxed italic relative z-10">"{selectedTask.description}"</p>
+                   <p className="text-sm font-medium text-gray-700 leading-relaxed relative z-10">"{selectedTask.description}"</p>
                 </div>
               </div>
 
               <div className="pt-10 border-t border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <div className="flex items-center gap-4 text-[10px] font-black text-gray-400 uppercase tracking-widest italic">
+                <div className="flex items-center gap-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   <ShieldCheck className="w-6 h-6 text-emerald-500" />
                   Assigned By: <span className="text-gray-900 group-hover:text-indigo-600 transition-colors uppercase">{selectedTask.assignedBy || 'Lead Mentor'}</span>
                 </div>
-                <div className="flex items-center gap-4 text-[10px] font-black text-gray-400 uppercase tracking-widest italic">
+                <div className="flex items-center gap-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                   <Activity className="w-6 h-6 text-indigo-500" />
                   Workflow Status: <span className="text-gray-900 group-hover:text-indigo-600 transition-colors uppercase">{selectedTask.status}</span>
                 </div>

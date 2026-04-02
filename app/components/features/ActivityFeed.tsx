@@ -12,7 +12,7 @@ import {
   Loader2,
   Calendar
 } from "lucide-react";
-import { Card } from "./Card";
+import { Card } from "../ui/Card";
 import { motion } from "framer-motion";
 
 const ACTION_ICONS: Record<string, any> = {
@@ -95,7 +95,7 @@ export function ActivityFeed() {
             transition={{ delay: index * 0.05 }}
             className="flex gap-4 relative"
           >
-            {/* Timeline Line */}
+            {/* Activity Line */}
             {index < activities.length - 1 && (
               <div className="absolute left-[19px] top-10 bottom-0 w-px bg-slate-200" />
             )}

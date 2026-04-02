@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/app/components/Button";
-import { Card } from "@/app/components/Card";
+import { Button } from "@/app/components/ui/Button";
+import { Card } from "@/app/components/ui/Card";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
 import { addSuccess, addError } from "@/app/lib/redux/slices/notificationSlice";
 import { Info, ArrowRight, ShieldCheck, Zap, Lock, Mail, Activity } from "lucide-react";
@@ -85,18 +85,18 @@ export default function LoginPage() {
             <div className="p-10 md:p-14">
               {/* Branding */}
               <div className="flex flex-col items-center mb-10">
-                <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase text-center mb-2 italic">
+                <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase text-center mb-2">
                   Sign <span className="text-indigo-600">In</span>
                 </h1>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center italic opacity-60">
-                   Secure Management Portal
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center opacity-60">
+                   Portal
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-5">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block italic opacity-70">Email Address</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block opacity-70">Email Address</label>
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                         <Mail className="w-4 h-4" />
@@ -116,7 +116,7 @@ export default function LoginPage() {
                   </div>
 
                   <div className="space-y-2 relative">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block italic opacity-70">Password</label>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 block opacity-70">Password</label>
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                         <Lock className="w-4 h-4" />
@@ -140,7 +140,7 @@ export default function LoginPage() {
                    <button
                         type="button"
                         onClick={() => router.push('/auth/forgot-password')}
-                        className="text-[9px] text-indigo-600 hover:text-indigo-700 font-black uppercase tracking-widest italic"
+                        className="text-[9px] text-indigo-600 hover:text-indigo-700 font-black uppercase tracking-widest"
                       >
                         Forgot Password?
                    </button>
@@ -148,7 +148,7 @@ export default function LoginPage() {
 
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-linear-to-r from-indigo-600 to-violet-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4 italic"
+                  className="w-full h-12 bg-linear-to-r from-indigo-600 to-violet-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4"
                   disabled={loading}
                 >
                   <span>{loading ? "Signing in..." : "Sign In"}</span>
@@ -168,8 +168,8 @@ export default function LoginPage() {
           </Card>
         </motion.div>
 
-        <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mt-12 italic">
-          © {new Date().getFullYear()} Intern Hub — Secure Portal
+        <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mt-12">
+          © {new Date().getFullYear()} Internship Management System — 
         </p>
       </div>
     </div>

@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
-import { Modal } from "@/app/components/Modal";
-import { Input } from "@/app/components/Input";
-import { TextArea } from "@/app/components/TextArea";
-import { Select } from "@/app/components/Select";
-import { Badge } from "@/app/components/Badge";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
+import { Modal } from "@/app/components/ui/Modal";
+import { Input } from "@/app/components/ui/Input";
+import { TextArea } from "@/app/components/ui/TextArea";
+import { Select } from "@/app/components/ui/Select";
+import { Badge } from "@/app/components/ui/Badge";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Plus, MapPin, Clock, Tag, X, Trash2, Activity, Globe, Sparkles, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
@@ -210,7 +210,7 @@ export default function CalendarPage() {
              <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
                Event <span className="text-indigo-600">Calendar</span>
              </h1>
-             <p className="text-gray-500 mt-1 font-medium italic">Schedule and manage organizational events.</p>
+             <p className="text-gray-500 mt-1 font-medium">Schedule and manage organizational events.</p>
            </div>
 
            {(userRole === "admin" || userRole === "mentor") && (
@@ -232,7 +232,7 @@ export default function CalendarPage() {
                 <div className="flex items-center gap-8 relative z-10">
                   <div className="flex flex-col">
                     <span className="text-indigo-400 text-[10px] font-black uppercase tracking-[0.4em] mb-2">Schedule Management</span>
-                    <h2 className="text-4xl font-extrabold text-white tracking-tight italic">
+                    <h2 className="text-4xl font-extrabold text-white tracking-tight">
                       {months[month]} <span className="font-light opacity-40">{year}</span>
                     </h2>
                   </div>
@@ -266,7 +266,7 @@ export default function CalendarPage() {
           <div className="xl:col-span-1 space-y-10">
              <div className="rounded-[2.5rem] border border-gray-100 overflow-hidden bg-white shadow-sm">
                 <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                   <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] italic flex items-center gap-2">
+                   <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] flex items-center gap-2">
                        <Sparkles className="w-4 h-4 text-indigo-500" />
                        Upcoming Events
                    </h3>
@@ -292,8 +292,8 @@ export default function CalendarPage() {
                                             <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest opacity-60">{new Date(event.start_time).toLocaleDateString([], { month: 'short' })}</span>
                                         </div>
                                     </div>
-                                    <h3 className="font-black text-[13px] text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight line-clamp-2 uppercase italic mb-4 leading-relaxed">{event.title}</h3>
-                                    <div className="flex items-center gap-3 text-[9px] font-black text-gray-400 uppercase tracking-widest pt-4 border-t border-gray-100 italic">
+                                    <h3 className="font-black text-[13px] text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight line-clamp-2 uppercase mb-4 leading-relaxed">{event.title}</h3>
+                                    <div className="flex items-center gap-3 text-[9px] font-black text-gray-400 uppercase tracking-widest pt-4 border-t border-gray-100">
                                         <Clock className="w-3.5 h-3.5 text-indigo-500" />
                                         <span>{new Date(event.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                     </div>
@@ -304,7 +304,7 @@ export default function CalendarPage() {
                                 <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                                   <Globe className="w-8 h-8 text-indigo-300" />
                                 </div>
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] italic">No events found</p>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">No events found</p>
                             </div>
                         )}
                     </div>
@@ -317,21 +317,21 @@ export default function CalendarPage() {
                     <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-8 border border-white/20 shadow-xl">
                         <Activity className="w-7 h-7 text-white" />
                     </div>
-                    <h3 className="font-black text-2xl tracking-tighter italic mb-6 uppercase">Sync <br/>Settings</h3>
+                    <h3 className="font-black text-2xl tracking-tighter mb-6 uppercase">Sync <br/>Settings</h3>
                     <div className="space-y-6">
                         <div className="p-4 bg-white/5 rounded-2xl border border-white/10 group-hover:bg-white/10 transition-colors">
                            <div className="flex items-center gap-3 mb-2">
                              <div className="w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.5)]" />
                              <span className="text-[10px] font-black uppercase tracking-widest">Company Wide</span>
                            </div>
-                           <p className="text-[10px] font-medium opacity-60 italic">Visible to all authorized resources.</p>
+                           <p className="text-[10px] font-medium opacity-60">Visible to all authorized resources.</p>
                         </div>
                         <div className="p-4 bg-white/5 rounded-2xl border border-white/10 group-hover:bg-white/10 transition-colors">
                            <div className="flex items-center gap-3 mb-2">
                              <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
                              <span className="text-[10px] font-black uppercase tracking-widest">Department Restricted</span>
                            </div>
-                           <p className="text-[10px] font-medium opacity-60 italic">Isolated to specific team streams.</p>
+                           <p className="text-[10px] font-medium opacity-60">Isolated to specific team streams.</p>
                         </div>
                     </div>
                 </div>
@@ -380,7 +380,7 @@ export default function CalendarPage() {
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                   rows={3}
-                  className="w-full bg-slate-50 border-none rounded-xl p-5 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none italic placeholder:text-gray-300 shadow-sm"
+                  className="w-full bg-slate-50 border-none rounded-xl p-5 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none placeholder:text-gray-300 shadow-sm"
                />
             </div>
             
@@ -472,10 +472,10 @@ export default function CalendarPage() {
                       <CalendarIcon className="w-8 h-8 relative z-10" />
                    </div>
                    <div>
-                      <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">{selectedEvent?.title}</h3>
+                      <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase">{selectedEvent?.title}</h3>
                       <div className="flex items-center gap-2 mt-2">
                          <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.5)]" />
-                         <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest opacity-60 italic">Created by {selectedEvent?.creator?.profile?.name || 'Administrator'}</span>
+                         <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest opacity-60">Created by {selectedEvent?.creator?.profile?.name || 'Administrator'}</span>
                       </div>
                    </div>
                 </div>
@@ -513,8 +513,8 @@ export default function CalendarPage() {
                         <Clock className="w-7 h-7" />
                     </div>
                     <div>
-                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic">Event Schedule</div>
-                        <div className="text-[13px] font-black text-gray-900 tracking-tight uppercase italic whitespace-nowrap">
+                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Event Schedule</div>
+                        <div className="text-[13px] font-black text-gray-900 tracking-tight uppercase whitespace-nowrap">
                             {selectedEvent && formatTimeRange(selectedEvent.start_time, selectedEvent.end_time)}
                         </div>
                     </div>
@@ -524,8 +524,8 @@ export default function CalendarPage() {
                         <MapPin className="w-7 h-7" />
                     </div>
                     <div>
-                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic">Event Location</div>
-                        <div className="text-[13px] font-black text-gray-900 tracking-tight uppercase italic">{selectedEvent?.location || 'Unspecified Sector'}</div>
+                        <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Event Location</div>
+                        <div className="text-[13px] font-black text-gray-900 tracking-tight uppercase">{selectedEvent?.location || 'Unspecified Sector'}</div>
                     </div>
                 </div>
             </div>
@@ -534,8 +534,8 @@ export default function CalendarPage() {
                 <div className="absolute right-0 top-0 p-8 opacity-5 blur-xl group-hover/desc:scale-150 transition-transform duration-700">
                    <AlertCircle className="w-32 h-32 text-indigo-500" />
                 </div>
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-6 block italic">Technical Specifications</label>
-                <p className="text-[14px] font-medium text-gray-700 leading-relaxed relative z-10 italic">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-6 block">Technical Specifications</label>
+                <p className="text-[14px] font-medium text-gray-700 leading-relaxed relative z-10">
                     "{selectedEvent?.description || "No tactical details provided for this event."}"
                 </p>
                 <div className="absolute bottom-0 left-0 w-full h-1.5 bg-indigo-500 opacity-20" />

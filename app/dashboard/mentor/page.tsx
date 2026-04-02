@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { QuickActionCard } from "@/app/components/QuickActionCard";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
+import { QuickActionCard } from "@/app/components/ui/QuickActionCard";
 import { Users, FileText, Clock, CheckSquare, Target, Activity, LayoutDashboard, UserCheck, ShieldCheck, Sparkles, GraduationCap, BarChart3 } from "lucide-react";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
-import { ActivityFeed } from "@/app/components/ActivityFeed";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
+import { ActivityFeed } from "@/app/components/features/ActivityFeed";
 import { motion } from "framer-motion";
 
 interface DashboardStats {
@@ -132,16 +132,16 @@ export default function MentorDashboard() {
       <div className="space-y-12 pb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 text-slate-900">
           <div>
-            <h1 className="text-5xl font-black tracking-tight italic">
-              Mentor <span className="text-indigo-600">Workspace</span>
+            <h1 className="text-5xl font-black tracking-tight">
+              Mentor <span className="text-indigo-600">Dashboard</span>
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic opacity-80">Welcome back. Oversee your assigned interns and evaluate their performance.</p>
+            <p className="text-gray-500 mt-1 font-medium opacity-80">Welcome back. Oversee your assigned interns and evaluate their performance.</p>
           </div>
           <div className="flex items-center gap-3">
-             <div className="px-6 py-3 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-[0.2em] italic shadow-sm relative overflow-hidden group">
+             <div className="px-6 py-3 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-[0.2em] shadow-sm relative overflow-hidden group">
                 <div className="absolute inset-0 bg-indigo-600/5 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
                 <ShieldCheck className="w-4 h-4 shadow-sm relative z-10" />
-                <span className="relative z-10">Mentorship Verified</span>
+                <span className="relative z-10">Mentor Access</span>
                 <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse relative z-10 shadow-[0_0_8px_rgba(79,70,229,0.8)]" />
              </div>
           </div>
@@ -156,9 +156,9 @@ export default function MentorDashboard() {
                 <Target className="w-40 h-40 text-indigo-600" />
               </div>
               <div className="flex items-center justify-between mb-10 relative z-10">
-                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3 italic">
+                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3">
                   <span className="w-8 h-1 bg-indigo-600 rounded-full" />
-                  Mentorship Hub
+                  Overview
                 </h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative z-10">
@@ -174,13 +174,13 @@ export default function MentorDashboard() {
                 </div>
                 <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
                   <div className="flex-1">
-                     <h3 className="text-4xl font-black mb-6 tracking-tight uppercase italic underline decoration-indigo-500 decoration-4 underline-offset-8">Mentorship Guidelines</h3>
-                     <p className="text-slate-400 font-medium leading-relaxed mb-10 max-w-lg italic text-lg">
-                        Guidance is key to intern growth. Execute human audit and provide "Technical Narrative" feedback within 24 hours of submission.
+                     <h3 className="text-4xl font-black mb-6 tracking-tight uppercase underline decoration-indigo-500 decoration-4 underline-offset-8">Mentorship Guidelines</h3>
+                     <p className="text-slate-400 font-medium leading-relaxed mb-10 max-w-lg text-lg">
+                        Guidance is key to intern growth. Review reports and provide "Feedback" feedback within 24 hours of submission.
                      </p>
                      <Link href="/dashboard/mentor/reports">
-                        <button className="bg-white text-slate-900 border-none px-12 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-50 transition-all active:scale-95 shadow-2xl flex items-center gap-3 italic">
-                          Review Deliverables
+                        <button className="bg-white text-slate-900 border-none px-12 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-50 transition-all active:scale-95 shadow-2xl flex items-center gap-3">
+                          Review Reports
                           <FileText className="w-4 h-4" />
                         </button>
                      </Link>
@@ -193,19 +193,19 @@ export default function MentorDashboard() {
                    <Sparkles className="w-48 h-48 text-indigo-600" />
                 </div>
                 <div className="flex items-center justify-between mb-10 relative z-10">
-                   <h3 className="font-black text-gray-400 uppercase tracking-[0.4em] text-[10px] italic flex items-center gap-3">
+                   <h3 className="font-black text-gray-400 uppercase tracking-[0.4em] text-[10px] flex items-center gap-3">
                        <span className="w-8 h-1 bg-indigo-500 rounded-full" />
-                       Squad Statistics
+                       Intern Stats
                    </h3>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 relative z-10">
                   <div className="rounded-[2.5rem] p-10 border border-gray-50 bg-gray-50/50 shadow-sm group/card hover:bg-white transition-all duration-300">
-                    <div className="text-5xl font-black text-slate-900 tracking-tighter italic group-hover/card:text-indigo-600 transition-colors uppercase">{loading ? "..." : stats.myInterns} <span className="text-xs opacity-40 not-italic">Units</span></div>
-                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 opacity-60">Assigned Resources</div>
+                    <div className="text-5xl font-black text-slate-900 tracking-tighter group-hover/card:text-indigo-600 transition-colors uppercase">{loading ? "..." : stats.myInterns} <span className="text-xs opacity-40 not-italic">Interns</span></div>
+                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 opacity-60">Assigned Interns</div>
                   </div>
                   <div className="rounded-[2.5rem] p-10 border border-gray-50 bg-gray-50/50 shadow-sm group/card hover:bg-white transition-all duration-300">
-                    <div className="text-5xl font-black text-amber-500 tracking-tighter italic group-hover/card:text-amber-600 transition-colors uppercase">{loading ? "..." : stats.pendingReports} <span className="text-xs opacity-40 not-italic">Logs</span></div>
-                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 opacity-60">Pending Human Evaluation</div>
+                    <div className="text-5xl font-black text-amber-500 tracking-tighter group-hover/card:text-amber-600 transition-colors uppercase">{loading ? "..." : stats.pendingReports} <span className="text-xs opacity-40 not-italic">Logs</span></div>
+                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 opacity-60">Pending Review</div>
                   </div>
                 </div>
             </div>
@@ -213,9 +213,9 @@ export default function MentorDashboard() {
 
           <div className="space-y-10">
             <div className="space-y-6">
-              <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] italic flex items-center gap-3 ml-2">
+              <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3 ml-2">
                 <span className="w-4 h-1 bg-gray-400 rounded-full" />
-                Operational History
+                Activity
               </h2>
               <div className="bg-white rounded-[2.5rem] p-10 border border-gray-100 shadow-sm h-fit hover:shadow-xl transition-all duration-500">
                   <ActivityFeed />
@@ -228,13 +228,13 @@ export default function MentorDashboard() {
                   <CheckSquare className="w-48 h-48" />
                </div>
                <div className="relative z-10 font-black">
-                  <h3 className="font-black text-3xl tracking-tight mb-4 italic uppercase underline decoration-indigo-500 decoration-4 underline-offset-8">Resource Nexus</h3>
-                  <p className="text-sm font-medium opacity-60 leading-relaxed mb-10 italic">
-                    Access standard evaluation protocols and tactical platform documentation.
+                  <h3 className="font-black text-3xl tracking-tight mb-4 uppercase underline decoration-indigo-500 decoration-4 underline-offset-8">Resources</h3>
+                  <p className="text-sm font-medium opacity-60 leading-relaxed mb-10">
+                    Access evaluation protocols and platform documentation.
                   </p>
                   <Link href="/dashboard/help" className="block w-full">
-                    <button className="w-full py-5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border border-white/10 shadow-2xl active:scale-95 italic">
-                       Deploy Guide
+                    <button className="w-full py-5 bg-white/5 hover:bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border border-white/10 shadow-2xl active:scale-95">
+                       View Guide
                     </button>
                    </Link>
                 </div>

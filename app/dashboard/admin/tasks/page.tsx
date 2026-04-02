@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
+import { Input } from "@/app/components/ui/Input";
 import { PlusCircle, Trash2, CheckCircle2, Clock, Activity, CheckSquare, LayoutGrid, List, Search, Users } from "lucide-react";
-import { KanbanBoard } from "@/app/components/KanbanBoard";
-import { SearchHeader } from "@/app/components/SearchHeader";
-import { Select } from "@/app/components/Select";
-import { TextArea } from "@/app/components/TextArea";
-import { Modal } from "@/app/components/Modal";
-import { QuickViewModal } from "@/app/components/QuickViewModal";
-import { BulkActionBar } from "@/app/components/BulkActionBar";
+import { KanbanBoard } from "@/app/components/features/KanbanBoard";
+import { SearchHeader } from "@/app/components/features/SearchHeader";
+import { Select } from "@/app/components/ui/Select";
+import { TextArea } from "@/app/components/ui/TextArea";
+import { Modal } from "@/app/components/ui/Modal";
+import { QuickViewModal } from "@/app/components/features/QuickViewModal";
+import { BulkActionBar } from "@/app/components/features/BulkActionBar";
 import { showToast } from "@/lib/notifications";
 import { downloadCSV } from "@/lib/utils/csv-utils";
 import Swal from "sweetalert2";
@@ -70,6 +70,11 @@ export default function TasksPage() {
     localStorage.setItem('taskViewMode', mode);
   };
 
+  /**
+   * Logic: Tactical State Transition
+   * Updates the lifecycle status of a specific technical directive.
+   * Facilitates the movement of tasks through the Kanban execution pipeline.
+   */
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
       const res = await fetch(`/api/tasks/${id}`, {
@@ -130,6 +135,11 @@ export default function TasksPage() {
     return Object.keys(errors).length === 0;
   };
 
+  /**
+   * Logic: Directive Publication
+   * Handles the creation and distribution of new technical tasks.
+   * Supports broadcast assignments and targeted deployments with email notifications.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -361,7 +371,7 @@ export default function TasksPage() {
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               Project Tasks
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Assign, monitor, and manage technical directives across your team.</p>
+            <p className="text-gray-500 mt-1 font-medium">Assign, monitor, and manage technical directives across your team.</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex bg-gray-100 p-1 rounded-xl border border-gray-200">
@@ -483,13 +493,13 @@ export default function TasksPage() {
                     </span>
                     <div className={`w-3 h-3 rounded-full mr-12 ${task.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : task.status === 'in-progress' ? 'bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.5)]' : 'bg-gray-300'}`} />
                   </div>
-                  <h4 className="text-lg font-black text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors uppercase tracking-tight italic">{task.title}</h4>
+                  <h4 className="text-lg font-black text-gray-900 mb-2 group-hover:text-indigo-600 transition-colors uppercase tracking-tight">{task.title}</h4>
                   <div className="flex items-center gap-2 mb-4">
                      <Users className="w-3.5 h-3.5 text-gray-400" />
                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Ownership: {getInternNames(task)}</p>
                   </div>
-                  <p className="text-sm text-gray-500 line-clamp-2 mb-8 font-medium italic leading-relaxed">"{task.description}"</p>
-                  <div className="flex justify-between items-center pt-5 border-t border-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400 italic">
+                  <p className="text-sm text-gray-500 line-clamp-2 mb-8 font-medium leading-relaxed">"{task.description}"</p>
+                  <div className="flex justify-between items-center pt-5 border-t border-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400">
                     <span className="flex items-center gap-1.5"><Clock className="w-4 h-4 text-indigo-400" /> {task.deadline}</span>
                     <span className="flex items-center gap-1.5"><Activity className={`w-4 h-4 ${task.status === 'completed' ? 'text-emerald-500' : 'text-indigo-500'}`} /> {task.status}</span>
                   </div>
@@ -514,7 +524,7 @@ export default function TasksPage() {
                       </th>
                       <th className="px-4 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Technical Objective</th>
                       <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Operational Ownership</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Execution Timeline</th>
+                      <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Execution Activity</th>
                       <th className="px-4 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Lifecycle State</th>
                       <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Actions</th>
                     </tr>
@@ -541,7 +551,7 @@ export default function TasksPage() {
                               <CheckSquare className="w-5 h-5" />
                             </div>
                             <div className="flex flex-col">
-                              <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight text-base italic">{task.title}</span>
+                              <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight text-base">{task.title}</span>
                               <span className={`text-[10px] font-black uppercase tracking-[0.15em] mt-0.5 ${
                                   task.priority === 'high' ? 'text-rose-500' : 
                                   task.priority === 'medium' ? 'text-amber-500' : 
@@ -557,11 +567,11 @@ export default function TasksPage() {
                             <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-[10px] font-black text-indigo-600 border border-indigo-100 shadow-sm">
                               {getInternNames(task).charAt(0)}
                             </div>
-                            <span className="text-sm font-bold text-gray-700 tracking-tight truncate max-w-[150px] italic">{getInternNames(task)}</span>
+                            <span className="text-sm font-bold text-gray-700 tracking-tight truncate max-w-[150px]">{getInternNames(task)}</span>
                           </div>
                         </td>
                         <td className="px-8 py-4">
-                          <div className="flex flex-col gap-1 italic">
+                          <div className="flex flex-col gap-1">
                             <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Due Date</span>
                             <div className="flex items-center gap-2 text-gray-900 font-bold text-sm">
                                <Clock className="w-3.5 h-3.5 text-indigo-400" />

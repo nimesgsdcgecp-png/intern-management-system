@@ -2,8 +2,8 @@
 
 import React, { useState, useRef } from "react";
 import { Upload, FileText, CheckCircle2, AlertCircle, Loader2, Download, Table, XCircle, Info } from "lucide-react";
-import { Button } from "../Button";
-import { Card } from "../Card";
+import { Button } from "../ui/Button";
+import { Card } from "../ui/Card";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface PreviewRow {
@@ -103,17 +103,17 @@ export function BulkImportForm() {
       </div>
 
       <div className="flex flex-col gap-6 relative z-10">
-        <div className="flex justify-between items-center bg-gray-50 p-8 rounded-[2rem] border border-gray-100 shadow-inner group/header hover:bg-white transition-all duration-300">
+        <div className="flex justify-between items-center bg-gray-50 p-8 rounded-4xl border border-gray-100 shadow-inner group/header hover:bg-white transition-all duration-300">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight italic uppercase">CSV <span className="text-indigo-600">Import</span></h2>
-            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mt-2 italic flex items-center gap-2">
+            <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase">CSV <span className="text-indigo-600">Import</span></h2>
+            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mt-2 flex items-center gap-2">
                <span className="w-4 h-px bg-gray-200" />
                Automated Import
             </p>
           </div>
           <button
             onClick={downloadTemplate}
-            className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-widest bg-white hover:bg-indigo-600 hover:text-white px-5 py-3 rounded-xl border border-gray-100 transition-all shadow-sm italic active:scale-95"
+            className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-widest bg-white hover:bg-indigo-600 hover:text-white px-5 py-3 rounded-xl border border-gray-100 transition-all shadow-sm active:scale-95"
           >
             <Download className="w-4 h-4" />
             Template
@@ -140,7 +140,7 @@ export function BulkImportForm() {
             </div>
             <div className="text-center">
               <p className="text-base font-extrabold text-slate-900">{file ? file.name : "Select CSV Record"}</p>
-              <p className="text-[10px] text-gray-400 font-black mt-1 uppercase tracking-widest italic">CSV format • Max 10MB • Auto-Verify</p>
+              <p className="text-[10px] text-gray-400 font-black mt-1 uppercase tracking-widest">CSV format • Max 10MB • Auto-Verify</p>
             </div>
           </motion.div>
         )}
@@ -156,7 +156,7 @@ export function BulkImportForm() {
               <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-8 bg-slate-50/50 rounded-4xl p-8 border border-gray-100">
                 <div className="flex items-center gap-2 mb-2">
                    <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Archive Snapshot (First 5 records)</span>
+                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Archive Snapshot (First 5 records)</span>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-[10px] font-bold text-left border-separate border-spacing-y-2">
@@ -172,7 +172,7 @@ export function BulkImportForm() {
                       {previewData.map((row, i) => (
                         <tr key={i} className="bg-white rounded-xl shadow-sm">
                           <td className="px-4 py-3 rounded-l-xl border-l border-y border-gray-50 text-slate-900">{row.name}</td>
-                          <td className="px-4 py-3 border-y border-gray-50 text-indigo-600 italic">{row.email}</td>
+                          <td className="px-4 py-3 border-y border-gray-50 text-indigo-600">{row.email}</td>
                           <td className="px-4 py-3 border-y border-gray-50">
                             <span className={`px-2 py-0.5 rounded-md text-[9px] uppercase font-black tracking-widest ${row.role === 'intern' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
                               {row.role}
@@ -214,7 +214,7 @@ export function BulkImportForm() {
 
             {result.errors.length > 0 && (
               <div className="p-8 bg-gray-50/50 rounded-4xl border border-gray-100">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-3 italic">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shadow-sm">
                     <AlertCircle className="w-4 h-4" />
                   </div>

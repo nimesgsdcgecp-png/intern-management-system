@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { hasuraMutation, hasuraQuery } from "@/lib/hasura";
 import { GET_MENTOR_BY_ID } from "@/lib/graphql/queries";
 import { UPDATE_MENTOR_USER, DELETE_MENTOR_USER } from "@/lib/graphql/mutations";
-import { logActivity } from "@/services/activityService";
+import { logActivity } from "@/lib/activityService";
 
 /**
  * Manage individual mentor data.

@@ -2,8 +2,8 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
 import { ShieldCheck, ArrowLeft, CheckCircle2, Timer, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -106,17 +106,17 @@ function VerifyOTPContent() {
           <Card className="rounded-4xl p-0 border border-slate-200 shadow-sm overflow-hidden bg-white">
             <div className="p-10 md:p-14">
                <div className="flex flex-col items-center mb-10">
-                <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase text-center mb-2 italic">
+                <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase text-center mb-2">
                   Verify <span className="text-indigo-600">OTP</span>
                 </h1>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center italic opacity-60">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center opacity-60">
                    Enter the code from your email
                 </p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="space-y-4">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block text-center italic opacity-70">6-Digit Confirmation Code</label>
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block text-center opacity-70">6-Digit Confirmation Code</label>
                   <div className="relative">
                     <input
                       type="text"
@@ -128,8 +128,8 @@ function VerifyOTPContent() {
                       required
                     />
                   </div>
-                  {error && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest text-center italic">{error}</p>}
-                  <div className="flex items-center justify-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-widest italic pt-2">
+                  {error && <p className="text-[10px] font-bold text-rose-500 uppercase tracking-widest text-center">{error}</p>}
+                  <div className="flex items-center justify-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-widest pt-2">
                     <Timer className={`w-3.5 h-3.5 ${timeLeft < 60 ? "text-rose-500 animate-pulse" : "text-amber-500"}`} />
                     <span>{timeLeft > 0 ? `Expires in ${formatTime(timeLeft)}` : "Expired"}</span>
                   </div>
@@ -139,7 +139,7 @@ function VerifyOTPContent() {
                   <Button
                     type="submit"
                     disabled={loading || otp.length !== 6 || timeLeft === 0}
-                    className="w-full h-12 bg-linear-to-r from-indigo-600 to-violet-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4 italic"
+                    className="w-full h-12 bg-linear-to-r from-indigo-600 to-violet-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 mt-4"
                   >
                     <span>{loading ? "Verifying..." : "Verify Code"}</span>
                     {!loading && <CheckCircle2 className="w-3.5 h-3.5" />}
@@ -148,7 +148,7 @@ function VerifyOTPContent() {
                   <button
                     type="button"
                     onClick={() => router.push('/auth/login')}
-                    className="w-full py-4 text-[9px] font-black text-slate-500 uppercase tracking-widest hover:text-indigo-600 transition-colors flex items-center justify-center gap-3 italic"
+                    className="w-full py-4 text-[9px] font-black text-slate-500 uppercase tracking-widest hover:text-indigo-600 transition-colors flex items-center justify-center gap-3"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     Back to Login
@@ -162,7 +162,7 @@ function VerifyOTPContent() {
                 type="button"
                 onClick={handleResendOTP}
                 disabled={loading}
-                className="text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-widest flex items-center justify-center gap-2 mx-auto disabled:opacity-50 italic"
+                className="text-[10px] font-black text-indigo-600 hover:text-indigo-700 uppercase tracking-widest flex items-center justify-center gap-2 mx-auto disabled:opacity-50"
               >
                 {loading ? "Resending..." : "Resend Code"}
               </button>
@@ -170,8 +170,8 @@ function VerifyOTPContent() {
           </Card>
         </motion.div>
 
-        <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mt-12 italic">
-          © {new Date().getFullYear()} Intern Hub — Verification
+        <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] mt-12">
+          © {new Date().getFullYear()} Internship Management System — Verification
         </p>
       </div>
     </div>

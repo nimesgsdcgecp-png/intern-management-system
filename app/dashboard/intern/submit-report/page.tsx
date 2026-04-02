@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
-import { TextArea } from "@/app/components/TextArea";
-import { SearchHeader } from "@/app/components/SearchHeader";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
+import { Input } from "@/app/components/ui/Input";
+import { TextArea } from "@/app/components/ui/TextArea";
+import { SearchHeader } from "@/app/components/features/SearchHeader";
 import { FilePlus2, Sparkles, Send, ArrowLeft, Clock, Target, CheckCircle2, ShieldCheck, AlertCircle, Loader2 } from "lucide-react";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
 import { addSuccess, addError } from "@/app/lib/redux/slices/notificationSlice";
@@ -39,6 +39,11 @@ export default function SubmitReportPage() {
     }
   };
 
+  /**
+   * Logic: Field Validation
+   * Enforces data integrity for work reports.
+   * Ensures Feedbacks meet minimum descriptive thresholds.
+   */
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.date) newErrors.date = "Date is required";
@@ -58,6 +63,11 @@ export default function SubmitReportPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  /**
+   * Logic: Report Synchronization
+   * Publishes the validated work narrative to the central repository.
+   * Facilitates mentor-readiness for performance evaluation.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -114,7 +124,7 @@ export default function SubmitReportPage() {
               <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight uppercase leading-none">
                 Submit <span className="text-indigo-600">Daily Log</span>
               </h1>
-              <p className="text-gray-500 mt-2 font-medium italic">Record your work achievements and technical progress.</p>
+              <p className="text-gray-500 mt-2 font-medium">Record your work achievements and technical progress.</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -138,7 +148,7 @@ export default function SubmitReportPage() {
                      </div>
                      <div>
                         <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Work Narrative</h4>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest italic">Daily progress tracking</p>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Daily progress tracking</p>
                      </div>
                   </div>
               </div>
@@ -186,7 +196,7 @@ export default function SubmitReportPage() {
                     placeholder="Briefly describe your tasks and accomplishments..."
                     rows={6}
                     required
-                    className="w-full p-8 bg-gray-50 border-none rounded-[2.5rem] text-sm font-medium text-slate-600 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none italic shadow-sm"
+                    className="w-full p-8 bg-gray-50 border-none rounded-[2.5rem] text-sm font-medium text-slate-600 outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none shadow-sm"
                   />
                   {errors.workDescription && <p className="text-rose-500 text-[10px] font-black uppercase tracking-widest mt-2 ml-1">{errors.workDescription}</p>}
                 </div>
@@ -214,7 +224,7 @@ export default function SubmitReportPage() {
                   <h4 className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Entry Tips</h4>
               </div>
               <div className="p-8 space-y-8">
-                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-bold italic">
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-bold">
                    Help your mentor understand your work by providing clear and specific details.
                 </p>
 
@@ -227,7 +237,7 @@ export default function SubmitReportPage() {
                       "Learning Outcomes",
                       "Time Distribution"
                     ].map((item, idx) => (
-                      <li key={idx} className="flex items-center gap-3 text-[10px] text-slate-700 font-bold uppercase tracking-tight italic">
+                      <li key={idx} className="flex items-center gap-3 text-[10px] text-slate-700 font-bold uppercase tracking-tight">
                         <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 opacity-40" />
                         {item}
                       </li>
@@ -238,7 +248,7 @@ export default function SubmitReportPage() {
                 <div className="p-6 bg-white/60 rounded-3xl border border-indigo-100 shadow-sm">
                    <div className="flex items-start gap-4">
                       <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0" />
-                      <p className="text-[10px] font-bold text-slate-600 leading-relaxed italic">
+                      <p className="text-[10px] font-bold text-slate-600 leading-relaxed">
                         Your mentor will review this log to monitor your technical trajectory.
                       </p>
                    </div>
@@ -250,7 +260,7 @@ export default function SubmitReportPage() {
                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-gray-100">
                   <Target className="w-6 h-6 text-indigo-600" />
                </div>
-               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-relaxed italic max-w-[180px]">
+               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-relaxed max-w-[180px]">
                  Consistent entries enable accurate growth assessments.
                </p>
             </div>

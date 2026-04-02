@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Button } from "./Button";
-import { useAppDispatch, useSidebar, useAppSelector } from "../lib/redux/hooks";
-import { toggleSidebar } from "../lib/redux/slices/uiSlice";
-import { addSuccess, addError } from "../lib/redux/slices/notificationSlice";
+import { Button } from "../ui/Button";
+import { useAppDispatch, useSidebar, useAppSelector } from "../../lib/redux/hooks";
+import { toggleSidebar } from "../../lib/redux/slices/uiSlice";
+import { addSuccess, addError } from "../../lib/redux/slices/notificationSlice";
 import {
   LayoutDashboard,
   Users,
@@ -207,7 +207,7 @@ export function Sidebar() {
         h-full flex flex-col relative
         transition-all duration-300 ease-in-out
         ${deviceType === 'mobile' && !isCollapsed ? 'fixed z-50' : ''}
-        bg-[var(--nav-bg)] border-r border-white/5
+        bg-(--nav-bg) border-r border-white/5
       `}
     >
       {/* Subtle Glow Overlay */}
@@ -235,8 +235,8 @@ export function Sidebar() {
                   <Building2 className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-black text-[var(--nav-text)] uppercase tracking-wider">Menu</span>
-                  <span className="text-[10px] font-bold text-[var(--nav-text-muted)] uppercase tracking-widest">System</span>
+                  <span className="text-sm font-black text-(--nav-text) uppercase tracking-wider">Menu</span>
+                  <span className="text-[10px] font-bold text-(--nav-text-muted) uppercase tracking-widest">System</span>
                 </div>
              </motion.div>
           )}

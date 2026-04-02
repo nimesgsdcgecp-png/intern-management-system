@@ -3,17 +3,17 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Modal } from "@/app/components/Modal";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Modal } from "@/app/components/ui/Modal";
 import { showToast } from "@/lib/notifications";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
+import { Input } from "@/app/components/ui/Input";
 import { Edit3, Trash2, PlusCircle, Users, Mail, GraduationCap, Building2, Calendar, Search } from "lucide-react";
-import { SearchHeader } from "@/app/components/SearchHeader";
-import { Select } from "@/app/components/Select";
-import { QuickViewModal } from "@/app/components/QuickViewModal";
-import { BulkActionBar } from "@/app/components/BulkActionBar";
+import { SearchHeader } from "@/app/components/features/SearchHeader";
+import { Select } from "@/app/components/ui/Select";
+import { QuickViewModal } from "@/app/components/features/QuickViewModal";
+import { BulkActionBar } from "@/app/components/features/BulkActionBar";
 import { downloadCSV } from "@/lib/utils/csv-utils";
 import Swal from "sweetalert2";
 
@@ -172,6 +172,11 @@ export default function InternsPage() {
     return Object.keys(errors).length === 0;
   };
 
+  /**
+   * Logic: Registration/Update Execution
+   * Handles the persistence layer for intern records. 
+   * Includes post-registration credential generation for new accounts.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -236,6 +241,11 @@ export default function InternsPage() {
     setIsFormOpen(true);
   };
 
+  /**
+   * Logic: Record Neutralization
+   * Purges intern data from the system with cascading deletion 
+   * for associated logs and reports.
+   */
   const handleDelete = async (id: string) => {
     const result = await Swal.fire({
       title: "Confirm Deletion",
@@ -384,12 +394,12 @@ export default function InternsPage() {
                 <p className="text-sm text-emerald-800 font-medium mb-6">These credentials have been generated for <span className="font-bold underline">{credentialNotice.name}</span>. Please share them securely.</p>
                 <div className="space-y-6">
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-2 italic">Portal Identifier</p>
-                    <div className="bg-white/50 px-5 py-4 rounded-2xl border border-emerald-200 font-mono font-bold text-slate-800 text-lg tracking-wider shadow-sm italic">{credentialNotice.id}</div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-2">Portal Identifier</p>
+                    <div className="bg-white/50 px-5 py-4 rounded-2xl border border-emerald-200 font-mono font-bold text-slate-800 text-lg tracking-wider shadow-sm">{credentialNotice.id}</div>
                   </div>
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-2 italic">One-Time Password</p>
-                    <div className="bg-white/50 px-5 py-4 rounded-2xl border border-emerald-200 font-mono font-bold text-slate-800 text-lg tracking-wider shadow-sm italic">{credentialNotice.password}</div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-2">One-Time Password</p>
+                    <div className="bg-white/50 px-5 py-4 rounded-2xl border border-emerald-200 font-mono font-bold text-slate-800 text-lg tracking-wider shadow-sm">{credentialNotice.password}</div>
                   </div>
                 </div>
               </div>
@@ -403,15 +413,15 @@ export default function InternsPage() {
 
         <div className="mb-12 flex flex-col md:flex-row md:items-center justify-between gap-8 text-slate-900">
           <div>
-            <h1 className="text-5xl font-black text-slate-900 tracking-tight italic uppercase">
+            <h1 className="text-5xl font-black text-slate-900 tracking-tight uppercase">
               Intern <span className="text-indigo-600">Directory</span>
             </h1>
-            <p className="text-gray-500 mt-2 font-medium italic opacity-80">Manage all registered interns and their placement details.</p>
+            <p className="text-gray-500 mt-2 font-medium opacity-80">Manage all registered interns and their placement details.</p>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => { setEditingId(null); setIsFormOpen(true); }}
-              className="py-5 px-12 shadow-2xl shadow-indigo-100 rounded-2xl bg-slate-900 hover:bg-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3 italic"
+              className="py-5 px-12 shadow-2xl shadow-indigo-100 rounded-2xl bg-slate-900 hover:bg-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-95 flex items-center gap-3"
             >
               <PlusCircle className="w-4 h-4" />
               Add Member
@@ -425,7 +435,7 @@ export default function InternsPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] ml-2 italic">Search Identity</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] ml-2">Search Identity</label>
               <div className="relative">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
@@ -433,24 +443,24 @@ export default function InternsPage() {
                   placeholder="Ex: John Doe"
                   value={filters.name}
                   onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-                  className="w-full bg-gray-50 border-none rounded-2xl py-4 pl-14 pr-6 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-gray-300 italic"
+                  className="w-full bg-gray-50 border-none rounded-2xl py-4 pl-14 pr-6 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-gray-300"
                 />
               </div>
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] ml-2 italic">Institution</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] ml-2">Institution</label>
               <input
                 type="text"
                 placeholder="Ex: MIT Boston"
                 value={filters.collegeName}
                 onChange={(e) => setFilters({ ...filters, collegeName: e.target.value })}
-                className="w-full bg-gray-50 border-none rounded-2xl py-4 px-8 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-gray-300 italic"
+                className="w-full bg-gray-50 border-none rounded-2xl py-4 px-8 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-gray-300"
               />
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] ml-1 flex items-center gap-2 italic">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] ml-1 flex items-center gap-2">
                 <span className="w-4 h-px bg-gray-200" />
                 Search Directory
               </label>
@@ -458,7 +468,7 @@ export default function InternsPage() {
                 <select
                   value={filters.department}
                   onChange={(e) => setFilters({ ...filters, department: e.target.value })}
-                  className="w-full bg-gray-50 border-none rounded-2xl py-4 px-8 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none cursor-pointer italic"
+                  className="w-full bg-gray-50 border-none rounded-2xl py-4 px-8 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">All Streams</option>
                   {DEPARTMENTS.map(d => <option key={d} value={d}>{d}</option>)}
@@ -470,12 +480,12 @@ export default function InternsPage() {
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] ml-2 italic">Manager</label>
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] ml-2">Manager</label>
               <div className="relative">
                 <select
                   value={filters.mentorName}
                   onChange={(e) => setFilters({ ...filters, mentorName: e.target.value })}
-                  className="w-full bg-gray-50 border-none rounded-2xl py-4 px-8 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none cursor-pointer italic"
+                  className="w-full bg-gray-50 border-none rounded-2xl py-4 px-8 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">All Managers</option>
                   {mentors.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
@@ -498,7 +508,7 @@ export default function InternsPage() {
             <div className="bg-white rounded-[2.5rem] p-24 text-center border border-gray-100 shadow-sm">
               <GraduationCap className="w-16 h-16 text-gray-200 mx-auto mb-6" />
               <h3 className="text-xl font-bold text-gray-900 mb-2">No interns recorded</h3>
-              <p className="text-gray-500 mb-8 max-w-sm mx-auto font-medium italic">Try adjusting your search criteria or register a new candidate to get started.</p>
+              <p className="text-gray-500 mb-8 max-w-sm mx-auto font-medium">Try adjusting your search criteria or register a new candidate to get started.</p>
               <Button
                 onClick={() => setIsFormOpen(true)}
                 className="bg-indigo-600 text-white px-10 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-100"
@@ -511,7 +521,7 @@ export default function InternsPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="bg-gray-50/50 border-b border-gray-100 uppercase italic">
+                    <tr className="bg-gray-50/50 border-b border-gray-100 uppercase">
                       <th className="px-8 py-6">
                         <input
                           type="checkbox"
@@ -522,7 +532,7 @@ export default function InternsPage() {
                       </th>
                       <th className="px-6 py-6 text-[10px] font-black text-gray-400 tracking-[0.2em]">Deploy Unit</th>
                       <th className="px-8 py-6 text-[10px] font-black text-gray-400 tracking-[0.2em]">Nexus Placement</th>
-                      <th className="px-8 py-6 text-[10px] font-black text-gray-400 tracking-[0.2em]">Command Lead</th>
+                      <th className="px-8 py-6 text-[10px] font-black text-gray-400 tracking-[0.2em]">Mentor</th>
                       <th className="px-8 py-6 text-[10px] font-black text-gray-400 tracking-[0.2em] text-center">Protocol Stream</th>
                       <th className="px-8 py-6 text-[10px] font-black text-gray-400 tracking-[0.2em] text-center">Status</th>
                       <th className="px-8 py-6 text-[10px] font-black text-gray-400 tracking-[0.2em] text-right pr-12">Actions</th>
@@ -550,7 +560,7 @@ export default function InternsPage() {
                             </div>
                             <div className="flex flex-col">
                               <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{intern.name}</span>
-                              <span className="text-xs text-gray-400 font-medium italic">{intern.email}</span>
+                              <span className="text-xs text-gray-400 font-medium">{intern.email}</span>
                             </div>
                           </div>
                         </td>

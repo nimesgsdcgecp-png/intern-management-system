@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { QuickActionCard } from "@/app/components/QuickActionCard";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
+import { QuickActionCard } from "@/app/components/ui/QuickActionCard";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
 import { CheckSquare, Clock, FileText, Target, Users, LayoutDashboard, Rocket, Zap, Sparkles, ShieldCheck, Activity, GraduationCap, BarChart3, Calendar } from "lucide-react";
-import { AttendanceCard } from "@/app/components/AttendanceCard";
-import { ActivityFeed } from "@/app/components/ActivityFeed";
+import { AttendanceCard } from "@/app/components/features/AttendanceCard";
+import { ActivityFeed } from "@/app/components/features/ActivityFeed";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -152,16 +152,16 @@ export default function InternDashboard() {
       <div className="space-y-12 pb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 text-slate-900">
           <div>
-            <h1 className="text-5xl font-black tracking-tight italic">
+            <h1 className="text-5xl font-black tracking-tight">
               Intern <span className="text-indigo-600">Workspace</span>
             </h1>
-            <p className="text-gray-500 mt-2 font-medium italic opacity-80">Welcome back. Manage your projects and track your professional growth.</p>
+            <p className="text-gray-500 mt-2 font-medium opacity-80">Welcome back. Manage your projects and track your professional growth.</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="px-6 py-3 bg-emerald-50 text-emerald-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-emerald-100 uppercase tracking-[0.2em] italic shadow-sm relative overflow-hidden group">
+            <div className="px-6 py-3 bg-emerald-50 text-emerald-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-emerald-100 uppercase tracking-[0.2em] shadow-sm relative overflow-hidden group">
               <div className="absolute inset-0 bg-emerald-600/5 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
               <Rocket className="w-4 h-4 shadow-sm relative z-10" />
-              <span className="relative z-10">Resource Verified</span>
+              <span className="relative z-10">Intern Access</span>
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse relative z-10 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
             </div>
           </div>
@@ -176,9 +176,9 @@ export default function InternDashboard() {
                 <LayoutDashboard className="w-40 h-40 text-indigo-600" />
               </div>
               <div className="flex items-center justify-between mb-10 relative z-10">
-                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3 italic">
+                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3">
                   <span className="w-8 h-1 bg-indigo-600 rounded-full" />
-                  Productivity Hub
+                  Overview
                 </h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 relative z-10">
@@ -196,14 +196,14 @@ export default function InternDashboard() {
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-6">
                     <Zap className="w-6 h-6 text-amber-400 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-amber-400 italic">Professional Development</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-amber-400">Professional Development</span>
                   </div>
-                  <h3 className="text-4xl font-black mb-6 tracking-tight uppercase italic underline decoration-indigo-500 decoration-4 underline-offset-8">Accelerate Growth</h3>
-                  <p className="text-slate-400 font-medium leading-relaxed mb-10 max-w-lg italic text-lg">
-                    Consistent performance and "Tactical Reporting" are key to unlocking full-time opportunities within the organization.
+                  <h3 className="text-4xl font-black mb-6 tracking-tight uppercase underline decoration-indigo-500 decoration-4 underline-offset-8">Accelerate Growth</h3>
+                  <p className="text-slate-400 font-medium leading-relaxed mb-10 max-w-lg text-lg">
+                    Consistent performance and "Regular reporting" are key to unlocking full-time opportunities within the organization.
                   </p>
                   <Link href="/dashboard/intern/tasks">
-                    <button className="bg-white text-slate-900 border-none px-12 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-50 transition-all active:scale-95 shadow-2xl flex items-center gap-3 italic">
+                    <button className="bg-white text-slate-900 border-none px-12 py-5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-50 transition-all active:scale-95 shadow-2xl flex items-center gap-3">
                       My Roadmap
                       <Rocket className="w-4 h-4" />
                     </button>
@@ -216,14 +216,14 @@ export default function InternDashboard() {
               <div className="space-y-6">
                 <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-3">
                   <Activity className="w-4 h-4 text-indigo-600" />
-                  Presence
+                  Attendance
                 </h2>
                 <AttendanceCard />
               </div>
               <div className="space-y-6">
                 <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] flex items-center gap-3">
                   <Clock className="w-4 h-4 text-indigo-600" />
-                  Timeline
+                  Activity
                 </h2>
                 <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm h-full">
                   <ActivityFeed />
@@ -234,17 +234,17 @@ export default function InternDashboard() {
 
           <div className="space-y-10">
             <div className="space-y-6">
-              <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] italic flex items-center gap-3 ml-2">
+              <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3 ml-2">
                 <span className="w-4 h-1 bg-gray-400 rounded-full" />
-                Identity Card
+                My Profile
               </h2>
               <div className="overflow-hidden border border-gray-100 shadow-sm rounded-[2.5rem] bg-white group hover:shadow-xl transition-all duration-500">
                 <div className="p-10 bg-slate-900 text-white relative overflow-hidden">
                   <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                   <div className="relative z-10">
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-3 italic">Active Deployed Unit</p>
-                    <h4 className="text-3xl font-black tracking-tight mb-8 uppercase italic leading-tight">{session?.user?.name}</h4>
-                    <div className="flex items-center gap-3 px-6 py-3 bg-white/5 rounded-2xl w-fit border border-white/10 backdrop-blur-md italic font-black shadow-inner">
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 mb-3">Active Intern</p>
+                    <h4 className="text-3xl font-black tracking-tight mb-8 uppercase leading-tight">{session?.user?.name}</h4>
+                    <div className="flex items-center gap-3 px-6 py-3 bg-white/5 rounded-2xl w-fit border border-white/10 backdrop-blur-md font-black shadow-inner">
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                       <span className="text-[10px] font-black uppercase tracking-widest leading-none">Status: Active</span>
                     </div>
@@ -255,19 +255,19 @@ export default function InternDashboard() {
                 </div>
                 <div className="p-10 space-y-8 bg-white">
                   {[
-                    { label: "Direct Intel", value: session?.user?.email },
-                    { label: "Assigned Stream", value: profile?.department },
-                    { label: "Original Nexus", value: profile?.collegeName },
-                    { label: "Command Lead", value: profile?.mentorName }
+                    { label: "Email", value: session?.user?.email },
+                    { label: "Department", value: profile?.department },
+                    { label: "University", value: profile?.collegeName },
+                    { label: "Mentor", value: profile?.mentorName }
                   ].map((item, i) => (
                     <div key={i} className="flex flex-col gap-2 group/field">
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] italic opacity-60 group-hover/field:text-indigo-600 transition-colors">{item.label}</p>
-                      <p className="text-sm font-bold text-slate-900 italic tracking-tight">{item.value || "Not Set"}</p>
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] opacity-60 group-hover/field:text-indigo-600 transition-colors">{item.label}</p>
+                      <p className="text-sm font-bold text-slate-900 tracking-tight">{item.value || "Not Set"}</p>
                     </div>
                   ))}
                   <div className="pt-10 border-t border-gray-50 text-center relative">
                     <div className="absolute -top-px left-1/2 -translate-x-1/2 w-16 h-1 bg-indigo-500 rounded-full opacity-20" />
-                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest italic leading-relaxed">
+                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest leading-relaxed">
                       SYNCHRONIZED DATE <br/> {new Date().toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                     </p>
                   </div>
@@ -281,11 +281,11 @@ export default function InternDashboard() {
                   <Sparkles className="w-6 h-6 text-indigo-500" />
                 </div>
                 <div>
-                  <h3 className="font-black text-gray-400 uppercase tracking-widest text-[10px] italic">Quick Tips</h3>
-                  <p className="text-[9px] text-gray-300 font-black uppercase tracking-widest opacity-40 italic">Consistency</p>
+                  <h3 className="font-black text-gray-400 uppercase tracking-widest text-[10px]">Quick Tips</h3>
+                  <p className="text-[9px] text-gray-300 font-black uppercase tracking-widest opacity-40">Consistency</p>
                 </div>
               </div>
-              <p className="text-sm text-slate-500 font-medium leading-relaxed italic">
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">
                 Submitting daily reports on time is the best way to demonstrate reliability to your mentor.
               </p>
             </div>

@@ -15,10 +15,10 @@ import {
   ShieldCheck,
   History as HistoryIcon,
 } from "lucide-react";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { QuickActionCard } from "@/app/components/QuickActionCard";
-import { Card } from "@/app/components/Card";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
+import { QuickActionCard } from "@/app/components/ui/QuickActionCard";
+import { Card } from "@/app/components/ui/Card";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -151,16 +151,16 @@ export default function AdminDashboard() {
       <div className="space-y-12 pb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>
-            <h1 className="text-5xl font-black text-slate-900 tracking-tight italic">
-              Admin <span className="text-indigo-600">Overview</span>
+            <h1 className="text-5xl font-black text-slate-900 tracking-tight">
+              Admin <span className="text-indigo-600">Dashboard</span>
             </h1>
-            <p className="text-gray-500 mt-2 font-medium italic opacity-80">Welcome back. Manage your interns and team from one place.</p>
+            <p className="text-gray-500 mt-2 font-medium opacity-80">Welcome back. Manage your interns and team from one place.</p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="px-6 py-3 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-[0.2em] italic shadow-sm relative overflow-hidden group">
+            <div className="px-6 py-3 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-[0.2em] shadow-sm relative overflow-hidden group">
               <div className="absolute inset-0 bg-indigo-600/5 translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
               <ShieldCheck className="w-4 h-4 relative z-10" />
-              <span className="relative z-10">Administrator Authorized</span>
+              <span className="relative z-10">Admin Access</span>
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse relative z-10 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
             </div>
           </div>
@@ -176,7 +176,7 @@ export default function AdminDashboard() {
                 <Target className="w-40 h-40 text-indigo-600 -rotate-12" />
               </div>
               <div className="flex items-center justify-between mb-10 relative z-10">
-                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3 italic">
+                <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3">
                   <span className="w-8 h-1 bg-indigo-600 rounded-full" />
                   Quick Actions
                 </h2>
@@ -195,19 +195,19 @@ export default function AdminDashboard() {
                 <Sparkles className="w-48 h-48 text-indigo-600" />
               </div>
               <div className="flex items-center justify-between mb-10 relative z-10">
-                <h3 className="font-black text-[10px] text-gray-400 uppercase tracking-[0.4em] italic flex items-center gap-3">
+                <h3 className="font-black text-[10px] text-gray-400 uppercase tracking-[0.4em] flex items-center gap-3">
                   <span className="w-8 h-1 bg-indigo-500 rounded-full" />
                   Recent Reports
                 </h3>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 relative z-10">
                 <div className="rounded-[2.5rem] p-10 border border-gray-50 bg-gray-50/50 shadow-sm group/card hover:bg-white transition-all duration-300">
-                  <div className="text-5xl font-black text-slate-900 tracking-tighter italic group-hover/card:text-indigo-600 transition-colors">{loading ? "..." : data.totalReports}</div>
+                  <div className="text-5xl font-black text-slate-900 tracking-tighter group-hover/card:text-indigo-600 transition-colors">{loading ? "..." : data.totalReports}</div>
                   <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 opacity-60">Reports Synced</div>
                 </div>
                 <div className="rounded-[2.5rem] p-10 border border-gray-50 bg-gray-50/50 shadow-sm group/card hover:bg-white transition-all duration-300">
-                  <div className="text-5xl font-black text-amber-500 tracking-tighter italic">{loading ? "..." : data.pendingReports}</div>
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 opacity-60">Pending Intel Audit</div>
+                  <div className="text-5xl font-black text-amber-500 tracking-tighter">{loading ? "..." : data.pendingReports}</div>
+                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-3 opacity-60">Pending Review</div>
                 </div>
               </div>
             </div>
@@ -217,13 +217,13 @@ export default function AdminDashboard() {
             <Card className="p-8 rounded-4xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 bg-white group overflow-hidden relative">
               <div className="absolute -right-4 -top-4 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl group-hover:bg-indigo-500/10 transition-colors" />
               <div className="relative z-10 flex flex-col items-center text-center">
-                 <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white mb-6 shadow-lg group-hover:rotate-6 transition-transform">
+                  <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white mb-6 shadow-lg group-hover:rotate-6 transition-transform">
                     <Users className="w-7 h-7" />
                  </div>
-                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2 italic">Intern Directory</h3>
-                 <p className="text-sm font-bold text-slate-600 mb-8 italic">View and manage all registered interns.</p>
+                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2">Interns</h3>
+                 <p className="text-sm font-bold text-slate-600 mb-8">View and manage all interns.</p>
                  <Link href="/dashboard/admin/interns" className="w-full">
-                    <button className="w-full bg-gray-50 hover:bg-indigo-600 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic border border-gray-100">View Directory</button>
+                    <button className="w-full bg-gray-50 hover:bg-indigo-600 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-gray-100">View Interns</button>
                  </Link>
               </div>
             </Card>
@@ -234,10 +234,10 @@ export default function AdminDashboard() {
                  <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white mb-6 shadow-lg group-hover:-rotate-6 transition-transform">
                     <ShieldCheck className="w-7 h-7" />
                  </div>
-                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2 italic">Mentor Team</h3>
-                 <p className="text-sm font-bold text-slate-600 mb-8 italic">Coordinate your leadership and set permissions.</p>
+                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2">Mentors</h3>
+                 <p className="text-sm font-bold text-slate-600 mb-8">Manage mentors and permissions.</p>
                  <Link href="/dashboard/admin/mentors" className="w-full">
-                    <button className="w-full bg-gray-50 hover:bg-amber-600 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic border border-gray-100">View Team</button>
+                    <button className="w-full bg-gray-50 hover:bg-amber-600 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-gray-100">View Mentors</button>
                  </Link>
               </div>
             </Card>
@@ -248,10 +248,10 @@ export default function AdminDashboard() {
                  <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white mb-6 shadow-lg group-hover:rotate-12 transition-transform">
                     <BarChart3 className="w-7 h-7" />
                  </div>
-                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2 italic">Report Hub</h3>
-                 <p className="text-sm font-bold opacity-80 mb-8 italic">Review performance logs and growth metrics.</p>
+                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2">Reports</h3>
+                 <p className="text-sm font-bold opacity-80 mb-8">Review intern performance logs.</p>
                  <Link href="/dashboard/admin/reports" className="w-full">
-                    <button className="w-full bg-gray-50 hover:bg-emerald-600 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic border border-gray-100">View Reports</button>
+                    <button className="w-full bg-gray-50 hover:bg-emerald-600 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-gray-100">View Reports</button>
                  </Link>
               </div>
             </Card>
@@ -262,16 +262,16 @@ export default function AdminDashboard() {
                  <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white mb-6 shadow-lg group-hover:-rotate-12 transition-transform">
                     <HistoryIcon className="w-7 h-7" />
                  </div>
-                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2 italic">Activity Logs</h3>
-                 <p className="text-sm font-bold opacity-80 mb-8 italic">Monitor historical trails and security events.</p>
+                 <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-2">System Logs</h3>
+                 <p className="text-sm font-bold opacity-80 mb-8">Monitor system history and events.</p>
                  <Link href="/dashboard/admin/logs" className="w-full">
-                    <button className="w-full bg-gray-50 hover:bg-rose-600 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all italic border border-gray-100">View History</button>
+                    <button className="w-full bg-gray-50 hover:bg-rose-600 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-gray-100">View Logs</button>
                  </Link>
               </div>
             </Card>
            <div className="bg-white rounded-4xl border border-gray-100 p-8 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden relative">
               <div className="flex items-center justify-between mb-10">
-                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] italic">System Summary</h3>
+                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em]">Overview</h3>
                 <div className="flex items-center gap-2">
                    <div className="w-2 h-2 rounded-full bg-indigo-500 animate-ping" />
                    <Activity className="w-4 h-4 text-indigo-500 opacity-40" />
@@ -279,23 +279,23 @@ export default function AdminDashboard() {
               </div>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-6 bg-gray-50 rounded-4xl border border-gray-100 shadow-sm group hover:bg-white transition-all duration-300">
-                  <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] italic opacity-60">Total Interns</span>
-                  <span className="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors uppercase italic">{loading ? "..." : data.totalInterns} Count</span>
+                  <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] opacity-60">Total Interns</span>
+                  <span className="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors uppercase">{loading ? "..." : data.totalInterns} Count</span>
                 </div>
                 <div className="flex items-center justify-between p-6 bg-gray-50 rounded-4xl border border-gray-100 shadow-sm group hover:bg-white transition-all duration-300">
-                  <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] italic opacity-60">Active Mentors</span>
-                  <span className="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors uppercase italic">{loading ? "..." : data.totalMentors} People</span>
+                  <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] opacity-60">Active Mentors</span>
+                  <span className="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors uppercase">{loading ? "..." : data.totalMentors} People</span>
                 </div>
                 <div className="flex items-center justify-between p-6 bg-gray-50 rounded-4xl border border-gray-100 shadow-sm group hover:bg-white transition-all duration-300">
-                  <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] italic opacity-60">Pending Tasks</span>
-                  <span className="text-sm font-black text-amber-500 uppercase italic">{loading ? "..." : data.pendingTasks} Todo</span>
+                  <span className="text-[11px] font-black text-gray-400 uppercase tracking-[0.2em] opacity-60">Pending Tasks</span>
+                  <span className="text-sm font-black text-amber-500 uppercase">{loading ? "..." : data.pendingTasks} Todo</span>
                 </div>
                 <div className="mt-6 p-6 bg-indigo-50 rounded-[2rem] border border-indigo-100 relative overflow-hidden">
                    <div className="relative z-10">
-                      <div className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-2 italic">Productivity</div>
+                      <div className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-2">Progress</div>
                       <div className="flex items-end gap-3">
-                         <div className="text-3xl font-black text-indigo-600 tracking-tighter italic">{completionRate}%</div>
-                         <div className="text-[10px] font-black text-indigo-400 uppercase mb-1">Efficiency</div>
+                         <div className="text-3xl font-black text-indigo-600 tracking-tighter">{completionRate}%</div>
+                         <div className="text-[10px] font-black text-indigo-400 uppercase mb-1">Rate</div>
                       </div>
                    </div>
                    <div className="absolute right-0 bottom-0 p-4 opacity-10">

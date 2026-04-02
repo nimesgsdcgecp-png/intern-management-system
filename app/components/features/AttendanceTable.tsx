@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { User, Clock, CheckCircle2, AlertCircle, Loader2, Calendar, Filter, ArrowRight, ShieldCheck } from "lucide-react";
-import { Card } from "./Card";
+import { Card } from "../ui/Card";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface AttendanceTableProps {
@@ -72,7 +72,7 @@ export function AttendanceTable({
   if (error) return (
     <div className="py-20 text-center">
        <AlertCircle className="w-12 h-12 text-rose-500 mx-auto mb-4 opacity-50" />
-       <p className="text-xs font-bold text-rose-500 uppercase tracking-widest italic">{error}</p>
+       <p className="text-xs font-bold text-rose-500 uppercase tracking-widest">{error}</p>
     </div>
   );
 
@@ -117,7 +117,7 @@ export function AttendanceTable({
                     </div>
                   </div>
                 </td>
-                <td className="px-8 py-5 text-sm font-medium text-gray-600 italic">
+                <td className="px-8 py-5 text-sm font-medium text-gray-600">
                   {log.date}
                 </td>
                 <td className="px-8 py-5 text-sm font-bold text-gray-700">
@@ -157,7 +157,7 @@ export function AttendanceTable({
                    <Calendar className="w-12 h-12 text-slate-300" />
                    <div>
                       <p className="text-sm font-bold text-gray-900 mb-1">No attendance records found</p>
-                      <p className="text-xs text-gray-500 font-medium italic">Try adjusting your date or department filters.</p>
+                      <p className="text-xs text-gray-500 font-medium">Try adjusting your date or department filters.</p>
                    </div>
                 </div>
               </td>

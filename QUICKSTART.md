@@ -136,9 +136,10 @@ npm run lint
 ## Next Steps
 
 ### 1. Explore the Code
-- Browse `app/components/` to see reusable components
-- Check `app/api/` to see API routes
-- Look at `lib/auth.ts` to see authentication setup
+- Browse `app/components/ui/` to see reusable atomic components
+- Browse `app/components/features/` for complex domain-specific logic
+- Check `app/api/` to see backend route handlers
+- Look at `lib/auth.ts` to see authentication configuration
 
 ### 2. Customize
 - Change colors in `app/globals.css`

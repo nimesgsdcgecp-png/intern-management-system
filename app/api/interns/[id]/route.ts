@@ -6,7 +6,7 @@ import {
   DELETE_INTERN_AND_USER,
   UPDATE_INTERN_AND_USER,
 } from "@/lib/graphql/mutations";
-import { logActivity } from "@/services/activityService";
+import { logActivity } from "@/lib/activityService";
 
 export async function GET(
   request: NextRequest,

@@ -2,8 +2,8 @@
 
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppDispatch, useNotifications } from '../lib/redux/hooks';
-import { removeNotification } from '../lib/redux/slices/notificationSlice';
+import { useAppDispatch, useNotifications } from '../../lib/redux/hooks';
+import { removeNotification } from '../../lib/redux/slices/notificationSlice';
 import { CheckCircle, AlertCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 const NotificationToast: React.FC<{ notification: any }> = ({ notification }) => {

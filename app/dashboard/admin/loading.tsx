@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatCardSkeleton, ChartSkeleton } from "@/app/components/Skeleton";
+import { StatCardSkeleton, ChartSkeleton } from "@/app/components/ui/Skeleton";
 
 export default function AdminLoading() {
   return (

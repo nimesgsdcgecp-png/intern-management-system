@@ -1,10 +1,10 @@
 "use client";
 
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { AttendanceTable } from "@/app/components/AttendanceTable";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { AttendanceTable } from "@/app/components/features/AttendanceTable";
 import { useState, useEffect } from "react";
-import { StatsGrid } from "@/app/components/StatsGrid";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { FileText, Clock, AlertCircle, CheckCircle2, Search, Activity, ShieldCheck, Calendar, Users } from "lucide-react";
@@ -19,6 +19,11 @@ export default function AttendanceMonitorPage() {
   const role = (session?.user as any)?.role;
   const isMentor = role === "mentor";
 
+  /**
+   * Effect: Identity Management
+   * Determines the user's role and initializes department-level filters 
+   * if the user is a mentor. This ensures they only see relevant team data.
+   */
   useEffect(() => {
     if (isMentor && session?.user) {
       const fetchMentorDept = async () => {
@@ -39,6 +44,11 @@ export default function AttendanceMonitorPage() {
     }
   }, [isMentor, session]);
 
+  /**
+   * Effect: Metrics Aggregation
+   * Synchronizes tactical attendance data including Attendance counts, 
+   * hours worked, and department-level leadership stats.
+   */
   useEffect(() => {
     const fetchStats = async () => {
       setLoading(true);
@@ -96,15 +106,15 @@ export default function AttendanceMonitorPage() {
         {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight italic uppercase">
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight uppercase">
               Attendance <span className="text-indigo-600">Monitor</span>
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">
+            <p className="text-gray-500 mt-1 font-medium">
               {isMentor ? "View daily attendance for your department." : "Overview of daily attendance across the organization."}
             </p>
           </div>
           <div className="flex items-center gap-3">
-             <div className="px-5 py-2.5 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-widest shadow-sm italic">
+             <div className="px-5 py-2.5 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-widest shadow-sm">
                 <ShieldCheck className="w-4 h-4" />
                 {isMentor ? "Mentor Access" : "Admin View"}
              </div>
@@ -132,7 +142,7 @@ export default function AttendanceMonitorPage() {
 
             {!isMentor ? (
               <div className="space-y-2">
-                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1 italic">Department</label>
+                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Department</label>
                  <select
                    value={department}
                    onChange={(e) => setDepartment(e.target.value)}
@@ -144,7 +154,7 @@ export default function AttendanceMonitorPage() {
               </div>
             ) : (
               <div className="space-y-2">
-                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1 italic">Your Department</label>
+                 <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Your Department</label>
                  <div className="w-full bg-indigo-50 text-indigo-600 rounded-2xl py-3 px-6 text-sm font-black uppercase tracking-widest shadow-sm border border-indigo-100">
                    {department || "Loading..."}
                  </div>
@@ -165,11 +175,11 @@ export default function AttendanceMonitorPage() {
 
         <div className="space-y-6">
           <div className="flex items-center justify-between px-2">
-             <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight italic flex items-center gap-3">
+             <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-3">
                 <Users className="w-6 h-6 text-indigo-600" />
                 Attendance List
              </h2>
-             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic bg-gray-50 px-4 py-2 rounded-full border border-gray-100 group hover:bg-white transition-colors cursor-default">
+             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-full border border-gray-100 group hover:bg-white transition-colors cursor-default">
                 {new Date(date).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' })}
              </div>
           </div>

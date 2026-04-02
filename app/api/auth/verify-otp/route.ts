@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PasswordResetService } from "@/lib/auth/passwordReset";
 
+/**
+ * API Route: OTP Verification
+ * Validates the 6-digit One-Time Password sent to the user's email.
+ * If successful, issues a short-lived reset token for the password reset flow.
+ * Includes basic rate-limiting by tracking attempts via PasswordResetService.
+ */
 export async function POST(request: NextRequest) {
   try {
     const { email, otp } = await request.json();

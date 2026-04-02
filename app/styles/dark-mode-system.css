@@ -1,5 +1,5 @@
 /* ============================================================
-   DARK MODE SYSTEM — InternHub
+   DARK MODE SYSTEM — Internship Management System
    Complete semantic token system for light/dark theme switching.
    All tokens use the .dark class selector (set by next-themes).
    ============================================================ */
@@ -589,7 +589,7 @@
   transform: translateY(-4px);
 }
 
-/* Profile / Identity card gradient header (stays dark in both modes) */
+/* Profile / My Profile gradient header (stays dark in both modes) */
 .dm-profile-header {
   background: linear-gradient(135deg, #4f46e5, #6366f1);
   color: #ffffff;

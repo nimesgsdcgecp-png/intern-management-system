@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatCardSkeleton, TableSkeleton } from "@/app/components/Skeleton";
+import { StatCardSkeleton, TableSkeleton } from "@/app/components/ui/Skeleton";
 
 export default function InternLoading() {
   return (

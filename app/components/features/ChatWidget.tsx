@@ -145,10 +145,10 @@ export function ChatWidget() {
           }`}
       >
         {/* Header */}
-        <div className="flex justify-between items-center px-6 py-4 bg-slate-900 text-white rounded-t-4xl shrink-0 italic">
+        <div className="flex justify-between items-center px-6 py-4 bg-slate-900 text-white rounded-t-4xl shrink-0">
           <span className="text-[11px] font-black uppercase tracking-[0.2em] flex items-center gap-3">
             <Sparkles className="w-4 h-4 text-indigo-400" />
-            Intern Hub AI
+            Internship Management System AI
           </span>
 
           <div className="flex gap-3 text-lg">

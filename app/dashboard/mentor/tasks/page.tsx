@@ -2,19 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
-import { Select } from "@/app/components/Select";
-import { TextArea } from "@/app/components/TextArea";
-import { SearchHeader } from "@/app/components/SearchHeader";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { Button } from "@/app/components/ui/Button";
+import { Input } from "@/app/components/ui/Input";
+import { Select } from "@/app/components/ui/Select";
+import { TextArea } from "@/app/components/ui/TextArea";
+import { SearchHeader } from "@/app/components/features/SearchHeader";
 import { PlusCircle, Trash2, ClipboardList, Target, Clock, Settings2, Layout, Table as TableIcon, Grid, Gauge, ShieldCheck, Sparkles, Activity, CheckCircle2, AlertCircle, Edit3, X, Mail, Search } from "lucide-react";
-import { Modal } from "@/app/components/Modal";
-import { KanbanBoard } from "@/app/components/KanbanBoard";
+import { Modal } from "@/app/components/ui/Modal";
+import { KanbanBoard } from "@/app/components/features/KanbanBoard";
 import { showToast } from "@/lib/notifications";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { PremiumStatCard } from "@/app/components/PremiumStatCard";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
 
@@ -57,6 +56,11 @@ export default function MentorTasksPage() {
 
   const [filters, setFilters] = useState({ title: "", status: "", priority: "" });
 
+  /**
+   * Effect: Distributed Data Fetching
+   * Synchronizes both the intern registry (filtered by mentor ownership)
+   * and the global task repository to build the management interface.
+   */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -93,6 +97,11 @@ export default function MentorTasksPage() {
     setFormData({ ...formData, [name]: val });
   };
 
+  /**
+   * Logic: Task Orchestration
+   * Handles the creation and deployment of technical tasks for interns.
+   * Ensures targets are correctly assigned before synchronization with HQ.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -233,7 +242,7 @@ export default function MentorTasksPage() {
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               Manage Tasks
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Assign tasks and monitor the progress of your interns.</p>
+            <p className="text-gray-500 mt-1 font-medium">Assign tasks and monitor the progress of your interns.</p>
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -328,7 +337,7 @@ export default function MentorTasksPage() {
           ) : filteredTasks.length === 0 ? (
             <Card className="text-center py-32 rounded-[3.5rem] border-dashed border-2 dm-border bg-gray-50/20">
               <ClipboardList className="w-20 h-20 dm-text-muted mx-auto mb-8 opacity-20" />
-              <h3 className="text-2xl font-black dm-text mb-2 uppercase tracking-tight italic">No Tasks Found</h3>
+              <h3 className="text-2xl font-black dm-text mb-2 uppercase tracking-tight">No Tasks Found</h3>
               <p className="dm-text-muted max-w-sm mx-auto font-medium tracking-tight mb-8">Start by assigning a new task to your interns.</p>
               <Button onClick={() => setIsFormOpen(true)} className="px-10">Assign First Task</Button>
             </Card>
@@ -364,7 +373,7 @@ export default function MentorTasksPage() {
                       </div>
                       <h4 className="text-lg font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors tracking-tight">{task.title}</h4>
                       <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4">Assigned to: {getAssignedToLabel(task)}</p>
-                      <p className="text-xs text-gray-500 line-clamp-2 mb-8 font-medium leading-relaxed italic opacity-80">{task.description}</p>
+                      <p className="text-xs text-gray-500 line-clamp-2 mb-8 font-medium leading-relaxed opacity-80">{task.description}</p>
                       <div className="flex justify-between items-center pt-6 border-t border-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400">
                         <span className="flex items-center gap-2"><Clock className="w-4 h-4 text-indigo-400" /> {task.deadline}</span>
                         <span className="flex items-center gap-2"><Activity className="w-4 h-4 text-indigo-400" /> {task.status}</span>
@@ -393,7 +402,7 @@ export default function MentorTasksPage() {
                         <td className="px-8 py-4 min-w-[300px]">
                           <div className="flex flex-col">
                             <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight text-base">{task.title}</span>
-                            <span className="text-xs text-gray-400 font-medium line-clamp-1 italic">{task.description}</span>
+                            <span className="text-xs text-gray-400 font-medium line-clamp-1">{task.description}</span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -449,34 +458,34 @@ export default function MentorTasksPage() {
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-6">
             <div className="space-y-3">
-              <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 block italic">Task Name</label>
+              <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 block">Task Name</label>
               <input
                 name="title"
                 type="text"
                 placeholder="What needs to be done?"
                 value={formData.title}
                 onChange={handleInputChange}
-                className="w-full h-16 px-6 bg-slate-50 border border-gray-100 rounded-[2rem] text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all uppercase italic shadow-sm"
+                className="w-full h-16 px-6 bg-slate-50 border border-gray-100 rounded-[2rem] text-sm font-bold text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all uppercase shadow-sm"
                 required
               />
             </div>
 
             <div className="space-y-3">
-              <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 block italic">Detailed Description</label>
+              <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 block">Detailed Description</label>
               <textarea
                 name="description"
                 placeholder="Explain the requirements, goals, and expectations..."
                 value={formData.description}
                 onChange={handleInputChange}
                 rows={4}
-                className="w-full p-6 bg-slate-50 border border-gray-100 rounded-[2rem] text-sm font-medium text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none italic shadow-sm"
+                className="w-full p-6 bg-slate-50 border border-gray-100 rounded-[2rem] text-sm font-medium text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all resize-none shadow-sm"
                 required
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 block italic">Assign to Intern</label>
+                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 block">Assign to Intern</label>
                 <select
                   name="assignedIntern"
                   value={formData.assignedIntern}
@@ -491,7 +500,7 @@ export default function MentorTasksPage() {
                 </select>
               </div>
               <div className="space-y-3">
-                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 block italic">Deadline Date</label>
+                <label className="text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1 block">Deadline Date</label>
                 <input
                   name="deadline"
                   type="date"
@@ -505,7 +514,7 @@ export default function MentorTasksPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-6 px-8 bg-indigo-50/20 rounded-[2.5rem] border border-indigo-100/30">
               <div className="space-y-3">
-                <label className="text-[11px] font-black text-indigo-400 uppercase tracking-widest ml-1 block italic">Priority Level</label>
+                <label className="text-[11px] font-black text-indigo-400 uppercase tracking-widest ml-1 block">Priority Level</label>
                 <select
                   name="priority"
                   value={formData.priority}
@@ -528,7 +537,7 @@ export default function MentorTasksPage() {
                   />
                   <div className="flex flex-col">
                     <span className="text-xs font-black text-gray-900 uppercase tracking-tight leading-none mb-1">Email Alert</span>
-                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest italic">Notify intern via email</span>
+                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Notify intern via email</span>
                   </div>
                 </label>
               </div>
@@ -570,10 +579,10 @@ export default function MentorTasksPage() {
                   <ClipboardList className="w-8 h-8" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">{selectedTask.title}</h3>
+                  <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase">{selectedTask.title}</h3>
                   <div className="flex items-center gap-2 mt-2">
                     <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(79,70,229,0.5)]" />
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Assigned to: {getAssignedToLabel(selectedTask)}</span>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Assigned to: {getAssignedToLabel(selectedTask)}</span>
                   </div>
                 </div>
               </div>
@@ -589,8 +598,8 @@ export default function MentorTasksPage() {
                   <Clock className="w-7 h-7" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic">Deadline</div>
-                  <div className="text-[13px] font-black text-gray-900 tracking-tight uppercase italic">{selectedTask.deadline}</div>
+                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Deadline</div>
+                  <div className="text-[13px] font-black text-gray-900 tracking-tight uppercase">{selectedTask.deadline}</div>
                 </div>
               </div>
               <div className="p-8 bg-slate-50 rounded-[2rem] border border-gray-100 flex items-center gap-6 group hover:bg-white hover:shadow-xl transition-all duration-300">
@@ -598,8 +607,8 @@ export default function MentorTasksPage() {
                   <Activity className="w-7 h-7" />
                 </div>
                 <div>
-                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 italic">Status</div>
-                  <div className="text-[13px] font-black text-gray-900 tracking-tight uppercase italic">{selectedTask.status}</div>
+                  <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Status</div>
+                  <div className="text-[13px] font-black text-gray-900 tracking-tight uppercase">{selectedTask.status}</div>
                 </div>
               </div>
             </div>
@@ -608,8 +617,8 @@ export default function MentorTasksPage() {
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-150 transition-transform duration-700">
                 <ClipboardList className="w-32 h-32 text-indigo-600" />
               </div>
-              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-6 block italic">Work Description</label>
-              <p className="text-[13px] font-medium text-gray-700 leading-relaxed relative z-10 italic">
+              <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-6 block">Work Description</label>
+              <p className="text-[13px] font-medium text-gray-700 leading-relaxed relative z-10">
                 "{selectedTask.description}"
               </p>
             </div>

@@ -3,7 +3,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, Activity, CheckSquare, Calendar, Users, ArrowRight } from "lucide-react";
-import { Card } from "./Card";
+import { Card } from "../ui/Card";
 
 interface Task {
   id: string;

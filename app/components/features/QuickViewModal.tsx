@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Modal } from './Modal';
+import { Modal } from '../ui/Modal';
 import { 
   Building2, Mail, Phone, Calendar, 
   GraduationCap, User, CheckSquare, 
   Clock, AlertCircle, ArrowUpRight,
   Edit3
 } from 'lucide-react';
-import { Button } from './Button';
+import { Button } from '../ui/Button';
 import Link from 'next/link';
 
 interface QuickViewModalProps {

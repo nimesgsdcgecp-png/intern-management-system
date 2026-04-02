@@ -53,7 +53,7 @@ export function DashboardHeader() {
         </div>
         <div>
           <h2 className="text-lg font-black text-(--nav-text) tracking-tighter uppercase leading-none">Management System</h2>
-          <p className="text-[10px] font-bold text-(--nav-text-muted) uppercase tracking-widest mt-1 opacity-60 italic">Live Tracking Dashboard</p>
+          <p className="text-[10px] font-bold text-(--nav-text-muted) uppercase tracking-widest mt-1 opacity-60">Live Tracking Dashboard</p>
         </div>
       </div>
 
@@ -118,7 +118,7 @@ export function DashboardHeader() {
           <div className="text-left hidden lg:block">
             <div className="text-sm font-bold text-white leading-tight">{session?.user?.name || "Administrator"}</div>
             <div className="flex items-center gap-2">
-              <div className="text-[10px] text-gray-400 font-medium">{session?.user?.email || "admin@internhub.com"}</div>
+              <div className="text-[10px] text-gray-400 font-medium">{session?.user?.email || "admin@Internship Management System.com"}</div>
               <span className="bg-indigo-500/20 text-indigo-400 text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">ADMIN</span>
             </div>
           </div>

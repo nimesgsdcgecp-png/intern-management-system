@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Card } from "./Card";
+import { Card } from "../ui/Card";
 
 interface SearchHeaderProps {
   title: string;

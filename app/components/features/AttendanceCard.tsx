@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { Clock, Play, Square, Loader2, CheckCircle2, AlertCircle, Timer } from "lucide-react";
-import { Button } from "./Button";
-import { Card } from "./Card";
+import { Button } from "../ui/Button";
+import { Card } from "../ui/Card";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function AttendanceCard() {
@@ -23,11 +23,11 @@ export function AttendanceCard() {
         const start = new Date(record.clock_in).getTime();
         const now = new Date().getTime();
         const diff = now - start;
-        
+
         const h = Math.floor(diff / 3600000);
         const m = Math.floor((diff % 3600000) / 60000);
         const s = Math.floor((diff % 60000) / 1000);
-        
+
         setElapsedTime(
           `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
         );
@@ -40,7 +40,7 @@ export function AttendanceCard() {
     try {
       const response = await fetch("/api/attendance");
       const data = await response.json();
-      
+
       if (data) {
         setRecord(data);
         if (data.clock_out) {
@@ -60,7 +60,7 @@ export function AttendanceCard() {
   const handleClockAction = async (action: "clock-in" | "clock-out") => {
     setStatus("loading");
     setError(null);
-    
+
     try {
       const response = await fetch("/api/attendance", {
         method: "POST",
@@ -95,7 +95,7 @@ export function AttendanceCard() {
     <Card className="p-10 dm-card rounded-[3rem] border dm-border shadow-2xl relative overflow-hidden group">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500/5 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-indigo-500/10 transition-colors" />
-      
+
       <div className="flex flex-col gap-8 relative z-10">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
@@ -112,7 +112,7 @@ export function AttendanceCard() {
 
         <AnimatePresence mode="wait">
           {status === "idle" ? (
-            <motion.div 
+            <motion.div
               key="idle"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -133,7 +133,7 @@ export function AttendanceCard() {
               </Button>
             </motion.div>
           ) : status === "clocked-in" ? (
-            <motion.div 
+            <motion.div
               key="active"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -159,7 +159,7 @@ export function AttendanceCard() {
               </Button>
             </motion.div>
           ) : (
-            <motion.div 
+            <motion.div
               key="done"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}

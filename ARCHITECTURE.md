@@ -315,10 +315,10 @@ app/
 │       └── reports/page.tsx   # Report submissions
 ├── profile/page.tsx           # Profile management
 └── components/
-    ├── ui/                    # Base UI components
-    ├── forms/                 # Form components
-    ├── layouts/               # Layout components
-    └── features/              # Feature-specific components
+    ├── ui/                    # Atomic UI components (Button, Card, Input, Modal, etc.)
+    ├── layout/                # Shell & navigation components (DashboardLayout, Sidebar, DashboardHeader)
+    ├── features/              # Domain-specific logic (KanbanBoard, AttendanceTable, ActivityFeed, etc.)
+    └── providers/             # Functional providers (ThemeProvider, SessionProviderWrapper)
 ```
 
 ## State Management Architecture

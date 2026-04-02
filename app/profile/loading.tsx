@@ -1,5 +1,5 @@
 import React from 'react';
-import { Skeleton } from "@/app/components/Skeleton";
+import { Skeleton } from "@/app/components/ui/Skeleton";
 
 export default function ProfileLoading() {
   return (

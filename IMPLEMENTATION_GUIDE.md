@@ -199,14 +199,10 @@ Helper functions in `lib/db.ts`:
 
 ```
 app/components/
-├── Button.tsx              # Reusable button component
-├── Card.tsx                # Content container
-├── Input.tsx               # Form input with validation
-├── Sidebar.tsx             # Navigation sidebar
-├── DashboardLayout.tsx     # Main layout wrapper
-├── StatCard.tsx            # Statistics display
-├── NotificationCenter.tsx  # Toast notifications
-└── SessionProviderWrapper.tsx # NextAuth provider
+├── ui/                    # Atomic UI components with standardized styling (Button, Card, Input)
+├── layout/                # Structural layout components (DashboardLayout, Sidebar, Header)
+├── features/              # Complex, domain-specific feature logic (KanbanBoard, AttendanceTable)
+└── providers/             # Context providers and session wrappers (SessionProviderWrapper)
 ```
 
 ### 📱 Design Patterns

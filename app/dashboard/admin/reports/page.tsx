@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState, Fragment } from "react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { SearchHeader } from "@/app/components/SearchHeader";
-import { Input } from "@/app/components/Input";
-import { Select } from "@/app/components/Select";
-import { Button } from "@/app/components/Button";
-import { AttendanceTable } from "@/app/components/AttendanceTable";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
+import { SearchHeader } from "@/app/components/features/SearchHeader";
+import { Input } from "@/app/components/ui/Input";
+import { Select } from "@/app/components/ui/Select";
+import { Button } from "@/app/components/ui/Button";
+import { AttendanceTable } from "@/app/components/features/AttendanceTable";
 import {
   FileText,
   Clock,
@@ -64,6 +64,11 @@ export default function AdminReportsPage() {
   });
   const [sortConfig, setSortConfig] = useState<{ key: keyof Report | 'intern'; direction: 'asc' | 'desc' } | null>(null);
 
+  /**
+   * Effect: Data Synchronization
+   * Fetches the global registry of reports and interns to populate the dashboard.
+   * Maps interns by ID for O(1) lookup during rendering.
+   */
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -92,7 +97,11 @@ export default function AdminReportsPage() {
     fetchData();
   }, []);
 
-  // Filter reports based on current filters
+  /**
+   * Logic: Multi-dimensional Filtering
+   * Filters the report registry based on intern identity, department stream, 
+   * review status, and historical date range.
+   */
   const filteredReports = reports.filter((report) => {
     const intern = internMap.get(report.internId);
     const internName = intern?.name?.toLowerCase() || "";
@@ -124,7 +133,10 @@ export default function AdminReportsPage() {
     return true;
   });
 
-  // Sort reports
+  /**
+   * Logic: Tactical Sorting
+   * Sorts the filtered dataset based on active configuration (e.g., date, hours, or intern name).
+   */
   const sortedReports = [...filteredReports].sort((a, b) => {
     if (!sortConfig) return 0;
     
@@ -205,7 +217,7 @@ export default function AdminReportsPage() {
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               Insight Reports
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Analyze performance metrics and review technical submissions.</p>
+            <p className="text-gray-500 mt-1 font-medium">Analyze performance metrics and review technical submissions.</p>
           </div>
           <div className="flex gap-4 no-print">
             <Button
@@ -372,7 +384,7 @@ export default function AdminReportsPage() {
                                   {intern.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                                 </div>
                                 <div className="flex flex-col">
-                                  <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors text-base tracking-tight italic">{intern.name}</span>
+                                  <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors text-base tracking-tight">{intern.name}</span>
                                   <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{intern.email}</span>
                                 </div>
                               </div>
@@ -383,7 +395,7 @@ export default function AdminReportsPage() {
                               </span>
                             </td>
                             <td className="px-8 py-4">
-                              <div className="flex items-center gap-2.5 text-sm font-bold text-gray-700 italic">
+                              <div className="flex items-center gap-2.5 text-sm font-bold text-gray-700">
                                 <Calendar className="w-4 h-4 text-indigo-400" />
                                 <span>{formatDate(report.date)}</span>
                               </div>
@@ -426,7 +438,7 @@ export default function AdminReportsPage() {
                                     </div>
                                     <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm min-h-[140px] relative overflow-hidden group/card hover:shadow-md transition-shadow">
                                       <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500 opacity-20" />
-                                      <p className="text-sm text-gray-600 leading-relaxed font-medium italic relative z-10">
+                                      <p className="text-sm text-gray-600 leading-relaxed font-medium relative z-10">
                                         "{report.workDescription || "No detailed logs synthesized."}"
                                       </p>
                                       <Search className="absolute -bottom-4 -right-4 w-24 h-24 text-gray-50 opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 -rotate-12" />
@@ -442,7 +454,7 @@ export default function AdminReportsPage() {
                                         report.mentorFeedback ? "bg-emerald-50/30 border-emerald-100" : "bg-amber-50/30 border-amber-100"
                                       }`}>
                                       <div className={`absolute top-0 left-0 w-1.5 h-full opacity-30 ${report.mentorFeedback ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                                      <p className="text-sm text-gray-700 leading-relaxed font-bold relative z-10 italic">
+                                      <p className="text-sm text-gray-700 leading-relaxed font-bold relative z-10">
                                         {report.mentorFeedback || "Waiting for mentor session authentication."}
                                       </p>
                                       <CheckCircle2 className={`absolute -bottom-4 -right-4 w-24 h-24 opacity-0 group-hover/feedback:opacity-100 transition-opacity duration-700 -rotate-12 ${

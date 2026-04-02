@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { Input } from "@/app/components/Input";
-import { Select } from "@/app/components/Select";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { Input } from "@/app/components/ui/Input";
+import { Select } from "@/app/components/ui/Select";
 import { Users, Mail, Building2, UserCheck, GraduationCap, MapPin, ExternalLink, ShieldCheck, Sparkles, Activity, Search, Filter } from "lucide-react";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { PremiumStatCard } from "@/app/components/PremiumStatCard";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
 import { motion } from "framer-motion";
 
 interface Intern {
@@ -31,6 +30,11 @@ export default function MyInternsPage() {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ name: "", department: "" });
 
+  /**
+   * Effect: Cross-Entity Data Synchronization
+   * Fetches the global intern registry and filters specifically for 
+   * individuals assigned to this mentor's leadership.
+   */
   useEffect(() => {
     const fetchInterns = async () => {
       try {
@@ -88,7 +92,7 @@ export default function MyInternsPage() {
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               My Interns
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Manage and track the performance of interns assigned to you.</p>
+            <p className="text-gray-500 mt-1 font-medium">Manage and track the performance of interns assigned to you.</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="px-5 py-2.5 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-widest shadow-sm">
@@ -144,7 +148,7 @@ export default function MyInternsPage() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-32">
               <div className="w-10 h-10 border-4 border-indigo-600/20 border-t-indigo-600 rounded-full animate-spin mb-6"></div>
-              <p className="text-[10px] font-black dm-text-muted uppercase tracking-widest opacity-40 italic">Syncing Directory...</p>
+              <p className="text-[10px] font-black dm-text-muted uppercase tracking-widest opacity-40">Syncing Directory...</p>
             </div>
           ) : filteredInterns.length === 0 ? (
             <Card className="text-center py-24 rounded-[2.5rem] border-dashed border-2 border-gray-100 bg-gray-50/20">
@@ -174,7 +178,7 @@ export default function MyInternsPage() {
                             </div>
                             <div className="flex flex-col">
                               <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{intern.name}</span>
-                              <span className="text-xs text-gray-400 font-medium italic">{intern.email}</span>
+                              <span className="text-xs text-gray-400 font-medium">{intern.email}</span>
                             </div>
                           </div>
                         </td>

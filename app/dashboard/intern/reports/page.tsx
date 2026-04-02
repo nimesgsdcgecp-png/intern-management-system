@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
 import { FileText, Clock, Calendar, CheckCircle2, MessageSquare, Timer, Sparkles, Activity, ShieldCheck, ExternalLink } from "lucide-react";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { PremiumStatCard } from "@/app/components/PremiumStatCard";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
 import { motion } from "framer-motion";
 
 interface Report {
@@ -21,6 +20,11 @@ export default function MyReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Effect: Historical Activity Retrieval
+   * Fetches the chronological repository of work reports submitted by 
+   * the current intern, including mentor feedback status.
+   */
   useEffect(() => {
     const fetchReports = async () => {
       try {
@@ -69,7 +73,7 @@ export default function MyReportsPage() {
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               Activity <span className="text-indigo-600">Logs</span>
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Your chronological submission history and performance evaluations.</p>
+            <p className="text-gray-500 mt-1 font-medium">Your chronological submission history and performance evaluations.</p>
           </div>
           <a 
             href="/dashboard/intern/submit-report" 
@@ -90,8 +94,8 @@ export default function MyReportsPage() {
         ) : reports.length === 0 ? (
           <div className="text-center py-32 rounded-[2.5rem] border-dashed border-2 border-gray-100 bg-gray-50/20">
             <FileText className="w-20 h-20 text-gray-300 mx-auto mb-8 opacity-20" />
-            <h3 className="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tight italic">No Records Found</h3>
-            <p className="text-gray-400 max-w-sm mx-auto font-medium tracking-tight mb-8 italic">You haven't submitted any activity reports yet. Begin tracking your progress today.</p>
+            <h3 className="text-2xl font-black text-gray-900 mb-2 uppercase tracking-tight">No Records Found</h3>
+            <p className="text-gray-400 max-w-sm mx-auto font-medium tracking-tight mb-8">You haven't submitted any activity reports yet. Begin tracking your progress today.</p>
             <a href="/dashboard/intern/submit-report" className="text-indigo-600 font-black hover:underline flex items-center justify-center gap-2 uppercase text-[10px] tracking-widest">
                 Submit your first report <ExternalLink className="w-4 h-4" />
             </a>
@@ -113,14 +117,14 @@ export default function MyReportsPage() {
                     {reports.map((report) => (
                       <tr key={report.id} className="group transition-all duration-300 hover:bg-gray-50/30">
                         <td className="px-8 py-4">
-                           <div className="flex items-center gap-3 font-bold text-gray-900 tracking-tight text-base italic group-hover:text-indigo-600 transition-colors">
+                           <div className="flex items-center gap-3 font-bold text-gray-900 tracking-tight text-base group-hover:text-indigo-600 transition-colors">
                               <Calendar className="w-4 h-4 text-indigo-400" /> 
                               {report.date}
                            </div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="max-w-md">
-                            <p className="text-xs font-semibold text-gray-500 line-clamp-2 italic leading-relaxed">
+                            <p className="text-xs font-semibold text-gray-500 line-clamp-2 leading-relaxed">
                               "{report.workDescription}"
                             </p>
                           </div>

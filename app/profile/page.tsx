@@ -3,14 +3,13 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/app/components/Button";
-import { Input } from "@/app/components/Input";
-import { Card } from "@/app/components/Card";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
+import { Button } from "@/app/components/ui/Button";
+import { Input } from "@/app/components/ui/Input";
+import { Card } from "@/app/components/ui/Card";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
 import { useAppDispatch } from "@/app/lib/redux/hooks";
 import { addSuccess, addError } from "@/app/lib/redux/slices/notificationSlice";
 import { User, Mail, ShieldCheck, Key, Building2, UserCircle, Save, Loader2, Sparkles, Activity } from "lucide-react";
-import { PremiumStatCard } from "@/app/components/PremiumStatCard";
 
 interface UserProfile {
   id: string;
@@ -39,6 +38,11 @@ export default function ProfilePage() {
   const [passwordFieldErrors, setPasswordFieldErrors] = useState<{ current?: string; new?: string; confirm?: string }>({});
   const [passwordLoading, setPasswordLoading] = useState(false);
 
+  /**
+   * Effect: Profile Update
+   * Ensures the UI reflects the latest account state.
+   * Redirects if not logged in.
+   */
   useEffect(() => {
     if (status === "loading") return;
 
@@ -50,6 +54,10 @@ export default function ProfilePage() {
     fetchProfile();
   }, [session, status, router]);
 
+  /**
+   * Logic: Get Profile
+   * Gets user details from the server.
+   */
   const fetchProfile = async () => {
     try {
       const res = await fetch("/api/profile");
@@ -124,6 +132,10 @@ export default function ProfilePage() {
     }
   };
 
+  /**
+   * Logic: Change Password
+   * Updates your password on the server.
+   */
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: typeof passwordFieldErrors = {};
@@ -226,7 +238,7 @@ export default function ProfilePage() {
               <h1 className="text-4xl font-extrabold dm-text tracking-tight">
                 Profile <span className="text-indigo-600">Settings</span>
               </h1>
-              <p className="dm-text-muted mt-1 font-medium italic">Manage your digital identity and account security.</p>
+              <p className="dm-text-muted mt-1 font-medium">Manage your profile and security.</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -270,7 +282,7 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                   <div className="space-y-6">
                     <h3 className="text-xs font-black dm-text-muted uppercase tracking-widest flex items-center gap-2">
-                      <Building2 className="w-4 h-4 text-indigo-500" /> Professional Affiliation
+                      <Building2 className="w-4 h-4 text-indigo-500" /> Department
                     </h3>
                     <div className="dm-sunken rounded-2xl p-6 border dm-border">
                       <p className="text-[10px] font-black dm-text-muted uppercase tracking-widest mb-1">Department</p>
@@ -279,7 +291,7 @@ export default function ProfilePage() {
                   </div>
                   <div className="space-y-6">
                     <h3 className="text-xs font-black dm-text-muted uppercase tracking-widest flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-indigo-500" /> Contact Channel
+                      <Mail className="w-4 h-4 text-indigo-500" /> Contact Email
                     </h3>
                     <div className="dm-sunken rounded-2xl p-6 border dm-border">
                       <p className="text-[10px] font-black dm-text-muted uppercase tracking-widest mb-1">Primary Email</p>
@@ -292,13 +304,13 @@ export default function ProfilePage() {
 
             {/* Change Password */}
             <div className="space-y-6">
-              <h2 className="text-xl font-black dm-text uppercase tracking-wider">Security Initialization</h2>
+              <h2 className="text-xl font-black dm-text uppercase tracking-wider">Change Password</h2>
               <Card className="rounded-[2.5rem] p-10 border dm-border shadow-2xl">
                 <form onSubmit={handlePasswordChange} className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <Input
                       type="password"
-                      label="Current Authentication"
+                      label="Current Password"
                       value={currentPassword}
                       onChange={(e) => {
                         setCurrentPassword(e.target.value);
@@ -310,7 +322,7 @@ export default function ProfilePage() {
                     />
                     <Input
                       type="password"
-                      label="New Secret Code"
+                      label="New Password"
                       value={newPassword}
                       onChange={(e) => {
                         setNewPassword(e.target.value);
@@ -322,7 +334,7 @@ export default function ProfilePage() {
                     />
                     <Input
                       type="password"
-                      label="Confirm Secret"
+                      label="Confirm Password"
                       value={confirmPassword}
                       onChange={(e) => {
                         setConfirmPassword(e.target.value);
@@ -336,7 +348,7 @@ export default function ProfilePage() {
 
                   {newPassword && (
                     <div className="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-3xl border dm-border">
-                      <p className="text-[10px] font-black dm-text-muted uppercase tracking-widest mb-4">Complexity Analysis</p>
+                      <p className="text-[10px] font-black dm-text-muted uppercase tracking-widest mb-4">Password Strength</p>
                       <div className="space-y-3">
                         <div className="flex flex-wrap gap-4">
                           {requirements.map((error: string, index: number) => (
@@ -354,7 +366,7 @@ export default function ProfilePage() {
                           {confirmPassword && (
                             <div className={`flex items-center gap-2 px-3 py-1 text-[10px] font-bold rounded-full border ${passwordsMatch ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 border-emerald-100 dark:border-emerald-500/20" : "bg-rose-50 dark:bg-rose-500/10 text-rose-600 border-rose-100 dark:border-rose-500/20"}`}>
                               <span className={`w-1.5 h-1.5 rounded-full ${passwordsMatch ? "bg-emerald-600" : "bg-rose-600"}`} />
-                              {passwordsMatch ? "Identifiers Match" : "Mismatch Detected"}
+                              {passwordsMatch ? "Passwords match" : "Passwords don't match"}
                             </div>
                           )}
                         </div>
@@ -379,7 +391,7 @@ export default function ProfilePage() {
                     ) : (
                       <Key className="w-4 h-4" />
                     )}
-                    {passwordLoading ? "Processing..." : "Update Security Credentials"}
+                    {passwordLoading ? "Saving..." : "Update Password"}
                   </Button>
                 </form>
               </Card>
@@ -389,12 +401,12 @@ export default function ProfilePage() {
           <div className="space-y-10">
             {/* Update Email */}
             <div className="space-y-6">
-              <h2 className="text-xl font-black dm-text uppercase tracking-wider">Communication Channel</h2>
+              <h2 className="text-xl font-black dm-text uppercase tracking-wider">Email Settings</h2>
               <Card className="rounded-[2.5rem] p-8 border dm-border shadow-2xl">
                 <form onSubmit={handleEmailUpdate} className="space-y-6">
                   <Input
                     type="email"
-                    label="Primary Correspondence"
+                    label="Your Email"
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
@@ -412,7 +424,7 @@ export default function ProfilePage() {
                     disabled={emailLoading || email === profile.email}
                   >
                     {emailLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                    {emailLoading ? "Synchronizing..." : "Update Email Address"}
+                    {emailLoading ? "Saving..." : "Update Email"}
                   </Button>
                 </form>
               </Card>
@@ -424,12 +436,12 @@ export default function ProfilePage() {
                 <Activity className="w-32 h-32" />
               </div>
               <div className="relative z-10">
-                <h3 className="font-extrabold text-2xl tracking-tighter italic mb-4">System Protocol</h3>
+                <h3 className="font-extrabold text-2xl tracking-tighter mb-4">Status</h3>
                 <p className="text-xs font-medium opacity-70 leading-relaxed mb-6">
-                  Profile updates are synchronized across all modules including attendance logs and activity streams instantly.
+                  Profile updates are saved across the system instantly.
                 </p>
                 <div className="w-full py-3 bg-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center border border-white/10 backdrop-blur-sm">
-                  Profile Integrity: Active
+                  Status: Active
                 </div>
               </div>
             </div>

@@ -2,11 +2,10 @@
 
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
-import { DashboardLayout } from "@/app/components/DashboardLayout";
-import { Card } from "@/app/components/Card";
-import { AttendanceTable } from "@/app/components/AttendanceTable";
-import { StatsGrid } from "@/app/components/StatsGrid";
-import { PremiumStatCard } from "@/app/components/PremiumStatCard";
+import { DashboardLayout } from "@/app/components/layout/DashboardLayout";
+import { Card } from "@/app/components/ui/Card";
+import { AttendanceTable } from "@/app/components/features/AttendanceTable";
+import { StatsGrid } from "@/app/components/ui/StatsGrid";
 import { Clock, Calendar, CheckCircle2, History, Timer, Loader2, LogIn, LogOut, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
@@ -27,6 +26,11 @@ export default function InternAttendancePage() {
     fetchTodayRecord();
   }, []);
 
+  /**
+   * Effect: Temporal Performance Tracking
+   * Aggregates total work hours and Attendance days for the current session user.
+   * Calculates daily average to provide productivity insights.
+   */
   const fetchStats = async () => {
     try {
       const res = await fetch("/api/attendance");
@@ -65,6 +69,11 @@ export default function InternAttendancePage() {
     }
   };
 
+  /**
+   * Logic: Attendance Verification
+   * Manages check-in and check-out events for the current workday.
+   * Ensures high-fidelity record keeping for mentor audit.
+   */
   const handlePunch = async (action: "clock-in" | "clock-out") => {
     setPunching(true);
     try {
@@ -132,12 +141,12 @@ export default function InternAttendancePage() {
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
               Work <span className="text-indigo-600">History</span>
             </h1>
-            <p className="text-gray-500 mt-1 font-medium italic">Track your check-ins and total working hours.</p>
+            <p className="text-gray-500 mt-1 font-medium">Track your check-ins and total working hours.</p>
           </div>
           <div className="flex items-center gap-3">
              <div className="px-5 py-2.5 bg-indigo-50 text-indigo-700 rounded-2xl text-[10px] font-black flex items-center gap-3 border border-indigo-100 uppercase tracking-widest shadow-sm">
                 <ShieldCheck className="w-4 h-4" />
-                Presence Verified
+                Attendance Verified
              </div>
           </div>
         </div>
@@ -149,8 +158,8 @@ export default function InternAttendancePage() {
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-black text-gray-900 tracking-tighter uppercase italic">Time Tracker</h3>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest italic">Record your work entry and exit for today</p>
+              <h3 className="text-xl font-black text-gray-900 tracking-tighter uppercase">Time Tracker</h3>
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Record your work entry and exit for today</p>
             </div>
           </div>
           <AnimatePresence mode="wait">
@@ -199,11 +208,11 @@ export default function InternAttendancePage() {
         {/* History Table */}
         <div className="space-y-6">
             <div className="flex items-center justify-between px-2">
-                <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight italic flex items-center gap-3">
+                <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-3">
                    <History className="w-6 h-6 text-indigo-600" />
                    Recent Activity
                 </h2>
-                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-full border border-gray-100 italic">
+                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
                    Year: {new Date().getFullYear()}
                 </div>
             </div>
@@ -225,8 +234,8 @@ export default function InternAttendancePage() {
                  <Calendar className="w-7 h-7" />
               </div>
               <div>
-                 <h4 className="text-[11px] font-black text-indigo-900 uppercase tracking-widest mb-3 italic">Automatic Tracking System</h4>
-                 <p className="text-xs text-indigo-900/60 font-semibold leading-relaxed max-w-2xl italic">
+                 <h4 className="text-[11px] font-black text-indigo-900 uppercase tracking-widest mb-3">Automatic Tracking System</h4>
+                 <p className="text-xs text-indigo-900/60 font-semibold leading-relaxed max-w-2xl">
                     Your check-ins are automatically saved and shared with your mentor for verification. Please remember to check in when you start and check out when you finish to ensure your hours are calculated accurately for the internship duration.
                  </p>
               </div>

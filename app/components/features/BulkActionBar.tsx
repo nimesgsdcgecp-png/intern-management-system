@@ -3,7 +3,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, X, Download, UserPlus, CheckCircle } from "lucide-react";
-import { Button } from "./Button";
+import { Button } from "../ui/Button";
 
 interface BulkActionBarProps {
   selectedCount: number;

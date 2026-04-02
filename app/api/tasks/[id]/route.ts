@@ -9,7 +9,7 @@ import {
   UPDATE_TASK_BY_CREATOR,
   UPDATE_TASK_STATUS,
 } from "@/lib/graphql/mutations";
-import { logActivity } from "@/services/activityService";
+import { logActivity } from "@/lib/activityService";
 
 
 export async function GET(

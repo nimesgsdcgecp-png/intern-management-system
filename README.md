@@ -76,37 +76,27 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 intern-management-system/
 ├── app/
+│   ├── components/             # Managed component architecture
+│   │   ├── ui/                 # Atomic UI components (Buttons, Cards, Inputs, Modals)
+│   │   ├── layout/             # Shell components (Sidebars, Headers, DashboardLayout)
+│   │   ├── features/           # Domain-specific modules (KanbanBoard, AttendanceTable)
+│   │   └── providers/          # Functional context wrappers (Redux, Auth, Themes)
 │   ├── api/                    # API Routes (CRUD operations)
-│   │   ├── auth/               # Authentication endpoints
-│   │   ├── interns/            # Intern management
-│   │   ├── mentors/            # Mentor management
-│   │   ├── tasks/              # Task operations
-│   │   ├── reports/            # Report management
-│   │   ├── profile/            # Profile management
-│   │   └── email/              # Email services
 │   ├── auth/                   # Authentication pages
-│   ├── components/             # Reusable React components
-│   ├── dashboard/              # Role-specific dashboards
+│   ├── dashboard/              # Role-specific dashboard pages
 │   ├── profile/                # Profile management pages
-│   ├── lib/redux/              # Redux store and slices
-│   ├── globals.css             # Global styles
-│   ├── layout.tsx              # Root layout
-│   └── page.tsx                # Home page
+│   └── lib/redux/              # Redux store and slice definitions
 ├── lib/
+│   ├── services/               # Centralized business logic and data services
 │   ├── auth.ts                 # NextAuth configuration
 │   ├── db.ts                   # Database utilities
 │   ├── hasura.ts               # GraphQL client
-│   ├── apolloClient.ts         # Apollo configuration
-│   ├── graphql/                # GraphQL queries & mutations
-│   ├── auth/                   # Password reset utilities
-│   └── email/                  # Email service providers
+│   └── graphql/                # Shared GraphQL operations
 ├── sql/
-│   └── schema.sql              # PostgreSQL schema
-├── middleware.ts               # Route protection
-├── .env.example                # Environment variables template
-├── DOCUMENTATION.md            # Comprehensive docs
-├── IMPLEMENTATION_GUIDE.md     # Developer guide
-└── ARCHITECTURE.md             # System architecture
+│   └── schema.sql              # Standardized PostgreSQL schema
+├── DOCUMENTATION.md            # Feature & API reference
+├── IMPLEMENTATION_GUIDE.md     # Engineering & setup guide
+└── ARCHITECTURE.md             # System design & architecture details
 ```
 
 ## 🏗️ Tech Stack
@@ -347,15 +337,15 @@ SMTP_PASS=your-app-password
 - [x] Email notifications for user credentials
 - [x] Redux state management
 - [x] Profile management system
+- [x] Attendance tracking
+- [x] Bulk import/export
+- [x] Performance ratings & Feedback
 - [ ] File upload support
 - [ ] PDF report generation
-- [ ] Advanced analytics dashboard
-- [ ] Attendance tracking
-- [ ] Performance ratings
-- [ ] Bulk import/export
+- [ ] Advanced analytics dashboard (enhanced)
 - [ ] Real-time notifications (WebSocket)
 - [ ] Mobile app (React Native)
-- [ ] Calendar integration
+- [ ] Calendar integration (enhanced)
 - [ ] Document management system
 
 ## 🤝 Contributing
