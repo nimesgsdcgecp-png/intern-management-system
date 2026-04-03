@@ -29,7 +29,7 @@ export default function MyTasksPage() {
   const dispatch = useAppDispatch();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<"table">("table");
+  const [viewMode, setViewMode] = useState<"table" | "kanban">("kanban");
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   /**
@@ -139,10 +139,26 @@ export default function MyTasksPage() {
             </div>
             <div className="flex items-center gap-3 p-1.5 bg-gray-50 rounded-2xl border border-gray-100">
               <button
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all bg-white shadow-sm text-indigo-600 border border-gray-100"
+                onClick={() => setViewMode("table")}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                  viewMode === "table" 
+                    ? "bg-white shadow-sm text-indigo-600 border border-gray-100" 
+                    : "text-gray-400 hover:text-gray-600"
+                }`}
               >
                 <Layout className="w-4 h-4" />
-                Active View: Table
+                Table View
+              </button>
+              <button
+                onClick={() => setViewMode("kanban")}
+                className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                  viewMode === "kanban" 
+                    ? "bg-white shadow-sm text-indigo-600 border border-gray-100" 
+                    : "text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                <Grid className="w-4 h-4" />
+                Kanban Board
               </button>
             </div>
           </div>
@@ -162,52 +178,61 @@ export default function MyTasksPage() {
             </Card>
           ) : (
             <div className="mt-8">
-              <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="bg-gray-50/50 border-b border-gray-100">
-                        <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Task Title & Information</th>
-                        <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Deadline</th>
-                        <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Priority</th>
-                        <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-50">
-                      {tasks.map((task) => (
-                        <tr key={task.id} className="group transition-all duration-300 cursor-pointer hover:bg-gray-50/30" onClick={() => handleQuickView(task.id)}>
-                          <td className="px-8 py-4 min-w-[300px]">
-                            <div className="flex flex-col">
-                              <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight text-base">{task.title}</span>
-                              <span className="text-xs text-gray-400 font-medium line-clamp-1">{task.description}</span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3 font-bold text-xs text-gray-600 tracking-tight">
-                              <Clock className="w-4 h-4 text-indigo-400" /> {task.deadline}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            <span className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                              task.priority === "high" ? "bg-rose-50 text-rose-600 border-rose-100" :
-                              task.priority === "medium" ? "bg-amber-50 text-amber-600 border-amber-100" :
-                              "bg-emerald-50 text-emerald-600 border-emerald-100"
-                            }`}>
-                              {task.priority}
-                            </span>
-                          </td>
-                          <td className="px-8 py-4">
-                            <div className="flex items-center justify-end gap-3 font-bold text-xs text-gray-500 uppercase tracking-tight">
-                              <div className={`w-2 h-2 rounded-full ${task.status === "completed" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : task.status === "in-progress" ? "bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.5)]" : "bg-gray-300"}`} />
-                              {task.status}
-                            </div>
-                          </td>
+              {viewMode === "table" ? (
+                <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                      <thead>
+                        <tr className="bg-gray-50/50 border-b border-gray-100">
+                          <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Task Title & Information</th>
+                          <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Deadline</th>
+                          <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Priority</th>
+                          <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Status</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {tasks.map((task) => (
+                          <tr key={task.id} className="group transition-all duration-300 cursor-pointer hover:bg-gray-50/30" onClick={() => handleQuickView(task.id)}>
+                            <td className="px-8 py-4 min-w-[300px]">
+                              <div className="flex flex-col">
+                                <span className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors tracking-tight text-base">{task.title}</span>
+                                <span className="text-xs text-gray-400 font-medium line-clamp-1">{task.description}</span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3 font-bold text-xs text-gray-600 tracking-tight">
+                                <Clock className="w-4 h-4 text-indigo-400" /> {task.deadline}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                              <span className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                                task.priority === "high" ? "bg-rose-50 text-rose-600 border-rose-100" :
+                                task.priority === "medium" ? "bg-amber-50 text-amber-600 border-amber-100" :
+                                "bg-emerald-50 text-emerald-600 border-emerald-100"
+                              }`}>
+                                {task.priority}
+                              </span>
+                            </td>
+                            <td className="px-8 py-4">
+                              <div className="flex items-center justify-end gap-3 font-bold text-xs text-gray-500 uppercase tracking-tight">
+                                <div className={`w-2 h-2 rounded-full ${task.status === "completed" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : task.status === "in-progress" ? "bg-indigo-500 shadow-[0_0_8px_rgba(79,70,229,0.5)]" : "bg-gray-300"}`} />
+                                {task.status}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <KanbanBoard 
+                  tasks={tasks} 
+                  onStatusChange={handleStatusChange} 
+                  onQuickView={handleQuickView}
+                  interns={[{ id: (session?.user as any)?.id, name: (session?.user as any)?.name }]}
+                />
+              )}
             </div>
           )}
         </div>
@@ -271,7 +296,31 @@ export default function MyTasksPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end pt-5">
+              <div className="flex flex-wrap items-center justify-end gap-4 pt-5">
+                {selectedTask.status === "pending" && (
+                  <button
+                    onClick={() => {
+                      handleStatusChange(selectedTask.id, "in-progress");
+                      setSelectedTask({ ...selectedTask, status: "in-progress" });
+                    }}
+                    className="px-8 py-4 bg-indigo-600 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all outline-none flex items-center gap-2"
+                  >
+                    <Activity className="w-4 h-4" />
+                    Start Task
+                  </button>
+                )}
+                {selectedTask.status === "in-progress" && (
+                  <button
+                    onClick={() => {
+                      handleStatusChange(selectedTask.id, "completed");
+                      setSelectedTask({ ...selectedTask, status: "completed" });
+                    }}
+                    className="px-8 py-4 bg-emerald-600 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all outline-none flex items-center gap-2"
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    Mark Completed
+                  </button>
+                )}
                 <button
                   onClick={() => setSelectedTask(null)}
                   className="px-12 py-4 bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-2xl hover:scale-105 active:scale-95 transition-all outline-none"

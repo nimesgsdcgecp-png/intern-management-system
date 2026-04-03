@@ -15,9 +15,9 @@ export default withAuth(
     // 2. Role-based Access Control (RBAC) Logic
     const role = token?.role as string;
 
-    // Admin-only sectors
+    // Admin-only sectors (Attendance allowed for mentors)
     if (pathname.startsWith("/dashboard/admin")) {
-      if (role !== "admin") {
+      if (role !== "admin" && !(role === "mentor" && pathname === "/dashboard/admin/attendance")) {
         return NextResponse.redirect(new URL("/access-denied", req.url));
       }
     }

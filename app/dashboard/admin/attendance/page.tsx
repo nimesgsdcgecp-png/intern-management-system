@@ -25,22 +25,8 @@ export default function AttendanceMonitorPage() {
    * if the user is a mentor. This ensures they only see relevant team data.
    */
   useEffect(() => {
-    if (isMentor && session?.user) {
-      const fetchMentorDept = async () => {
-        try {
-          const res = await fetch('/api/auth/users');
-          if (res.ok) {
-            const users = await res.json();
-            const me = users.find((u: any) => u.id === (session.user as any).id);
-            if (me?.profile?.department) {
-              setDepartment(me.profile.department);
-            }
-          }
-        } catch (err) {
-          console.error("Failed to fetch mentor department", err);
-        }
-      };
-      fetchMentorDept();
+    if (isMentor && session && (session.user as any)?.department) {
+      setDepartment((session.user as any).department);
     }
   }, [isMentor, session]);
 

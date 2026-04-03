@@ -149,7 +149,7 @@ export default function CalendarPage() {
   const renderCells = () => {
     const cells = [];
     for (let i = 0; i < firstDay; i++) {
-      cells.push(<div key={`pad-${i}`} className="h-32 border-b border-r dm-border bg-slate-50/20 dark:bg-black/10 opacity-30"></div>);
+      cells.push(<div key={`pad-${i}`} className="h-20 border-b border-r dm-border bg-slate-50/20 dark:bg-black/10 opacity-30"></div>);
     }
 
     for (let d = 1; d <= totalDays; d++) {
@@ -166,9 +166,9 @@ export default function CalendarPage() {
               setShowAddModal(true);
             }
           }}
-          className={`h-32 border-b border-r border-gray-100 p-4 relative group transition-all hover:bg-gray-50/50 cursor-pointer ${isToday ? 'bg-indigo-50/30' : ''}`}
+          className={`h-20 border-b border-r border-gray-100 p-3 relative group transition-all hover:bg-gray-50/50 cursor-pointer ${isToday ? 'bg-indigo-50/30' : ''}`}
         >
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-2">
             <span className={`text-[11px] font-black w-7 h-7 rounded-full flex items-center justify-center transition-all ${isToday ? 'bg-indigo-600 text-white' : 'text-gray-400 group-hover:text-indigo-600 group-hover:bg-indigo-50'}`}>
               {d}
             </span>
@@ -195,7 +195,7 @@ export default function CalendarPage() {
 
     const targetTotal = Math.ceil((firstDay + totalDays) / 7) * 7;
     for (let i = cells.length; i < targetTotal; i++) {
-        cells.push(<div key={`end-${i}`} className="h-32 border-b border-r border-gray-100 bg-gray-50/30 opacity-30"></div>);
+        cells.push(<div key={`end-${i}`} className="h-20 border-b border-r border-gray-100 bg-gray-50/30 opacity-30"></div>);
     }
 
     return cells;
@@ -203,11 +203,11 @@ export default function CalendarPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-12">
+      <div className="space-y-6">
         {/* Page Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
            <div>
-             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
                Event <span className="text-indigo-600">Calendar</span>
              </h1>
              <p className="text-gray-500 mt-1 font-medium">Schedule and manage organizational events.</p>
@@ -224,10 +224,10 @@ export default function CalendarPage() {
            )}
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
           <div className="xl:col-span-3">
-            <div className="rounded-[2.5rem] border border-gray-100 overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-500">
-              <div className="bg-slate-900 px-12 py-10 flex flex-col md:flex-row md:items-center justify-between gap-8 relative overflow-hidden">
+            <div className="rounded-[2rem] border border-gray-100 overflow-hidden bg-white shadow-sm hover:shadow-xl transition-all duration-500">
+              <div className="bg-slate-900 px-10 py-8 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
                 <div className="absolute right-0 top-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
                 <div className="flex items-center gap-8 relative z-10">
                   <div className="flex flex-col">
@@ -254,7 +254,7 @@ export default function CalendarPage() {
 
               <div className="grid grid-cols-7">
                 {days.map(day => (
-                  <div key={day} className="py-5 border-r border-b border-gray-100 bg-gray-50/50 text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
+                  <div key={day} className="py-3 border-r border-b border-gray-100 bg-gray-50/50 text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
                     {day}
                   </div>
                 ))}
@@ -263,8 +263,8 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          <div className="xl:col-span-1 space-y-10">
-             <div className="rounded-[2.5rem] border border-gray-100 overflow-hidden bg-white shadow-sm">
+          <div className="xl:col-span-1 space-y-6">
+             <div className="rounded-[2rem] border border-gray-100 overflow-hidden bg-white shadow-sm">
                 <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                    <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em] flex items-center gap-2">
                        <Sparkles className="w-4 h-4 text-indigo-500" />
@@ -311,7 +311,7 @@ export default function CalendarPage() {
                 </div>
              </div>
 
-             <div className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-indigo-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl group border-none">
+              <div className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-indigo-900 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-2xl group border-none">
                 <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700" />
                 <div className="relative z-10 font-black">
                     <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-8 border border-white/20 shadow-xl">

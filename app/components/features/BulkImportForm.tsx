@@ -10,8 +10,9 @@ interface PreviewRow {
   name: string;
   email: string;
   role: string;
-  department?: string;
-  mentor_email?: string;
+  department: string;
+  phone: string;
+  mentor_email: string;
 }
 
 export function BulkImportForm() {
@@ -110,6 +111,13 @@ export function BulkImportForm() {
                <span className="w-4 h-px bg-gray-200" />
                Automated Import
             </p>
+          </div>
+          <div className="flex items-center gap-4 text-rose-500 bg-rose-50 px-6 py-4 rounded-3xl border border-rose-100">
+             <AlertCircle className="w-5 h-5 shrink-0" />
+             <div className="flex flex-col">
+                <span className="text-[10px] font-black uppercase tracking-widest leading-none">Security Protocol</span>
+                <span className="text-[9px] font-bold uppercase tracking-tight opacity-70">All CSV fields are strictly mandatory for initialization</span>
+             </div>
           </div>
           <button
             onClick={downloadTemplate}

@@ -55,9 +55,17 @@ export async function POST(request: NextRequest) {
 
       const { name, email, role, department, phone, mentor_email } = userData;
 
-      if (!name || !email || !role) {
+      if (!name || !email || !role || !department || !phone || !mentor_email) {
         results.failed++;
-        results.errors.push(`Missing required fields for ${email || 'unknown row'}`);
+        const missing = [];
+        if (!name) missing.push("Name");
+        if (!email) missing.push("Email");
+        if (!role) missing.push("Role");
+        if (!department) missing.push("Department");
+        if (!phone) missing.push("Phone");
+        if (!mentor_email) missing.push("Mentor Email");
+
+        results.errors.push(`Missing fields [${missing.join(", ")}] for ${email || 'unknown row'}`);
         continue;
       }
 
