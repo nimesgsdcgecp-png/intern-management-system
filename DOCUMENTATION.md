@@ -10,8 +10,12 @@
 6. [Redux State Management](#redux-state-management)
 7. [Email System](#email-system)
 8. [Profile Management](#profile-management)
-9. [Error Handling](#error-handling)
-10. [Security Features](#security-features)
+9. [Attendance System](#attendance-system)
+10. [Events Management](#events-management)
+11. [Activity Logging](#activity-logging)
+12. [Admin Import](#admin-import)
+13. [Error Handling](#error-handling)
+14. [Security Features](#security-features)
 
 ## Features Overview
 
@@ -157,6 +161,9 @@ The system uses a **normalized database design** with UUID primary keys for bett
 - `POST /api/auth/[...nextauth]` - NextAuth.js authentication handler
 - `GET /api/auth/users` - Get all users (Admin only)
 - `POST /api/auth/users` - Create new user account (Admin only)
+- `POST /api/auth/forgot-password` - Request password reset
+- `POST /api/auth/reset-password` - Confirm password reset with token
+- `POST /api/auth/verify-otp` - Verify OTP code
 
 ### 👤 Profile Management
 
@@ -182,9 +189,40 @@ The system uses a **normalized database design** with UUID primary keys for bett
 - `PUT /api/mentors/[id]` - Update mentor profile
 - `DELETE /api/mentors/[id]` - Delete mentor account
 
+### 👨‍🎓 Intern Operations
+
+- `GET /api/interns` - Get all interns (filtered by role)
+- `POST /api/interns` - Create new intern (Admin only)
+- `PUT /api/interns/[id]` - Update intern information
+- `DELETE /api/interns/[id]` - Delete intern account
+- `POST /api/interns/reminders` - Send reminders to interns
+
+### 📋 Attendance Endpoints
+
+- `GET /api/attendance` - Get attendance records (filtered by role)
+- `POST /api/attendance` - Mark attendance (Interns)
+
+### 📅 Events Endpoints
+
+- `GET /api/events` - Get all events
+- `POST /api/events` - Create event (Admin only)
+- `GET /api/events/[id]` - Get specific event details
+- `DELETE /api/events/[id]` - Delete event (Admin only)
+
+### 🏢 Admin Operations
+
+- `GET /api/admin/stats` - Get dashboard statistics and analytics
+- `POST /api/admin/import` - Bulk import users (Admin only)
+
+### 📝 Activity & Search
+
+- `GET /api/activity` - Get activity logs
+- `GET /api/search` - Search across entities (interns, tasks, reports)
+- `GET /api/search/details` - Get detailed search results with filters
+
 ### 📧 Email Services
 
-- `POST /api/email` - Send system emails
+- `POST /api/email/test` - Test email configuration (Admin only)
 
 ## Redux State Management
 
@@ -242,6 +280,63 @@ All non-admin users can manage their profiles:
 - **Strength requirements**: 8+ characters, mixed case, numbers
 - **Confirmation matching**
 - **Secure hashing** with bcrypt
+
+## Attendance System
+
+### 📋 Attendance Tracking
+
+The system includes a comprehensive attendance tracking feature:
+
+- **Mark Attendance**: Interns can mark their daily attendance
+- **Attendance Records**: View historical attendance data
+- **Attendance Management**: Admin can view and manage attendance records
+- **Date-based Tracking**: Organized by calendar dates
+- **Status Indicators**: Present, Absent, Leave options
+- **Attendance Reports**: Generate attendance reports per intern
+
+### Admin Attendance Management
+- View all intern attendance records
+- Filter by date range and intern
+- Generate attendance summaries
+- Export attendance data
+
+## Events Management
+
+### 📅 Event System
+
+Admins can create and manage events that are visible to all users:
+
+- **Event Creation**: Create system-wide events
+- **Event Details**: Title, description, date, and time
+- **Event Visibility**: All users can view upcoming events
+- **Event Calendar**: Integrated calendar view for events
+- **Event Management**: Edit and delete events (Admin only)
+
+## Activity Logging
+
+### 📝 Activity Tracking
+
+The system logs all important activities for audit purposes:
+
+- **User Actions**: Login/logout entries
+- **CRUD Operations**: Create, Read, Update, Delete logs
+- **Admin Actions**: Track admin-specific operations
+- **Activity Feed**: View recent system activities
+- **Search Activities**: Query activity logs by user or action type
+- **Timestamps**: All activities timestamped for audit trail
+
+## Admin Import
+
+### 📥 Bulk Import Feature
+
+Admins can bulk import users into the system:
+
+- **CSV/Excel Support**: Import from spreadsheet files
+- **Bulk Creation**: Create multiple users at once
+- **Error Handling**: Identify and report import errors
+- **Validation**: Validate data before import
+- **Auto-generation**: Generate passwords for imported users
+- **Email Notification**: Send credentials to bulk imported users
 
 ## Error Handling
 

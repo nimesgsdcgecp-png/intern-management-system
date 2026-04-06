@@ -12,6 +12,7 @@ import { useAppDispatch } from "@/app/lib/redux/hooks";
 import { addSuccess, addError } from "@/app/lib/redux/slices/notificationSlice";
 import { StatsGrid } from "@/app/components/ui/StatsGrid";
 import { motion, AnimatePresence } from "framer-motion";
+import { showToast } from "@/lib/notifications";
 import Swal from "sweetalert2";
 
 interface Task {
@@ -69,12 +70,12 @@ export default function MyTasksPage() {
 
       if (res.ok) {
         setTasks(tasks.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
-        dispatch(addSuccess({ title: "Status Updated", message: `Task moved to ${newStatus}.` }));
+        showToast(`Task moved to ${newStatus}`, "success");
       } else {
-        dispatch(addError({ title: "Update Failed", message: "Failed to update task status." }));
+        showToast("Failed to update task status", "error");
       }
     } catch (error) {
-      dispatch(addError({ title: "Network Error", message: "Check your connection." }));
+      showToast("Check your connection", "error");
     }
   };
 

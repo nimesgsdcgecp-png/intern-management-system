@@ -10,6 +10,7 @@ import { SearchHeader } from "@/app/components/features/SearchHeader";
 import { Select } from "@/app/components/ui/Select";
 import { Modal } from "@/app/components/ui/Modal";
 import { QuickViewModal } from "@/app/components/features/QuickViewModal";
+import { ChangePasswordModal } from "@/app/components/features/ChangePasswordModal";
 import { BulkActionBar } from "@/app/components/features/BulkActionBar";
 import { showToast } from "@/lib/notifications";
 import { downloadCSV } from "@/lib/utils/csv-utils";
@@ -39,6 +40,7 @@ export default function MentorsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [credentialNotice, setCredentialNotice] = useState<CredentialNotice | null>(null);
+  const [resetPasswordUser, setResetPasswordUser] = useState<{ id: string, name: string } | null>(null);
   const [quickViewEntity, setQuickViewEntity] = useState<{ id: string, type: 'intern' | 'mentor' | 'task' } | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -499,6 +501,13 @@ export default function MentorsPage() {
                         <td className="px-8 py-4">
                           <div className="flex items-center justify-end gap-3">
                             <button
+                              onClick={() => setResetPasswordUser({ id: mentor.id, name: mentor.name })}
+                              className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:bg-amber-50 hover:text-amber-600 transition-all border border-gray-100 active:scale-95 shadow-sm"
+                              title="Reset Password"
+                            >
+                              <ShieldCheck className="w-4 h-4" />
+                            </button>
+                            <button
                               onClick={() => handleEdit(mentor)}
                               className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:bg-indigo-50 hover:text-indigo-600 transition-all border border-gray-100 active:scale-95 shadow-sm"
                               title="Edit Manager"
@@ -533,6 +542,13 @@ export default function MentorsPage() {
           setEditingId(id);
           setIsFormOpen(true);
         }}
+      />
+
+      <ChangePasswordModal
+        isOpen={!!resetPasswordUser}
+        onClose={() => setResetPasswordUser(null)}
+        userId={resetPasswordUser?.id || null}
+        userName={resetPasswordUser?.name || null}
       />
 
       <BulkActionBar

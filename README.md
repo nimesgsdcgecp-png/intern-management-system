@@ -67,9 +67,9 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 | Role | Email | Password |
 |------|-------|----------|
-| **Admin** | admin@internship.com | admin123 |
-| **Mentor** | Create via Admin Dashboard | Generated Password |
-| **Intern** | Create via Admin Dashboard | Generated Password |
+| **Admin** | admin@internship.com | password |
+| **Mentor** | mentor@internship.com | password |
+| **Intern** | intern@internship.com | password |
 
 ## 📁 Project Structure
 
@@ -170,6 +170,7 @@ intern-management-system/
 - `POST /api/interns` - Create intern (Admin)
 - `PUT /api/interns/[id]` - Update intern
 - `DELETE /api/interns/[id]` - Delete intern
+- `POST /api/interns/reminders` - Send reminders to interns
 
 ### Tasks (Role-based)
 - `GET /api/tasks` - Get tasks (filtered by role)
@@ -182,6 +183,25 @@ intern-management-system/
 - `POST /api/reports` - Submit report (Interns)
 - `PUT /api/reports/[id]` - Add feedback (Mentors)
 - `GET /api/reports/[id]` - Get specific report
+
+### Attendance
+- `GET /api/attendance` - Get attendance records
+- `POST /api/attendance` - Mark attendance (Interns)
+
+### Events
+- `GET /api/events` - Get all events
+- `POST /api/events` - Create event (Admin)
+- `GET /api/events/[id]` - Get event details
+- `DELETE /api/events/[id]` - Delete event
+
+### Admin Operations
+- `GET /api/admin/stats` - Get dashboard statistics
+- `POST /api/admin/import` - Bulk import users
+
+### Activity & Logs
+- `GET /api/activity` - Get activity logs
+- `GET /api/search` - Search across entities
+- `GET /api/search/details` - Get detailed search results
 
 ### Email Services
 - `POST /api/email/test` - Test email configuration (Admin)

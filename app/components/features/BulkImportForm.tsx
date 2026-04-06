@@ -98,32 +98,32 @@ export function BulkImportForm() {
   };
 
   return (
-    <Card className="p-8 max-w-xl mx-auto rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden bg-white">
-      <div className="absolute top-0 right-0 p-8 opacity-5">
-        <Table className="w-40 h-40" />
+    <Card className="p-10 max-w-2xl mx-auto rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40 relative overflow-hidden bg-white">
+      <div className="absolute top-0 right-0 p-8 opacity-[0.03] rotate-12 pointer-events-none">
+        <Table className="w-64 h-64 text-slate-900" />
       </div>
 
-      <div className="flex flex-col gap-6 relative z-10">
-        <div className="flex justify-between items-center bg-gray-50 p-8 rounded-4xl border border-gray-100 shadow-inner group/header hover:bg-white transition-all duration-300">
+      <div className="flex flex-col gap-8 relative z-10">
+        <div className="flex justify-between items-center bg-indigo-50/50 p-8 rounded-3xl border border-indigo-100/50 group/header transition-all duration-300">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase">CSV <span className="text-indigo-600">Import</span></h2>
-            <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mt-2 flex items-center gap-2">
-               <span className="w-4 h-px bg-gray-200" />
-               Automated Import
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight uppercase">CSV <span className="text-indigo-600">Import</span></h2>
+            <p className="text-[10px] text-indigo-400 font-extrabold uppercase tracking-[0.25em] mt-2 flex items-center gap-2">
+               <span className="w-6 h-px bg-indigo-200" />
+               Automated Protocol
             </p>
           </div>
-          <div className="flex items-center gap-4 text-rose-500 bg-rose-50 px-6 py-4 rounded-3xl border border-rose-100">
-             <AlertCircle className="w-5 h-5 shrink-0" />
+          <div className="flex items-center gap-4 text-amber-600 bg-amber-50 px-6 py-4 rounded-2xl border border-amber-100 shadow-sm shadow-amber-100/20">
+             <Info className="w-5 h-5 shrink-0" />
              <div className="flex flex-col">
-                <span className="text-[10px] font-black uppercase tracking-widest leading-none">Security Protocol</span>
-                <span className="text-[9px] font-bold uppercase tracking-tight opacity-70">All CSV fields are strictly mandatory for initialization</span>
+                <span className="text-[10px] font-black uppercase tracking-widest leading-none">Status Check</span>
+                <span className="text-[9px] font-bold uppercase tracking-tight opacity-70">Validation active for all fields</span>
              </div>
           </div>
           <button
             onClick={downloadTemplate}
-            className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-widest bg-white hover:bg-indigo-600 hover:text-white px-5 py-3 rounded-xl border border-gray-100 transition-all shadow-sm active:scale-95"
+            className="flex items-center gap-2.5 text-[10px] font-black uppercase tracking-widest bg-white hover:bg-slate-900 hover:text-white px-6 py-4 rounded-xl border border-slate-200 transition-all shadow-sm active:scale-95 group/btn"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4 group-hover/btn:animate-bounce" />
             Template
           </button>
         </div>

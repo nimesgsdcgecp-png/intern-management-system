@@ -49,37 +49,42 @@ export default function BulkImportPage() {
                           </div>
                           <p className="text-sm font-bold text-slate-600 mb-6">Follow these rules to ensure your data is correctly processed.</p>
 
-                         <div className="space-y-6">
-                            <div className="space-y-3">
-                               <p className="text-[9px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
-                                 <span className="w-4 h-px bg-indigo-200" />
-                                 Mandatory Parameters
-                               </p>
-                               <div className="grid grid-cols-1 gap-3">
-                                  {["NAME", "EMAIL", "ROLE"].map(item => (
-                                     <div key={item} className="flex items-center gap-3 p-3.5 bg-gray-50 rounded-2xl border border-gray-50 hover:bg-white transition-all cursor-default">
-                                        <Zap className="w-3.5 h-3.5 text-amber-500 animate-pulse" fill="currentColor" />
-                                        <span className="text-[10px] font-black text-slate-900 tracking-[0.2em]">{item}</span>
-                                     </div>
-                                  ))}
-                               </div>
-                            </div>
-
-                            <div className="space-y-3 pt-2">
-                               <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                 <span className="w-4 h-px bg-gray-200" />
-                                 Optional Nodes
-                               </p>
-                               <div className="grid grid-cols-1 gap-3">
-                                  {["DEPARTMENT", "PHONE", "MENTOR_EMAIL"].map(item => (
-                                     <div key={item} className="flex items-center gap-3 p-3.5 bg-gray-50/50 rounded-2xl border border-transparent opacity-60">
-                                        <div className="w-1 h-1 rounded-full bg-gray-400" />
-                                        <span className="text-[10px] font-black text-gray-400 tracking-[0.2em]">{item}</span>
-                                     </div>
-                                  ))}
-                               </div>
-                            </div>
-                         </div>
+                          <div className="space-y-8">
+                             <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                   <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-2">
+                                     <span className="w-5 h-px bg-indigo-200" />
+                                     Mandatory Parameters
+                                   </p>
+                                   <span className="px-2 py-0.5 bg-indigo-100 text-indigo-600 text-[8px] font-black rounded uppercase tracking-tighter">Required</span>
+                                </div>
+                                <div className="grid grid-cols-1 gap-3">
+                                   {["NAME", "EMAIL", "ROLE", "DEPARTMENT"].map(item => (
+                                      <div key={item} className="flex items-center gap-4 p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100 hover:bg-indigo-50 hover:border-indigo-200 transition-all cursor-default group/item">
+                                         <div className="w-8 h-8 rounded-xl bg-white shadow-sm flex items-center justify-center text-amber-500 group-hover/item:scale-110 transition-transform">
+                                            <Zap className="w-4 h-4 animate-pulse" fill="currentColor" />
+                                         </div>
+                                         <span className="text-[11px] font-black text-slate-900 tracking-[0.2em]">{item}</span>
+                                      </div>
+                                   ))}
+                                </div>
+                             </div>
+ 
+                             <div className="space-y-4 pt-2">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                                  <span className="w-5 h-px bg-gray-200" />
+                                  Optional Nodes
+                                </p>
+                                <div className="grid grid-cols-1 gap-3">
+                                   {["PHONE", "MENTOR_EMAIL"].map(item => (
+                                      <div key={item} className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-transparent opacity-60 hover:opacity-100 transition-opacity">
+                                         <div className="w-2 h-2 rounded-full bg-slate-300" />
+                                         <span className="text-[11px] font-black text-slate-400 tracking-[0.2em]">{item}</span>
+                                      </div>
+                                   ))}
+                                </div>
+                             </div>
+                          </div>
                       </div>
                     </div>
 

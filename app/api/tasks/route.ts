@@ -2,9 +2,11 @@ import { generateId, getTaskById, mapTaskRow } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { hasuraMutation, hasuraQuery } from "@/lib/hasura";
-import { GET_ALL_INTERN_IDS, GET_CREATOR_TASKS, GET_INTERN_TASKS, GET_TASK_ASSIGNMENTS_BY_TASK_IDS, GET_TASK_IDS_FOR_INTERN, GET_USER_BY_ID } from "@/lib/graphql/queries";
+import { GET_ALL_INTERN_IDS, GET_ALL_TASKS, GET_CREATOR_TASKS, GET_INTERN_TASKS, GET_TASK_ASSIGNMENTS_BY_TASK_IDS, GET_TASK_IDS_FOR_INTERN, GET_USER_BY_ID } from "@/lib/graphql/queries";
 import { CREATE_TASK, INSERT_TASK_ASSIGNMENTS } from "@/lib/graphql/mutations";
 import { getEmailService } from "@/lib/email/emailService";
+
+export const dynamic = 'force-dynamic';
 
 /**
  * API route for managing tasks.
@@ -19,8 +21,11 @@ export async function GET() {
     const { id: userId, role: userRole } = session.user as any;
     let tasks: any[] = [];
 
-    // Admin/Mentor see tasks they created
-    if (userRole === "admin" || userRole === "mentor") {
+    // Admin see all tasks, Mentor see tasks they created
+    if (userRole === "admin") {
+      const data = await hasuraQuery(GET_ALL_TASKS, {});
+      tasks = data.tasks;
+    } else if (userRole === "mentor") {
       const data = await hasuraQuery(GET_CREATOR_TASKS, { creatorId: userId });
       tasks = data.tasks;
     } else {

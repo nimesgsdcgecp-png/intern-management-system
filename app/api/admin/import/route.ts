@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { hasuraMutation, hasuraQuery } from "@/lib/hasura";
 import { EXISTING_USER_BY_EMAIL, EXISTING_USER_BY_ID } from "@/lib/graphql/queries";
-import { CREATE_INTERN_AND_USER, CREATE_USER, LOG_ACTIVITY } from "@/lib/graphql/mutations";
+import { CREATE_INTERN_AND_USER, CREATE_MENTOR_AND_USER, CREATE_USER, LOG_ACTIVITY } from "@/lib/graphql/mutations";
 import { hash } from "bcryptjs";
 import { sendCredentialsEmail } from "@/lib/email/emailService";
 import { generateId } from "@/lib/db";
@@ -53,125 +53,138 @@ export async function POST(request: NextRequest) {
         userData[h] = values[i];
       });
 
-      const { name, email, role, department, phone, mentor_email } = userData;
+        const { name, email, role, department, phone, mentor_email } = userData;
 
-      if (!name || !email || !role || !department || !phone || !mentor_email) {
-        results.failed++;
-        const missing = [];
-        if (!name) missing.push("Name");
-        if (!email) missing.push("Email");
-        if (!role) missing.push("Role");
-        if (!department) missing.push("Department");
-        if (!phone) missing.push("Phone");
-        if (!mentor_email) missing.push("Mentor Email");
-
-        results.errors.push(`Missing fields [${missing.join(", ")}] for ${email || 'unknown row'}`);
-        continue;
-      }
-
-      try {
-        // Check if user exists
-        const existingEmail = await hasuraQuery<{ users: Array<{ id: string }> }>(
-          EXISTING_USER_BY_EMAIL,
-          { email: email.toLowerCase() }
-        );
-
-        if (existingEmail.users.length > 0) {
+        if (!name || !email || !role || !department) {
           results.failed++;
-          results.errors.push(`User with email ${email} already exists`);
+          const missing = [];
+          if (!name) missing.push("Name");
+          if (!email) missing.push("Email");
+          if (!role) missing.push("Role");
+          if (!department) missing.push("Department");
+
+          results.errors.push(`Missing required fields [${missing.join(", ")}] for ${email || 'row ' + (dataLines.indexOf(line) + 2)}`);
           continue;
         }
 
-        // Role Restriction (Security)
-        const lowerRole = role.toLowerCase();
-        if (lowerRole === 'admin') {
+        const dept = (department || "").toUpperCase();
+        if (!DEPARTMENTS.includes(dept)) {
           results.failed++;
-          results.errors.push(`Security Violation: Admin role assignment blocked for ${email}`);
+          results.errors.push(`Invalid department [${dept}] for ${email}. Allowed: ${DEPARTMENTS.join(", ")}`);
           continue;
         }
 
-        if (!['intern', 'mentor'].includes(lowerRole)) {
-          results.failed++;
-          results.errors.push(`Invalid role for ${email}: ${role}. Only intern/mentor allowed.`);
-          continue;
-        }
+        const finalDept = dept;
 
-        // Handle Mentor Assignment
-        let mentorId = null;
-        if (lowerRole === 'intern' && mentor_email) {
-          const mentorCheck = await hasuraQuery<{ users: Array<{ id: string }> }>(
+        try {
+          // Check if user exists
+          const existingEmail = await hasuraQuery<{ users: Array<{ id: string }> }>(
             EXISTING_USER_BY_EMAIL,
-            { email: mentor_email.toLowerCase() }
+            { email: email.toLowerCase() }
           );
-          if (mentorCheck.users.length > 0) {
-            mentorId = mentorCheck.users[0].id;
+
+          if (existingEmail.users.length > 0) {
+            results.failed++;
+            results.errors.push(`User with email ${email} already exists`);
+            continue;
           }
-        }
 
-        // Generate ID
-        let id = generateId();
-        const plainPassword = generatePassword();
-        const hashedPassword = await hash(plainPassword, 10);
+          // Role Restriction (Security)
+          const lowerRole = role.toLowerCase();
+          if (lowerRole === 'admin') {
+            results.failed++;
+            results.errors.push(`Security Violation: Admin role assignment blocked for ${email}`);
+            continue;
+          }
 
-        // Map department
-        const dept = (department || "AI").toUpperCase();
-        const finalDept = DEPARTMENTS.includes(dept) ? dept : "AI";
+          if (!['intern', 'mentor'].includes(lowerRole)) {
+            results.failed++;
+            results.errors.push(`Invalid role for ${email}: ${role}. Only intern/mentor allowed.`);
+            continue;
+          }
 
-        // Create User
-        if (lowerRole === 'intern') {
+          // Handle Mentor Assignment
+          let mentorId = null;
+          if (lowerRole === 'intern' && mentor_email) {
+            const mentorCheck = await hasuraQuery<{ users: Array<{ id: string }> }>(
+              EXISTING_USER_BY_EMAIL,
+              { email: mentor_email.toLowerCase() }
+            );
+            if (mentorCheck.users.length > 0) {
+              mentorId = mentorCheck.users[0].id;
+            }
+          }
+
+          // Generate ID
+          let id = generateId();
+          const plainPassword = generatePassword();
+          const hashedPassword = await hash(plainPassword, 10);
+
+          // Create User
+          if (lowerRole === 'intern') {
             await hasuraMutation(CREATE_INTERN_AND_USER, {
+              id,
+              email: email.toLowerCase(),
+              password: hashedPassword,
+              role: 'intern',
+              name,
+              department: finalDept,
+              phone: phone || "",
+              internStatus: 'active',
+              startDate: new Date().toISOString().split('T')[0],
+              mentorId: mentorId
+            });
+          } else if (lowerRole === 'mentor') {
+            await hasuraMutation(CREATE_MENTOR_AND_USER, {
                 id,
                 email: email.toLowerCase(),
                 password: hashedPassword,
-                role: 'intern',
+                role: 'mentor',
                 name,
                 department: finalDept,
                 phone: phone || "",
-                internStatus: 'active',
-                startDate: new Date().toISOString().split('T')[0],
-                mentorId: mentorId
             });
-        } else {
+          } else {
             await hasuraMutation(CREATE_USER, {
-                id,
-                email: email.toLowerCase(),
-                password: hashedPassword,
-                role: lowerRole,
-                name,
-                department: finalDept,
-                phone: phone || "",
+              id,
+              email: email.toLowerCase(),
+              password: hashedPassword,
+              role: lowerRole,
+              name,
+              department: finalDept,
+              phone: phone || "",
             });
-        }
+          }
 
-        // Log Activity
-        await hasuraMutation(LOG_ACTIVITY, {
+          // Log Activity
+          await hasuraMutation(LOG_ACTIVITY, {
             userId: (session.user as any).id,
             action: `Bulk imported user: ${email}`,
             entityType: 'user',
             entityId: id,
             metadata: { role, email }
-        });
+          });
 
-        // Send Email
-        await sendCredentialsEmail({
-          to: email.toLowerCase(),
-          credentials: { id, password: plainPassword },
-          userInfo: { name, email: email.toLowerCase() },
-          userType: role === 'admin' ? 'mentor' : role as 'mentor' | 'intern',
-          includeResetLink: true
-        });
+          // Send Email
+          await sendCredentialsEmail({
+            to: email.toLowerCase(),
+            credentials: { id, password: plainPassword },
+            userInfo: { name, email: email.toLowerCase() },
+            userType: role === 'admin' ? 'mentor' : role as 'mentor' | 'intern',
+            includeResetLink: true
+          });
 
-        results.success++;
-      } catch (err: any) {
-        results.failed++;
-        results.errors.push(`Error creating ${email}: ${err.message}`);
+          results.success++;
+        } catch (err: any) {
+          results.failed++;
+          results.errors.push(`Error creating ${email}: ${err.message}`);
+        }
       }
-    }
 
-    return NextResponse.json({
+      return NextResponse.json({
         message: `Import completed. Success: ${results.success}, Failed: ${results.failed}`,
         results
-    });
+      });
 
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

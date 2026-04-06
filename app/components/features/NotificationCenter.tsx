@@ -20,111 +20,106 @@ const NotificationToast: React.FC<{ notification: any }> = ({ notification }) =>
     }
   }, [notification, dispatch]);
 
-  const getIcon = () => {
+  const getStyles = () => {
     switch (notification.type) {
       case 'success':
-        return <CheckCircle className="w-5 h-5 text-emerald-500" />;
+        return {
+          container: 'bg-emerald-50 border-emerald-100',
+          icon: <CheckCircle className="w-5 h-5 text-emerald-600 fill-emerald-100" />,
+          title: 'text-emerald-900',
+          message: 'text-emerald-700'
+        };
       case 'error':
-        return <AlertCircle className="w-5 h-5 text-red-500" />;
+        return {
+          container: 'bg-red-50 border-red-100',
+          icon: <AlertCircle className="w-5 h-5 text-red-600 fill-red-100" />,
+          title: 'text-red-900',
+          message: 'text-red-700'
+        };
       case 'warning':
-        return <AlertTriangle className="w-5 h-5 text-amber-500" />;
+        return {
+          container: 'bg-amber-50 border-amber-100',
+          icon: <AlertTriangle className="w-5 h-5 text-amber-600 fill-amber-100" />,
+          title: 'text-amber-900',
+          message: 'text-amber-700'
+        };
       case 'info':
-        return <Info className="w-5 h-5 text-blue-500" />;
       default:
-        return <Info className="w-5 h-5 text-gray-500" />;
+        return {
+          container: 'bg-blue-50 border-blue-100',
+          icon: <Info className="w-5 h-5 text-blue-600 fill-blue-100" />,
+          title: 'text-blue-900',
+          message: 'text-blue-700'
+        };
     }
   };
 
-  const getBorderColor = () => {
-    switch (notification.type) {
-      case 'success':
-        return 'border-l-emerald-500';
-      case 'error':
-        return 'border-l-red-500';
-      case 'warning':
-        return 'border-l-amber-500';
-      case 'info':
-        return 'border-l-blue-500';
-      default:
-        return 'border-l-gray-500';
-    }
-  };
+  const styles = getStyles();
 
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: -50, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -20, scale: 0.95 }}
+      initial={{ opacity: 0, x: 50, scale: 0.9 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={{ opacity: 0, x: 20, scale: 0.9 }}
       transition={{
         duration: 0.3,
-        ease: [0.25, 0.46, 0.45, 0.94],
+        ease: [0.23, 1, 0.32, 1],
       }}
       className={`
         relative overflow-hidden max-w-sm w-full
-        glass-card border-l-4 ${getBorderColor()}
-        shadow-lg hover:shadow-xl
+        ${styles.container} border
+        rounded-2xl shadow-xl shadow-slate-200/50
         transition-all duration-200
         group cursor-pointer
       `}
       onClick={() => dispatch(removeNotification(notification.id))}
-      whileHover={{ scale: 1.02, y: -2 }}
     >
-      {/* Progress bar for timed notifications */}
-      {notification.duration && notification.duration > 0 && (
-        <motion.div
-          className="absolute top-0 left-0 h-1 bg-linear-to-r from-blue-500 to-emerald-500 rounded-full"
-          initial={{ width: '100%' }}
-          animate={{ width: '0%' }}
-          transition={{ duration: notification.duration / 1000, ease: 'linear' }}
-        />
-      )}
+      <div className="p-4 flex items-center gap-4">
+        <div className="shrink-0">
+          {styles.icon}
+        </div>
 
-      <div className="p-4">
-        <div className="flex items-start">
-          <div className="shrink-0 mr-3 mt-0.5">
-            {getIcon()}
-          </div>
-
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h4 className="text-sm font-semibold dm-text mb-1">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex-1">
+              {notification.title && (
+                <h4 className={`text-sm font-black uppercase tracking-widest ${styles.title} mb-0.5`}>
                   {notification.title}
                 </h4>
-                <p className="text-sm dm-text-secondary leading-relaxed">
-                  {notification.message}
-                </p>
-
-                {notification.action && (
-                  <motion.button
-                    className="mt-3 text-sm font-medium dm-text-link transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      notification.action.onClick();
-                      dispatch(removeNotification(notification.id));
-                    }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {notification.action.label}
-                  </motion.button>
-                )}
-              </div>
-
-              <motion.button
-                className="ml-4 dm-text-muted transition-colors opacity-0 group-hover:opacity-100"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  dispatch(removeNotification(notification.id));
-                }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <X className="w-4 h-4" />
-              </motion.button>
+              )}
+              <p className={`text-sm font-bold ${styles.message} leading-snug`}>
+                {notification.message}
+              </p>
             </div>
+
+            <motion.button
+              className="p-1 rounded-lg hover:bg-black/5 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                dispatch(removeNotification(notification.id));
+              }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <X className={`w-4 h-4 opacity-40 group-hover:opacity-100 transition-opacity ${styles.message}`} />
+            </motion.button>
           </div>
+          
+          {notification.action && (
+            <motion.button
+              className="mt-2 text-xs font-black uppercase tracking-widest bg-white/50 hover:bg-white px-3 py-1.5 rounded-lg border border-black/5 transition-all"
+              onClick={(e) => {
+                e.stopPropagation();
+                notification.action.onClick();
+                dispatch(removeNotification(notification.id));
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {notification.action.label}
+            </motion.button>
+          )}
         </div>
       </div>
     </motion.div>

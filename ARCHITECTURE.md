@@ -56,14 +56,14 @@ The Intern Management System follows a **modern full-stack architecture** with t
 
 | Layer | Technology | Version | Purpose |
 |-------|------------|---------|---------|
-| **Frontend** | Next.js | 16+ | React framework with SSR/SSG |
+| **Frontend** | Next.js | 16.1.7 | React framework with SSR/SSG |
 | **Language** | TypeScript | 5+ | Type-safe development |
 | **Styling** | Tailwind CSS | 4+ | Utility-first CSS framework |
-| **Database** | PostgreSQL | 14+ | Relational database with ACID properties |
-| **GraphQL** | Hasura | 2.33+ | Auto-generated GraphQL API |
-| **Authentication** | NextAuth.js | 4+ | Authentication framework |
+| **Database** | PostgreSQL | 15+ | Relational database with ACID properties |
+| **GraphQL** | Hasura | 2.44.0+ | Auto-generated GraphQL API |
+| **Authentication** | NextAuth.js | 4.24.13 | Authentication framework |
 | **State Management** | Redux Toolkit | 2+ | Client-side state management |
-| **Animations** | Framer Motion | 12+ | Smooth UI animations |
+| **Animations** | Framer Motion | 12+ | Smooth UI animations
 
 ## Data Flow Architecture
 
@@ -280,12 +280,27 @@ The Intern Management System follows a **modern full-stack architecture** with t
 ```
 /api/
 ├── auth/                  # Authentication & user management
+│   ├── [...nextauth]      # NextAuth core endpoints
+│   ├── users              # User creation & retrieval
+│   ├── forgot-password    # Password reset initiation
+│   ├── reset-password     # Password reset confirmation
+│   └── verify-otp         # OTP verification
 ├── profile/               # User profile management
 ├── mentors/              # Mentor operations
 ├── interns/              # Intern management
+│   └── reminders         # Send intern reminders
 ├── tasks/                # Task operations
 ├── reports/              # Report management
+├── attendance/           # Attendance tracking
+├── events/               # Event management
+├── admin/                # Admin operations
+│   ├── stats             # Dashboard statistics
+│   └── import            # Bulk import users
+├── activity/             # Activity logging
+├── search/               # Search functionality
+│   └── details           # Detailed search results
 └── email/                # Email services
+    └── test              # Test email configuration
 ```
 
 ## Frontend Architecture

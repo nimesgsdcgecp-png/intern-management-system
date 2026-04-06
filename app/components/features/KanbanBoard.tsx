@@ -27,7 +27,7 @@ const COLUMNS = [
   { id: "pending", label: "Queued", icon: <Clock className="w-4 h-4" />, color: "text-slate-400", bg: "bg-slate-100" },
   { id: "in-progress", label: "Executing", icon: <Activity className="w-4 h-4" />, color: "text-indigo-500", bg: "bg-indigo-100" },
   { id: "review", label: "Review", icon: <Users className="w-4 h-4" />, color: "text-amber-500", bg: "bg-amber-100" },
-  { id: "completed", label: "Finished", icon: <CheckSquare className="w-4 h-4" />, color: "text-emerald-500", bg: "bg-emerald-100" },
+  { id: "completed", label: "Finished", icon: <CheckSquare className="w-4 h-4" />, color: "text-emerald-500", bg: "bg-emerald-50" },
 ];
 
 export function KanbanBoard({ tasks, onStatusChange, onQuickView, interns }: KanbanBoardProps) {
@@ -103,7 +103,7 @@ export function KanbanBoard({ tasks, onStatusChange, onQuickView, interns }: Kan
                     }}
                     className="cursor-grab active:cursor-grabbing group"
                   >
-                    <div className="dm-card rounded-3xl p-5 hover:shadow-xl hover:border-indigo-100 transition-all duration-300 relative overflow-hidden">
+                    <div className={`dm-card rounded-3xl p-5 hover:shadow-xl transition-all duration-300 relative overflow-hidden ${col.id === 'completed' ? 'border-emerald-200 bg-emerald-50/20' : 'hover:border-indigo-100'}`}>
                       {/* Priority Strip */}
                       <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${task.priority === 'high' ? 'bg-rose-500' : task.priority === 'medium' ? 'bg-amber-500' : 'bg-slate-300'}`} />
                       

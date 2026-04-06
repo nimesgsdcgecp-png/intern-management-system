@@ -116,10 +116,12 @@ export function DashboardHeader() {
           </div>
 
           <div className="text-left hidden lg:block">
-            <div className="text-sm font-bold text-white leading-tight">{session?.user?.name || "Administrator"}</div>
+            <div className="text-sm font-bold text-white leading-tight">{session?.user?.name || "User"}</div>
             <div className="flex items-center gap-2">
-              <div className="text-[10px] text-gray-400 font-medium">{session?.user?.email || "admin@Internship Management System.com"}</div>
-              <span className="bg-indigo-500/20 text-indigo-400 text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">ADMIN</span>
+              <div className="text-[10px] text-gray-400 font-medium">{session?.user?.email || ""}</div>
+              <span className="bg-indigo-500/20 text-indigo-400 text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider">
+                {(session?.user as any)?.role || "User"}
+              </span>
             </div>
           </div>
         </div>

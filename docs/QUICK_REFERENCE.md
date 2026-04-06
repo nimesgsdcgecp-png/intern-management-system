@@ -10,14 +10,15 @@ A full-stack role-based intern management system with React frontend, Next.js ba
 | Aspect | Details |
 |--------|---------|
 | **Framework** | Next.js 16.1.7 (React 19, TypeScript) |
-| **Database** | PostgreSQL 15 + Hasura GraphQL |
-| **Authentication** | NextAuth.js (JWT + Credentials) |
-| **State Management** | Redux Toolkit |
-| **Styling** | Tailwind CSS 4 + Framer Motion |
-| **API Routes** | 8 endpoints (Auth, CRUD, Email) |
-| **UI Components** | 15 reusable components |
+| **Database** | PostgreSQL 15 + Hasura GraphQL 2.44.0 |
+| **Authentication** | NextAuth.js 4.24.13 (JWT + Credentials) |
+| **State Management** | Redux Toolkit 2.11.2 |
+| **Styling** | Tailwind CSS 4 + Framer Motion 12 |
+| **API Routes** | 23+ endpoints (Auth, CRUD, Email, Events, Attendance, Admin, Activity, Search) |
+| **UI Components** | 20+ reusable components |
+| **Pages** | 23+ dashboard and feature pages |
 | **Roles** | Admin, Mentor, Intern (3-tier) |
-| **Security** | bcryptjs hashing, HttpOnly cookies, role-based access control |
+| **Security** | bcryptjs hashing, HttpOnly cookies, role-based access control, JWT tokens |
 | **Deployment** | Docker (local), cloud-ready (Vercel, AWS EC2) |
 
 ---
@@ -68,11 +69,28 @@ User Browser → Next.js (SSR/CSR) → API Routes → Hasura GraphQL → Postgre
 
 ```
 app/
-├── api/                 # Backend API routes (8 endpoints)
+├── api/                 # Backend API routes (23+ endpoints)
+│   ├── auth/            # Authentication
+│   ├── interns/         # Intern operations
+│   ├── mentors/         # Mentor operations
+│   ├── tasks/           # Task operations
+│   ├── reports/         # Report management
+│   ├── attendance/      # Attendance tracking
+│   ├── events/          # Event management
+│   ├── admin/           # Admin operations
+│   ├── activity/        # Activity logging
+│   ├── search/          # Search functionality
+│   ├── profile/         # Profile management
+│   └── email/           # Email services
 ├── auth/                # Login, password reset pages (CSR)
 ├── dashboard/           # Role-based dashboards (CSR)
-├── components/          # 15 reusable UI components
-├── lib/                 # Redux store, design tokens
+│   ├── admin/           # Admin dashboard with interns, mentors, tasks, reports, logs, import
+│   ├── mentor/          # Mentor dashboard with interns, tasks, reports
+│   ├── intern/          # Intern dashboard with tasks, reports, attendance
+│   └── calendar/        # Calendar view for events
+├── profile/             # Profile management page
+├── components/          # 20+ reusable UI components
+├── lib/                 # Redux store, design tokens, services
 ├── globals.css          # Tailwind styles
 ├── layout.tsx           # Root layout (SSR)
 └── page.tsx             # Home redirect (CSR)
@@ -80,13 +98,17 @@ app/
 lib/
 ├── auth.ts              # NextAuth configuration
 ├── hasura.ts            # GraphQL client wrapper
+├── apolloClient.ts      # Apollo configuration
 ├── graphql/             # Queries & mutations
 ├── db.ts                # Database utilities
 ├── email/               # Email service
-└── apolloClient.ts      # Apollo config
+└── redux/               # Redux store configuration
 
 sql/
 └── schema.sql           # PostgreSQL schema
+
+types/
+└── *.ts                 # TypeScript type definitions
 ```
 
 ---
@@ -186,9 +208,10 @@ RootLayout (SSR)
 **Authentication:**
 ```
 POST   /api/auth/[...nextauth]      Login/logout (NextAuth handles)
+GET    /api/auth/users              Get all users
 POST   /api/auth/users              Create user (admin)
-POST   /api/auth/forgot-password    Request reset
-POST   /api/auth/reset-password     Confirm reset
+POST   /api/auth/forgot-password    Request password reset
+POST   /api/auth/reset-password     Confirm password reset
 POST   /api/auth/verify-otp         Verify OTP
 ```
 
@@ -197,6 +220,16 @@ POST   /api/auth/verify-otp         Verify OTP
 GET    /api/interns                 Get all/filtered interns
 POST   /api/interns                 Create intern (admin)
 GET    /api/interns/[id]            Get specific intern
+PUT    /api/interns/[id]            Update intern
+DELETE /api/interns/[id]            Delete intern
+POST   /api/interns/reminders       Send reminders
+```
+
+**Mentors:**
+```
+GET    /api/mentors                 Get all mentors
+PUT    /api/mentors/[id]            Update mentor
+DELETE /api/mentors/[id]            Delete mentor
 ```
 
 **Tasks:**
@@ -204,25 +237,55 @@ GET    /api/interns/[id]            Get specific intern
 GET    /api/tasks                   Get all/filtered tasks
 POST   /api/tasks                   Create task (admin/mentor)
 GET    /api/tasks/[id]              Get task details
+PUT    /api/tasks/[id]              Update task
+DELETE /api/tasks/[id]              Delete task
 ```
 
 **Reports:**
 ```
 GET    /api/reports                 Get reports (filtered by role)
 POST   /api/reports                 Submit report (intern)
-PATCH  /api/reports/[id]            Add feedback (mentor)
+PUT    /api/reports/[id]            Add feedback (mentor)
+GET    /api/reports/[id]            Get specific report
+```
+
+**Attendance:**
+```
+GET    /api/attendance              Get attendance records
+POST   /api/attendance              Mark attendance (intern)
+```
+
+**Events:**
+```
+GET    /api/events                  Get all events
+POST   /api/events                  Create event (admin)
+GET    /api/events/[id]             Get event details
+DELETE /api/events/[id]             Delete event
+```
+
+**Admin Operations:**
+```
+GET    /api/admin/stats             Get dashboard statistics
+POST   /api/admin/import            Bulk import users
+```
+
+**Search & Activity:**
+```
+GET    /api/activity                Get activity logs
+GET    /api/search                  Global search
+GET    /api/search/details          Detailed search results
 ```
 
 **Other:**
 ```
 GET    /api/profile                 Get my profile
-PATCH  /api/profile                 Update my profile
+PUT    /api/profile                 Update my profile
 POST   /api/email/test              Test email service
 ```
 
 ---
 
-## 🗄️ DATABASE SCHEMA (7 Tables)
+## 🗄️ DATABASE SCHEMA (10+ Tables)
 
 ```sql
 users (core auth)
@@ -243,8 +306,17 @@ task_assignments (many-to-many)
 reports (progress tracking)
 ├─ id (UUID), intern_id (FK), report_date, work_description, hours_worked, feedback
 
+attendance (daily attendance) [NEW]
+├─ id (UUID), intern_id (FK), date, status (present/absent/leave)
+
+events (system-wide events) [NEW]
+├─ id (UUID), title, description, date, time, created_by
+
 password_reset_tokens (recovery)
 ├─ id (UUID), email, token, otp_code, type (enum), expires_at
+
+activity_logs (audit trail) [NEW]
+├─ id (UUID), user_id (FK), action, entity_type, entity_id, created_at
 ```
 
 ---
@@ -393,14 +465,18 @@ Production:
 ## 🏆 PROJECT STRENGTHS
 
 ✅ **Type-Safe**: Full TypeScript across frontend and backend
-✅ **Secure**: Modern auth patterns, encrypted passwords, role-based access
+✅ **Secure**: Modern auth patterns, encrypted passwords, role-based access, JWT tokens
 ✅ **Scalable**: GraphQL abstraction allows easy data scaling
 ✅ **Maintainable**: Clear separation of concerns (frontend/backend/data)
-✅ **Modern Stack**: React 19, Next.js 16, Redux, Tailwind CSS 4
+✅ **Modern Stack**: React 19, Next.js 16.1.7, Redux Toolkit, Tailwind CSS 4
 ✅ **Cloud-Ready**: Docker support, cloud-agnostic deployment
 ✅ **Developer Experience**: Hot reloading, TypeScript errors, Redux DevTools
 ✅ **Role-Based**: 3-tier access control built-in
 ✅ **Production-Ready**: Error handling, validation, email notifications
+✅ **Rich Features**: 23+ API endpoints, attendance tracking, events, activity logs, bulk import
+✅ **Global Search**: Advanced search across all entities with filters
+✅ **Analytics**: Admin statistics dashboard with real-time metrics
+✅ **Audit Trail**: Complete activity logging for compliance
 
 ---
 

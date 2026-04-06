@@ -179,6 +179,11 @@ export function Sidebar() {
           icon: <FileText className="w-5 h-5" />,
         },
         {
+          href: "/dashboard/intern/reports",
+          label: "View Reports",
+          icon: <BarChart3 className="w-5 h-5" />,
+        },
+        {
           href: "/dashboard/intern/attendance",
           label: "Attendance History",
           icon: <UserCheck className="w-5 h-5" />,
@@ -296,8 +301,10 @@ export function Sidebar() {
             </div>
             {!isCollapsed && (
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-black text-white truncate">{session?.user?.name || "Administrator"}</span>
-                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Super Admin</span>
+                <span className="text-xs font-black text-white truncate">{session?.user?.name || "User"}</span>
+                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">
+                  {role || "Administrator"}
+                </span>
               </div>
             )}
          </div>

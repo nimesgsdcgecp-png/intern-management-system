@@ -7,7 +7,7 @@ import {
   EXISTING_USER_BY_ID,
   GET_USERS,
 } from "@/lib/graphql/queries";
-import { CREATE_USER } from "@/lib/graphql/mutations";
+import { CREATE_USER, CREATE_MENTOR_AND_USER, UPDATE_USER_PASSWORD } from "@/lib/graphql/mutations";
 import { hash } from "bcryptjs";
 import { sendCredentialsEmail } from "@/lib/email/emailService";
 
@@ -126,18 +126,34 @@ export async function POST(request: NextRequest) {
     const plainPassword = generatePassword();
     const hashedPassword = await hash(plainPassword, 10);
 
-    const inserted = await hasuraMutation<{
-      insert_users_one: { id: string; email: string; role: string };
-      insert_profiles_one: { user_id: string; name: string; department: string; phone: string };
-    }>(CREATE_USER, {
-      id,
-      email,
-      password: hashedPassword,
-      role,
-      name,
-      department,
-      phone,
-    });
+    let inserted;
+    if (role === 'mentor') {
+      inserted = await hasuraMutation<{
+        insert_users_one: { id: string; email: string; role: string };
+        insert_profiles_one: { user_id: string; name: string; department: string; phone: string };
+      }>(CREATE_MENTOR_AND_USER, {
+        id,
+        email,
+        password: hashedPassword,
+        role,
+        name,
+        department,
+        phone,
+      });
+    } else {
+      inserted = await hasuraMutation<{
+        insert_users_one: { id: string; email: string; role: string };
+        insert_profiles_one: { user_id: string; name: string; department: string; phone: string };
+      }>(CREATE_USER, {
+        id,
+        email,
+        password: hashedPassword,
+        role,
+        name,
+        department,
+        phone,
+      });
+    }
 
     const safeUser = {
       id: inserted.insert_users_one.id,
@@ -224,6 +240,48 @@ export async function POST(request: NextRequest) {
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
       { error: "Failed to create user", details: message },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session || (session.user as any)?.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized: Admin access required" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const userId = body?.userId;
+    const newPassword = body?.password;
+
+    if (!userId || !newPassword) {
+      return NextResponse.json(
+        { error: "User ID and new password are required" },
+        { status: 400 }
+      );
+    }
+
+    if (newPassword.length < 6) {
+      return NextResponse.json(
+        { error: "Password must be at least 6 characters long" },
+        { status: 400 }
+      );
+    }
+
+    const hashedPassword = await hash(newPassword, 10);
+
+    await hasuraMutation(UPDATE_USER_PASSWORD, {
+      id: userId,
+      passwordHash: hashedPassword,
+    });
+
+    return NextResponse.json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Password update error:", error);
+    return NextResponse.json(
+      { error: "Failed to update password" },
       { status: 500 }
     );
   }

@@ -223,6 +223,22 @@ export const GET_CREATOR_TASKS = gql`
   }
 `;
 
+export const GET_ALL_TASKS = gql`
+  query GetAllTasks {
+    tasks(order_by: { created_at: desc }) {
+      id
+      title
+      description
+      assigned_by
+      assigned_to_all
+      deadline
+      priority
+      status
+      created_at
+    }
+  }
+`;
+
 export const GET_INTERN_TASKS = gql`
   query GetInternTasks($taskIds: [uuid!]!) {
     tasks(

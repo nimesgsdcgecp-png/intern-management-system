@@ -29,7 +29,7 @@ const notificationSlice = createSlice({
         ...action.payload,
         id: Math.random().toString(36).substring(2, 11),
         timestamp: Date.now(),
-        duration: action.payload.duration ?? 5000,
+        duration: action.payload.duration ?? 3000,
       };
       state.notifications.unshift(notification);
       if (state.notifications.length > 5) state.notifications.pop();

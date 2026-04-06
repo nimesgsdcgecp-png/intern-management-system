@@ -39,6 +39,46 @@ export const CREATE_USER = gql`
   }
 `;
 
+export const CREATE_MENTOR_AND_USER = gql`
+  mutation CreateMentorAndUser(
+    $id: uuid!
+    $name: String!
+    $email: String!
+    $password: String!
+    $role: user_role!
+    $department: String!
+    $phone: String
+  ) {
+    insert_users_one(
+      object: {
+        id: $id
+        email: $email
+        password_hash: $password
+        role: $role
+      }
+    ) {
+      id
+    }
+    insert_profiles_one(
+      object: {
+        user_id: $id
+        name: $name
+        department: $department
+        phone: $phone
+      }
+    ) {
+      user_id
+    }
+    insert_mentors_one(
+      object: {
+        user_id: $id
+      }
+    ) {
+      user_id
+    }
+  }
+`;
+
 export const CREATE_INTERN_AND_USER = gql`
   mutation CreateInternAndUser(
     $id: uuid!

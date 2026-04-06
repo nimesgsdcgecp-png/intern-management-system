@@ -115,27 +115,40 @@ export default function MyReportsPage() {
                   </thead>
                   <tbody className="divide-y divide-gray-50">
                     {reports.map((report) => (
-                      <tr key={report.id} className="group transition-all duration-300 hover:bg-gray-50/30">
-                        <td className="px-8 py-4">
+                      <tr key={report.id} className="group transition-all duration-300 hover:bg-gray-50/30 border-b border-gray-50 last:border-0">
+                        <td className="px-8 py-6 align-top">
                            <div className="flex items-center gap-3 font-bold text-gray-900 tracking-tight text-base group-hover:text-indigo-600 transition-colors">
                               <Calendar className="w-4 h-4 text-indigo-400" /> 
                               {report.date}
                            </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="max-w-md">
-                            <p className="text-xs font-semibold text-gray-500 line-clamp-2 leading-relaxed">
-                              "{report.workDescription}"
-                            </p>
+                        <td className="px-6 py-6 align-top">
+                          <div className="max-w-md space-y-4">
+                            <div>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Work Description</p>
+                                <p className="text-xs font-semibold text-gray-600 leading-relaxed">
+                                  "{report.workDescription}"
+                                </p>
+                            </div>
+                            {report.mentorFeedback && (
+                                <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100/50">
+                                    <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                        <MessageSquare className="w-3 h-3" /> Mentor Feedback
+                                    </p>
+                                    <p className="text-xs font-bold text-emerald-700 italic leading-relaxed">
+                                        "{report.mentorFeedback}"
+                                    </p>
+                                </div>
+                            )}
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-6 align-top">
                           <span className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 border border-indigo-50 w-fit">
                              <Timer className="w-3.5 h-3.5" />
                              {report.hoursWorked} HRS
                           </span>
                         </td>
-                        <td className="px-8 py-4">
+                        <td className="px-8 py-6 align-top">
                           <div className="flex justify-end">
                             {report.mentorFeedback ? (
                               <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">

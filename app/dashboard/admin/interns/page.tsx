@@ -9,10 +9,11 @@ import { showToast } from "@/lib/notifications";
 import { Card } from "@/app/components/ui/Card";
 import { Button } from "@/app/components/ui/Button";
 import { Input } from "@/app/components/ui/Input";
-import { Edit3, Trash2, PlusCircle, Users, Mail, GraduationCap, Building2, Calendar, Search } from "lucide-react";
+import { Edit3, Trash2, PlusCircle, Users, Mail, GraduationCap, Building2, Calendar, Search, ShieldCheck } from "lucide-react";
 import { SearchHeader } from "@/app/components/features/SearchHeader";
 import { Select } from "@/app/components/ui/Select";
 import { QuickViewModal } from "@/app/components/features/QuickViewModal";
+import { ChangePasswordModal } from "@/app/components/features/ChangePasswordModal";
 import { BulkActionBar } from "@/app/components/features/BulkActionBar";
 import { downloadCSV } from "@/lib/utils/csv-utils";
 import Swal from "sweetalert2";
@@ -55,6 +56,7 @@ export default function InternsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [credentialNotice, setCredentialNotice] = useState<CredentialNotice | null>(null);
+  const [resetPasswordUser, setResetPasswordUser] = useState<{ id: string, name: string } | null>(null);
   const [quickViewEntity, setQuickViewEntity] = useState<{ id: string, type: 'intern' | 'mentor' | 'task' } | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [phoneError, setPhoneError] = useState("");
@@ -594,6 +596,13 @@ export default function InternsPage() {
                         <td className="px-8 py-4">
                           <div className="flex items-center justify-end gap-2.5">
                             <button
+                              onClick={() => setResetPasswordUser({ id: intern.id, name: intern.name })}
+                              className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:bg-amber-50 hover:text-amber-600 transition-all border border-gray-100 active:scale-95"
+                              title="Reset Password"
+                            >
+                              <ShieldCheck className="w-4 h-4" />
+                            </button>
+                            <button
                               onClick={() => setQuickViewEntity({ id: intern.id, type: 'intern' })}
                               className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:bg-indigo-50 hover:text-indigo-600 transition-all border border-gray-100 active:scale-95"
                               title="Details"
@@ -635,6 +644,13 @@ export default function InternsPage() {
           setEditingId(id);
           setIsFormOpen(true);
         }}
+      />
+
+      <ChangePasswordModal
+        isOpen={!!resetPasswordUser}
+        onClose={() => setResetPasswordUser(null)}
+        userId={resetPasswordUser?.id || null}
+        userName={resetPasswordUser?.name || null}
       />
 
       <BulkActionBar
